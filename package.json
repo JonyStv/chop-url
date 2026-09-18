@@ -1,0 +1,14 @@
+{
+  "name": "chop-url",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter chop-url-frontend dev",
+    "dev:api": "pnpm --filter chop-url-backend dev",
+    "dev": "concurrently -n web,api -c blue,green \"pnpm run dev:web\" \"pnpm run dev:api\"",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
