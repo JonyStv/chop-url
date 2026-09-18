@@ -1,12 +1,16 @@
 {
-  "name": "chop-url",
+  "name": "chop-url-monorepo",
   "private": true,
   "scripts": {
-    "dev:web": "pnpm --filter chop-url-frontend dev",
-    "dev:api": "pnpm --filter chop-url-backend dev",
+    "dev:web": "pnpm --filter @chop-url/web dev",
+    "dev:api": "pnpm --filter @chop-url/api dev",
     "dev": "concurrently -n web,api -c blue,green \"pnpm run dev:web\" \"pnpm run dev:api\"",
     "build": "pnpm -r build",
-    "lint": "pnpm -r lint"
+    "build:web": "pnpm --filter @chop-url/web build",
+    "build:api": "pnpm --filter @chop-url/api build",
+    "lint": "pnpm -r lint --if-present",
+    "test": "pnpm -r test --if-present",
+    "clean": "pnpm -r exec rm -rf node_modules dist && rm -rf node_modules"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
