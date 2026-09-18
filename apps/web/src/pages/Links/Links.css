@@ -1,0 +1,125 @@
+/* --- GESTION DE ENLACES.CSS--- */
+.links-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.enlaces-header-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+.enlaces-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.5rem 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: var(--color-button-secondary);
+    box-shadow: var(--shadow-elevation-1);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    &:hover,
+    &:focus {
+      background-color: var(--color-button-secondary-hover);
+    }
+  }
+}
+.table-section {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  display: block;
+  margin: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-bg-sidebar);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+}
+select {
+  background-color: var(--color-button-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23607d8b' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.8rem;
+
+  &:hover,
+  &:focus {
+    background-color: var(--color-bg-interactive-hover);
+  }
+  &:focus {
+    outline: 2px solid var(--color-text-accent);
+    outline-offset: 2px;
+  }
+}
+.input-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  form {
+    width: 70%;
+  }
+}
+.link-column {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

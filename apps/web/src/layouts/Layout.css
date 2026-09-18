@@ -1,0 +1,27 @@
+/* components/Layout/Layout.css */
+.app-container {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  grid-column: 2;
+  padding: 2rem 2rem;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    display: block;
+    height: 100vh;
+  }
+
+  .main-content {
+    grid-column: auto;
+    height: 100vh;
+    padding: 3.5rem 1.5rem 2rem 1.5rem;
+  }
+}

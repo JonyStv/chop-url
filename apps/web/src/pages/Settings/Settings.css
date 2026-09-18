@@ -1,0 +1,63 @@
+/* AJUSTES.CSS */
+.settings-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.ajustes-header-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.ajustes-section {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem;
+  border: 0.5px solid var(--color-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-elevation-1);
+  margin: 0;
+  h4 {
+    margin-bottom: 1rem;
+  }
+  button {
+    background: var(--color-button-primary);
+    color: var(--color-text-primary-inverse);
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+  }
+  div {
+    width: 100%;
+  }
+}
+.save-changes-button.disabled,
+.change-password-button.disabled {
+  color: #9ca3af;
+  background: var(--color-button-disabled);
+  cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .ajustes-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+}

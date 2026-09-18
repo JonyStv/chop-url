@@ -1,0 +1,36 @@
+{
+  "name": "chop-url-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --env-file=.env --watch server.js",
+    "start": "node --env-file=.env server.js",
+    "test": "node --env-file=.env.test --test test/*.test.js",
+    "check": "node --env-file=.env.test --test test/*.test.js && node --check app.js && node --check server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.3.4",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.3.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "geoip-lite": "^2.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "ua-parser-js": "^2.0.10"
+  }
+}

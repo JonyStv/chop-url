@@ -1,0 +1,188 @@
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+thead {
+  background-color: var(--color-bg-sidebar);
+}
+th,
+td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+.checkbox-column {
+  width: 40px;
+  text-align: center;
+}
+.link-column {
+  width: 200px;
+  text-align: left;
+}
+.properties-column {
+  width: 150px;
+  text-align: center;
+}
+.table-content {
+  text-align: center;
+}
+.estado {
+  border-radius: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  &.active {
+    background-color: var(--color-button-primary);
+  }
+  &.inactive {
+    background-color: var(--color-text-error);
+  }
+}
+.table-link {
+  color: var(--color-text-accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  &:hover,
+  &:focus {
+    color: var(--color-button-primary);
+  }
+}
+tfoot td {
+  border-bottom: none;
+  padding-top: 1rem;
+}
+tfoot p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+.delete-button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  svg {
+    stroke: #ef4444;
+  }
+}
+
+tfoot td:nth-child(2) {
+  text-align: center;
+}
+tfoot td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .table-section {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  th,
+  td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  margin-right: 0.5rem;
+}
+/* --- CHECKBOX --- */
+.table-section input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.table-section .checkbox-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.table-section .checkbox-label::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-bg-surface);
+  transition: all 0.2s ease;
+}
+.table-section input[type="checkbox"]:checked + .checkbox-label::before {
+  background-color: var(--color-button-primary);
+  border-color: var(--color-button-primary);
+}
+.table-section input[type="checkbox"]:checked + .checkbox-label::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+}
+table button {
+  background: var(--color-button-secondary);
+  box-shadow: var(--shadow-elevation-1);
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+.status {
+  text-align: center;
+  vertical-align: middle;
+  p {
+    display: inline-block;
+    margin: 0 auto;
+    padding: 0rem 0.75rem;
+    border-radius: 0.75rem;
+  }
+  .active {
+    background-color: var(--color-button-primary);
+  }
+  .inactive {
+    background-color: var(--color-text-error);
+  }
+}
+.selector-link-row {
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: var(--color-button-secondary);
+    transition: background-color 0.3s ease;
+  }
+  &.selected {
+    background-color: var(--color-button-secondary);
+  }
+}
