@@ -13,10 +13,10 @@ app.use(corsMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth", authRouter);
-app.use("/api/links", linksRouter);
-app.use("/api/analytics", analyticsRouter);
-app.use("/api/users", userRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
+app.use("/links", linksRouter);
+app.use("/analytics", analyticsRouter);
 app.use("/", redirectRouter);
 
 // Middleware centralizado de manejo de errores
