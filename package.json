@@ -1,6 +1,7 @@
 {
   "name": "chop-url-monorepo",
   "private": true,
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "dev:web": "pnpm --filter @chop-url/web dev",
     "dev:api": "pnpm --filter @chop-url/api dev",

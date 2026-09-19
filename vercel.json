@@ -1,33 +1,20 @@
 {
-  "version": 2,
-  "builds": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "pnpm build:web",
+  "outputDirectory": "apps/web/dist",
+  "rewrites": [
     {
-      "src": "apps/web/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "source": "/(dashboard|links|settings|analytics|identify)(/.*)?",
+      "destination": "/index.html"
     },
     {
-      "src": "apps/api/app.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "handle": "filesystem"
+      "source": "/api/(.*)",
+      "destination": "apps/api/app.js"
     },
     {
-      "src": "/(dashboard|links|settings|analytics|identify)(/.*)?",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "apps/api/app.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "apps/api/app.js"
+      "source": "/((?!assets/|favicon.svg|icons.svg).*)",
+      "destination": "apps/api/app.js"
     }
   ]
 }
