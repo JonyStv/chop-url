@@ -6,18 +6,17 @@ import { redirectRouter } from "./routes/redirect.js";
 import { authRouter } from "./routes/auth.js";
 import { userRouter } from "./routes/users.js";
 import { corsMiddleware } from "./middleware/cors.js";
-import { clearRoute } from "./middleware/clearRoute.js";
 
 const app = express();
 app.set("trust proxy", true); // Para obtener la IP real del cliente detrás de un proxy
 app.use(corsMiddleware);
 app.use(express.json());
 app.use(cookieParser());
-app.use(clearRoute);
-app.use("/users", userRouter);
-app.use("/auth", authRouter);
-app.use("/links", linksRouter);
-app.use("/analytics", analyticsRouter);
+
+app.use(["/users", "/api/users"], userRouter);
+app.use(["/auth", "/api/auth"], authRouter);
+app.use(["/links", "/api/links"], linksRouter);
+app.use(["/analytics", "/api/analytics"], analyticsRouter);
 app.use("/", redirectRouter);
 
 // Middleware centralizado de manejo de errores
