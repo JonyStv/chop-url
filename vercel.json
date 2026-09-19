@@ -9,8 +9,16 @@
       "destination": "/index.html"
     },
     {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "apps/api/app.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/apps/api/app.js"
     },
     {
       "source": "/((?!assets/|favicon.svg|icons.svg).*)",
