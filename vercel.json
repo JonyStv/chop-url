@@ -3,6 +3,11 @@
   "framework": "vite",
   "buildCommand": "pnpm build:web",
   "outputDirectory": "apps/web/dist",
+  "functions": {
+    "api/index.mjs": {
+      "includeFiles": "apps/api/data.json"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
