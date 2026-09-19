@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "apps/api/app.js"
+      "destination": "/api"
     },
     {
       "source": "/(dashboard|analytics|settings|identify|links)(/.*)?",
@@ -18,7 +18,7 @@
     },
     {
       "source": "/((?!assets/|favicon.svg|icons.svg).*)",
-      "destination": "apps/api/app.js"
+      "destination": "/api"
     }
   ]
 }

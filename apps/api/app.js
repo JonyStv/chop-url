@@ -13,16 +13,6 @@ app.use(corsMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/api/test", (req, res) => {
-  res.json({
-    message: "Servidor Express en Vercel respondiendo correctamente",
-  });
-});
-
-app.get("/test", (req, res) => {
-  res.json({ message: "Servidor Express respondiendo en /test" });
-});
-
 app.use(["/users", "/api/users"], userRouter);
 app.use(["/auth", "/api/auth"], authRouter);
 app.use(["/links", "/api/links"], linksRouter);
