@@ -1,6 +1,10 @@
 import { RedirectModel } from "../models/redirect.js";
 import { UAParser } from "ua-parser-js";
-import data from "../data.json" with { type: "json" };
+import fs from "node:fs";
+import path from "node:path";
+
+const filePath = path.join(process.cwd(), "../data.json");
+const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
 export class RedirectController {
   static async redirect(req, res) {

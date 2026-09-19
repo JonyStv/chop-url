@@ -1,5 +1,9 @@
-import data from "../data.json" with { type: "json" };
+import fs from "node:fs";
+import path from "node:path";
 import { env } from "../config/env.js";
+
+const filePath = path.join(process.cwd(), "../data.json");
+const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
 export class LinkModel {
   static async getAll({ estado, search, limit, offset }) {

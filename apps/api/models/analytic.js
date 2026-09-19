@@ -1,5 +1,8 @@
-import data from "../data.json" with { type: "json" };
+import fs from "node:fs";
+import path from "node:path";
 
+const filePath = path.join(process.cwd(), "../data.json");
+const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 export class AnalyticModel {
   static async getByUserId(userid) {
     return data.analytics.filter(

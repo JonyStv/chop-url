@@ -1,5 +1,9 @@
-import data from "../data.json" with { type: "json" };
+import fs from "node:fs";
+import path from "node:path";
 import bcrypt from "bcryptjs";
+
+const filePath = path.join(process.cwd(), "../data.json");
+const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
 export class UserModel {
   static async findByEmail(email) {
