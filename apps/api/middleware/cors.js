@@ -6,7 +6,7 @@ export const corsMiddleware = cors({
     if (!origin) {
       return callback(null, true); // Permitir solicitudes sin origen (por ejemplo, desde Postman)
     }
-    if (env.defaultOrigins.includes(origin)) {
+    if (env.corsOrigins.includes(origin)) {
       return callback(null, true);
     }
     if (origin.endsWith(".vercel.app")) {
