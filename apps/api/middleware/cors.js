@@ -3,11 +3,16 @@ import { env } from "../config/env.js";
 
 export const corsMiddleware = cors({
   origin: (origin, callback) => {
-    if (!origin || env.corsOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    if (!origin) {
+      return callback(null, true); // Permitir solicitudes sin origen (por ejemplo, desde Postman)
     }
+    if (acceptedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    if (origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+    return callback(new Error("No permitido por CORS"));
   },
   credentials: true,
 });
