@@ -3,8 +3,14 @@ import { UAParser } from "ua-parser-js";
 import fs from "node:fs";
 import path from "node:path";
 
-const filePath = path.join(process.cwd(), "../data.json");
-const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+const jsonPath = path.join(process.cwd(), "apps/api/data.json");
+
+let data = {};
+try {
+  data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+} catch (error) {
+  console.error("Error leyendo data.json:", error);
+}
 
 export class RedirectController {
   static async redirect(req, res) {
