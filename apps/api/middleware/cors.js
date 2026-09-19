@@ -12,7 +12,7 @@ export const corsMiddleware = cors({
     if (origin.endsWith(".vercel.app")) {
       return callback(null, true);
     }
-    return callback(new Error("No permitido por CORS"));
+    return callback(new Error("No permitido por CORS - Origen: " + origin));
   },
   credentials: true,
 });
