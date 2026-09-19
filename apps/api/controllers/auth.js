@@ -60,6 +60,7 @@ export const login = async (req, res, next) => {
     res.cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTS);
     res.status(200).json({ user, accessToken });
   } catch (error) {
+    console.error("Error en login:", error);
     next(error);
   }
 };
