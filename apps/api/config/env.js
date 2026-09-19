@@ -6,7 +6,11 @@ const splitValues = (value = "") =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-const defaultOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const defaultOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://stvdev.com",
+];
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
