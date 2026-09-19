@@ -35,7 +35,7 @@ function App() {
     <>
       <NotificationContainer />
       <Routes>
-        <Route path="/dashboard" element={<Layout />}>
+        <Route path="/" element={<Layout />}>
           <Route index element={withSuspense(Home)} />
           <Route path="links" element={withSuspense(Links)} />
           <Route path="analytics" element={withSuspense(Analytics)} />

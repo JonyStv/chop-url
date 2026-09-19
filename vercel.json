@@ -5,20 +5,16 @@
   "outputDirectory": "apps/web/dist",
   "rewrites": [
     {
-      "source": "/(dashboard|links|settings|analytics|identify)(/.*)?",
+      "source": "/api/(.*)",
+      "destination": "apps/api/app.js"
+    },
+    {
+      "source": "/(dashboard|analytics|settings|identify|links)(/.*)?",
       "destination": "/index.html"
     },
     {
       "source": "/",
       "destination": "/index.html"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "apps/api/app.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/apps/api/app.js"
     },
     {
       "source": "/((?!assets/|favicon.svg|icons.svg).*)",
