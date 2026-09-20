@@ -10,7 +10,8 @@ function TableRow({
   selectedLinkId,
   handleSelectLink,
 }) {
-  const urlAcortada = import.meta.env.VITE_APP_DOMAIN + "/" + enlace.slug;
+  const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
+  const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
   const fechaCreacion = new Date(enlace.fecha_creacion).toLocaleDateString(
     "es-ES",
     {
