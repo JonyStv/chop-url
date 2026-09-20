@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "prisma generate && node server.js",
     "dev": "node --env-file=.env --watch server.js",
     "start": "node --env-file=.env server.js",
