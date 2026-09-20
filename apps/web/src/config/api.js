@@ -20,7 +20,7 @@ export const apiFetch = (path, options = {}) => {
 export const apiJson = async (path, options = {}) => {
   const response = await apiFetch(path, options);
   const data = response.status === 204 ? null : await response.json();
-
+  console.log("apiJson response:", data);
   if (!response.ok) {
     throw new Error(data?.message || `Error HTTP ${response.status}`);
   }

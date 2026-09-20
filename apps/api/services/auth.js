@@ -147,16 +147,22 @@ export const refresh = async (refreshToken, ip, dispositivo) => {
   try {
     decoded = verifyRefreshToken(refreshToken);
   } catch (err) {
+    console.error("Token de refresco inválido o expirado:", err.message);
     throw new AppError("Token de refresco inválido o expirado.", 401);
   }
 
   const session = await UserModel.findSessionByToken(refreshToken);
   if (!session) {
+    console.error(
+      "Sesión no encontrada o ya cerrada en la base de datos con este token." +
+        refreshToken,
+    );
     throw new AppError("Sesión no encontrada o ya cerrada.", 401);
   }
 
   const user = await UserModel.findById(decoded.id);
   if (!user || !user.activo) {
+    console.error("Usuario no encontrado o inactivo:", decoded?.id);
     throw new AppError("Usuario no encontrado o inactivo.", 401);
   }
 

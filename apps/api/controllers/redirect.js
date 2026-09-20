@@ -1,55 +1,39 @@
-import { RedirectModel } from "../models/redirect.js";
+import { AnalyticModel } from "../models/analytic.js";
+import { LinkModel } from "../models/link.js";
 import { UAParser } from "ua-parser-js";
-import fs from "node:fs";
-import path from "node:path";
-
-const jsonPath = path.join(process.cwd(), "apps/api/data.json");
-
-let data = {};
-try {
-  data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-} catch (error) {
-  console.error("Error leyendo data.json:", error);
-}
 
 export class RedirectController {
   static async redirect(req, res) {
+    const { slug } = req.params;
+    if (!slug) {
+      return res.status(400).json({ error: "Slug is required" });
+    }
     const ua = req.headers["user-agent"];
     const parser = new UAParser(ua);
     const result = parser.getResult();
 
-    const { slug } = req.params;
-    const linkData = await RedirectModel.getBySlug(slug);
+    const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
 
-    // 🌍 Geolocalización por IP
     const ip = req.ip;
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
     };
-
-    const analyticsData = {
-      id: data.analytics.length + 1,
-      enlaceId: linkData.id,
-      slug,
-      usuarioId: linkData.usuarioId,
-      visitorId: req.cookies?.visitorId || "vis_anon",
+    AnalyticModel.create({
+      enlace_id: linkData.id,
+      usuario_id: linkData.usuario_id,
+      visitor_id: req.cookies?.visitorId || "vis_anon",
       ip,
-      country: geo.country || "N/A",
-      city: geo.city || "N/A",
-      browser: result.browser.name || "Desconocido",
-      os: result.os.name || "Desconocido",
-      deviceType: result.device.type || "desktop",
+      country: geo.country,
+      city: geo.city,
+      browser: result.browser.name || "Unknown",
+      os: result.os.name || "Unknown",
+      device_type: result.device.type || "desktop",
       referrer: req.headers["referer"] || "Directo",
-      timestamp: new Date().toISOString(),
-    };
-
-    data.analytics.push(analyticsData);
-    linkData.totalClicks = (linkData.totalClicks || 0) + 1;
-
-    return res.redirect(302, linkData.urlOriginal);
+    });
+    return res.redirect(302, linkData.url_original);
   }
 }

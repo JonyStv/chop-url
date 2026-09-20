@@ -1,26 +1,15 @@
 import { Router } from "express";
-import {
-  register,
-  login,
-  refresh,
-  logout,
-  me,
-  checkSession,
-  changePassword,
-} from "../controllers/auth.js";
+import { AuthController } from "../controllers/auth.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
-router.post("/refresh", refresh);
-router.post("/logout", logout);
-router.get("/me", authMiddleware, me);
-router.get("/session", checkSession);
-router.patch("/change-password", authMiddleware, changePassword);
-// Compatibilidad con clientes que todavía envían el id en la URL. El usuario
-// utilizado sigue siendo siempre el del token autenticado.
-router.patch("/:id/change-password", authMiddleware, changePassword);
+router.post("/register", AuthController.register);
+router.post("/login", AuthController.login);
+router.post("/refresh", AuthController.refresh);
+router.post("/logout", AuthController.logout);
+router.get("/me", authMiddleware, AuthController.me);
+router.get("/session", AuthController.checkSession);
+router.patch("/change-password", authMiddleware, AuthController.changePassword);
 
 export { router as authRouter };

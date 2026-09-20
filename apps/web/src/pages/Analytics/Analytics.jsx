@@ -54,7 +54,9 @@ function Analytics() {
     const query = params.toString();
     if (!userId) return;
 
-    apiJson(`/analytics/${userId}/summary/${selectedLinkId || "all"}${query ? `?${query}` : ""}`)
+    apiJson(
+      `/analytics/${userId}/summary/${selectedLinkId || "all"}${query ? `?${query}` : ""}`,
+    )
       .then((json) => {
         setSummary(json);
         setLoading(false);

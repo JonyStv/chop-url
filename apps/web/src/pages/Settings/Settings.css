@@ -54,6 +54,25 @@
   background: var(--color-button-disabled);
   cursor: not-allowed;
 }
+.delete-account-button {
+  background: var(--color-button-danger);
+  color: var(--color-text-primary);
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+  align-self: end;
+  &:hover,
+  &:focus {
+    background: var(--color-button-danger-hover);
+    scale: 1.05;
+    transition: all 0.3s ease;
+  }
+}
 @media (max-width: 768px) {
   .ajustes-section {
     flex-direction: column;

@@ -1,62 +1,104 @@
-import fs from "node:fs";
-import path from "node:path";
+import { prisma } from "../config/db.js";
+import { LinkModel } from "../models/link.js";
 
-const jsonPath = path.join(process.cwd(), "apps/api/data.json");
-
-let data = {};
-try {
-  data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-} catch (error) {
-  console.error("Error leyendo data.json:", error);
-}
 export class AnalyticModel {
-  static async getByUserId(userid) {
-    return data.analytics.filter(
-      (analytic) => analytic.usuarioId === parseInt(userid),
-    );
+  //CREATE
+  static async create({
+    enlace_id,
+    usuario_id,
+    visitor_id,
+    ip,
+    country,
+    city,
+    browser,
+    os,
+    deviceType,
+    referrer,
+  }) {
+    const analyticsData = {
+      enlace_id,
+      usuario_id,
+      visitor_id,
+      ip,
+      country,
+      city,
+      browser,
+      os,
+      deviceType,
+      referrer,
+    };
+    return await prisma.analiticas.create({
+      data: analyticsData,
+    });
+    this.incrementClickCount(enlace_id);
   }
 
+  static async incrementClickCount(enlaceId) {
+    let linkData = await LinkModel.getById(enlaceId);
+    if (!linkData) {
+      throw new Error("Link not found");
+    }
+    let totalClicksSum = (linkData.totalClicks =
+      (linkData.totalClicks || 0) + 1);
+    return await prisma.enlaces.update({
+      where: {
+        id: enlaceId,
+      },
+      data: {
+        total_clicks: totalClicksSum,
+      },
+    });
+  }
+  //READ
+  static async getByUserId(userid) {
+    return await prisma.analiticas.findMany({
+      where: {
+        usuario_id: userid,
+      },
+    });
+  }
   static async getSummaryByUserId(userid, linkid = null, options = {}) {
-    const uid = parseInt(userid);
-    const lid = linkid && linkid !== "all" ? parseInt(linkid) : null;
+    //Devolvemos rescumen con el usuario id y link id si se proporciona.
+    const uid = userid; //PARA MOSTRAR LAS ANALITICAS DE TODOS LOS ENLACES DE UN USUARIO
+    const lid = linkid && linkid !== "all" ? linkid : null; // PARA MOSTRAR LAS ANALITICAS DE UN ENLACE ESPECIFICO SI SE PROPORCIONA
     const { startDate, endDate } = options;
-
-    let userAnalytics = data.analytics.filter((a) => a.usuarioId === uid);
-    let userLinks = data.links.filter((l) => l.usuarioId === uid);
-
-    if (lid !== null && !isNaN(lid)) {
-      userAnalytics = userAnalytics.filter((a) => a.enlaceId === lid);
-      userLinks = userLinks.filter((l) => l.id === lid);
+    let analytics;
+    if (lid) {
+      analytics = await prisma.analiticas.findMany({
+        where: {
+          enlace_id: lid,
+        },
+      });
+    } else {
+      analytics = await prisma.analiticas.findMany({
+        where: {
+          usuario_id: uid,
+        },
+      });
     }
 
     // Filtrar por intervalo de fechas si se proporciona
     if (startDate) {
       const start = new Date(startDate);
       start.setHours(0, 0, 0, 0);
-      userAnalytics = userAnalytics.filter(
-        (a) => new Date(a.timestamp) >= start,
-      );
+      analytics = analytics.filter((a) => new Date(a.timestamp) >= start);
     }
 
     if (endDate) {
       const end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
-      userAnalytics = userAnalytics.filter((a) => new Date(a.timestamp) <= end);
+      analytics = analytics.filter((a) => new Date(a.timestamp) <= end);
     }
 
-    const totalClicks =
-      startDate || endDate
-        ? userAnalytics.length
-        : userLinks.reduce((sum, link) => sum + (link.totalClicks || 0), 0);
-
-    const uniqueVisitors = new Set(userAnalytics.map((a) => a.visitorId)).size;
+    const totalClicks = analytics.length;
+    const uniqueVisitors = new Set(analytics.map((a) => a.visitorId)).size;
 
     // Función auxiliar para calcular porcentaje y distribución por campo
     const getDistribution = (field, limit = 5) => {
       const counts = {};
       let total = 0;
 
-      userAnalytics.forEach((entry) => {
+      analytics.forEach((entry) => {
         const val = entry[field];
         if (val) {
           counts[val] = (counts[val] || 0) + 1;
@@ -85,11 +127,9 @@ export class AnalyticModel {
     const primaryCountry =
       countries.labels.length > 0 ? countries.labels[0] : "N/A";
 
-    const activeLinks = userLinks.filter((l) => l.estado === "Activo");
-    const averageCTR =
-      activeLinks.length > 0
-        ? parseFloat((totalClicks / activeLinks.length).toFixed(1))
-        : 0;
+    const averageCTR = Math.round(
+      totalClicks > 0 ? (uniqueVisitors / totalClicks) * 100 : 0,
+    );
 
     return {
       totalClicks,

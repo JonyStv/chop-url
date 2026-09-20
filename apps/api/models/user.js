@@ -1,120 +1,111 @@
-import fs from "node:fs";
-import path from "node:path";
+import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
 
-const jsonPath = path.join(process.cwd(), "apps/api/data.json");
-
-let data = {};
-try {
-  data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-} catch (error) {
-  console.error("Error leyendo data.json:", error);
-}
 export class UserModel {
-  static async findByEmail(email) {
-    if (!email) return null;
-    return (
-      data.usuarios.find(
-        (user) => user.email.toLowerCase() === email.toLowerCase(),
-      ) || null
-    );
-  }
-
-  static async findById(id) {
-    const numericId = parseInt(id);
-    return data.usuarios.find((user) => user.id === numericId) || null;
-  }
-
-  static async create({ email, password, nombre }) {
+  //CREATE
+  static async create({
+    email,
+    password,
+    nombre,
+    plan = "gratuito",
+    limiteEnlaces = 10,
+    activo = true,
+  }) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const maxId = data.usuarios.length
-      ? Math.max(...data.usuarios.map((u) => u.id))
-      : 0;
-    const newId = maxId + 1;
 
     const newUser = {
-      id: newId,
       email,
       password: hashedPassword,
       nombre,
-      fechaRegistro: new Date().toISOString(),
-      plan: "gratuito",
-      limiteEnlaces: 10,
-      enlacesCreados: 0,
-      activo: true,
+      plan,
+      limite_enlaces: limiteEnlaces,
+      activo,
     };
 
-    data.usuarios.push(newUser);
-    return newUser;
+    return await prisma.usuarios.create({
+      data: newUser,
+    });
   }
-
-  static async comparePassword(candidatePassword, hashedPassword) {
-    return await bcrypt.compare(candidatePassword, hashedPassword);
-  }
-
   static async createSession({ usuarioId, token, ip = "", dispositivo = "" }) {
-    const maxId = data.sesiones.length
-      ? Math.max(...data.sesiones.map((s) => s.id))
-      : 0;
     const newSession = {
-      id: maxId + 1,
-      usuarioId: parseInt(usuarioId),
+      usuario_id: usuarioId,
       token,
-      fechaCreacion: new Date().toISOString(),
-      fechaExpiracion: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000,
-      ).toISOString(),
+      fecha_expiracion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       ip,
       dispositivo,
     };
-
-    data.sesiones.push(newSession);
-    return newSession;
+    return await prisma.sesiones.create({
+      data: newSession,
+    });
   }
+  //READ
+  static sanitizeUser(newUser) {
+    if (!newUser) return null;
 
+    const { password, ...sanitizedUser } = newUser;
+    return sanitizedUser;
+  }
+  static async findByEmail(email) {
+    return await prisma.usuarios.findUnique({
+      where: { email },
+    });
+  }
+  static async findById(id) {
+    const numericId = id;
+    return await prisma.usuarios.findUnique({
+      where: { id: numericId },
+    });
+  }
   static async findSessionByToken(token) {
-    return data.sesiones.find((s) => s.token === token) || null;
+    return await prisma.sesiones.findUnique({
+      where: { token },
+    });
   }
-
-  static async removeSession(token) {
-    const index = data.sesiones.findIndex((s) => s.token === token);
-    if (index !== -1) {
-      data.sesiones.splice(index, 1);
-      return true;
-    }
-    return false;
+  static async comparePassword(candidatePassword, hashedPassword) {
+    return await bcrypt.compare(candidatePassword, hashedPassword);
   }
-
-  static async removeAllSessionsForUser(userId) {
-    const numericId = parseInt(userId);
-    const sessionsToRemove = data.sesiones.filter(
-      (session) => session.usuarioId === numericId,
-    );
-
-    data.sesiones = data.sesiones.filter(
-      (session) => session.usuarioId !== numericId,
-    );
-
-    return sessionsToRemove.length;
-  }
-
-  static sanitizeUser(user) {
-    if (!user) return null;
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
-  }
+  //UPDATE
   static async updateUser(id, updates) {
     const user = await this.findById(id);
     if (!user) return null;
 
-    Object.assign(user, updates);
-    return user;
+    return await prisma.usuarios.update({
+      where: { id },
+      data: updates,
+    });
   }
+
   static async updatePassword(id, newHashedPassword) {
     const user = await this.findById(id);
     if (!user) return null;
 
-    Object.assign(user, { password: newHashedPassword });
-    return user;
+    return await prisma.usuarios.update({
+      where: { id },
+      data: { password: newHashedPassword },
+    });
+  }
+  //REMOVE
+  static async removeSession(token) {
+    const session = await this.findSessionByToken(token);
+    if (!session) return false;
+
+    await prisma.sesiones.delete({
+      where: { token },
+    });
+    return true;
+  }
+  static async removeAllSessionsForUser(userId) {
+    await prisma.sesiones.deleteMany({
+      where: { usuario_id: userId },
+    });
+  }
+  static async deleteUser(id) {
+    const user = await this.findById(id);
+    if (!user) return null;
+
+    await prisma.usuarios.delete({
+      where: { id },
+    });
+    return true;
   }
 }

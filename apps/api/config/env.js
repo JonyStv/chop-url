@@ -20,9 +20,13 @@ export const env = {
     ? splitValues(process.env.CORS_ORIGINS)
     : defaultOrigins,
   accessTokenSecret:
-    process.env.JWT_ACCESS_SECRET || "local_access_secret_change_me",
+    process.env.JWT_ACCESS_SECRET ||
+    process.env.JWT_SECRET ||
+    "local_access_secret_change_me",
   refreshTokenSecret:
-    process.env.JWT_REFRESH_SECRET || "local_refresh_secret_change_me",
+    process.env.JWT_REFRESH_SECRET ||
+    process.env.JWT_SECRET ||
+    "local_refresh_secret_change_me",
   accessTokenExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "15m",
   refreshTokenExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
   cookieSecure: process.env.COOKIE_SECURE

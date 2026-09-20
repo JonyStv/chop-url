@@ -21,6 +21,8 @@
   --color-button-disabled: #56585b3a;
   --color-button-secondary: #24293d;
   --color-button-secondary-hover: #334155;
+  --color-button-danger: #ef4444;
+  --color-button-danger-hover: #dc2626;
   --shadow-elevation-1: 0 3px 6px 0px rgba(0, 0, 0, 0.5);
   --sidebar-width: 17rem;
 }

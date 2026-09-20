@@ -10,7 +10,8 @@ function TableRow({
   selectedLinkId,
   handleSelectLink,
 }) {
-  const fechaCreacion = new Date(enlace.fechaCreacion).toLocaleDateString(
+  const urlAcortada = import.meta.env.VITE_APP_DOMAIN + "/" + enlace.slug;
+  const fechaCreacion = new Date(enlace.fecha_creacion).toLocaleDateString(
     "es-ES",
     {
       year: "numeric",
@@ -37,8 +38,8 @@ function TableRow({
             <label htmlFor={checkboxId} className="checkbox-label"></label>
           </td>
         )}
-        <td className="link-column">{enlace.urlAcortada}</td>
-        <td className="link-column">{enlace.urlOriginal}</td>
+        <td className="link-column">{urlAcortada}</td>
+        <td className="link-column">{enlace.url_original}</td>
         <td className="properties-column">{fechaCreacion}</td>
         <td className="properties-column">{enlace.totalClicks || 0}</td>
         <td className="status">
@@ -67,8 +68,8 @@ function TableRow({
           <label htmlFor={checkboxId} className="checkbox-label"></label>
         </td>
       )}
-      <td className="link-column">{enlace.urlAcortada}</td>
-      <td className="link-column">{enlace.urlOriginal}</td>
+      <td className="link-column">{urlAcortada}</td>
+      <td className="link-column">{enlace.url_original}</td>
       <td className="properties-column">{fechaCreacion}</td>
       <td className="properties-column">{enlace.totalClicks || 0}</td>
       <td className="status">

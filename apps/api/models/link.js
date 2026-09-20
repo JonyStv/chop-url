@@ -1,18 +1,28 @@
-import fs from "node:fs";
-import path from "node:path";
+import { prisma } from "../config/db.js";
 import { env } from "../config/env.js";
 
-const jsonPath = path.join(process.cwd(), "apps/api/data.json");
-
-let data = {};
-try {
-  data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-} catch (error) {
-  console.error("Error leyendo data.json:", error);
-}
 export class LinkModel {
+  //CREATE
+  static async create({ titulo, urlOriginal, slug, userId }) {
+    let dominio = env.publicUrl;
+    if (!dominio.endsWith("/")) {
+      dominio += "/";
+    }
+
+    const newLink = {
+      usuario_id: userId,
+      slug,
+      url_original: urlOriginal,
+      titulo,
+      estado: "Activo",
+    };
+    return await prisma.enlaces.create({
+      data: newLink,
+    });
+  }
+  //READ
   static async getAll({ estado, search, limit, offset }) {
-    let filteredLinks = data.links;
+    let filteredLinks = await prisma.enlaces.findMany();
     filteredLinks = filterLinks(filteredLinks, {
       estado,
       search,
@@ -23,9 +33,11 @@ export class LinkModel {
   }
 
   static async getByUserId(userid, { estado, search, limit, offset }) {
-    let filteredLinks = data.links.filter(
-      (link) => link.usuarioId === parseInt(userid),
-    );
+    let filteredLinks = await prisma.enlaces.findMany({
+      where: {
+        usuario_id: userid,
+      },
+    });
     filteredLinks = filterLinks(filteredLinks, {
       estado,
       search,
@@ -34,66 +46,44 @@ export class LinkModel {
     });
     return filteredLinks;
   }
-
-  static async create({ titulo, urlOriginal, slug, userId }) {
-    let dominio = env.publicUrl;
-    if (!dominio.endsWith("/")) {
-      dominio += "/";
-    }
-    const urlAcortada = `${dominio}${slug}`;
-    const fechaCreacion = new Date().toISOString();
-
-    const newLink = {
-      id: data.links.length + 1,
-      usuarioId: parseInt(userId),
-      slug,
-      urlOriginal,
-      titulo,
-      urlAcortada,
-      fechaCreacion,
-      estado: "Activo",
-      fechaExpiracion: null, // No use by now
-      tags: [], // No use by now
-      totalClicks: 0,
-    };
-    data.links.push(newLink);
-    return newLink;
+  static async getBySlug(slug) {
+    return await prisma.enlaces.findUnique({
+      where: {
+        slug,
+      },
+    });
   }
-
-  static async delete(id, userid) {
-    const linkId = parseInt(id);
-    const userId = parseInt(userid);
-    const link = data.links.find((l) => l.id === linkId);
-    if (!link) {
-      return { status: 404, message: "Enlace no encontrado" };
-    }
-    if (link.usuarioId !== userId) {
-      return { status: 403, message: "No autorizado" };
-    }
-
-    // Eliminar también todas las analytics asociadas al enlace eliminado.
-    data.analytics = data.analytics.filter((a) => a.enlaceId !== linkId);
-    data.links = data.links.filter((l) => l.id !== linkId);
-    return { status: 200, message: "Enlace eliminado correctamente" };
+  static async getById(id) {
+    return await prisma.enlaces.findUnique({
+      where: {
+        id,
+      },
+    });
   }
-
-  static async update(id, { titulo, urlOriginal, urlAcortada, estado, tags }) {
-    const linkIndex = data.links.findIndex((link) => link.id === parseInt(id));
-    if (linkIndex !== -1) {
-      data.links[linkIndex] = {
-        ...data.links[linkIndex],
+  //UPDATE
+  static async update(id, { titulo, urlOriginal, slug, estado }) {
+    return await prisma.enlaces.update({
+      where: {
+        id,
+      },
+      data: {
         titulo,
-        urlOriginal,
-        urlAcortada,
+        url_original: urlOriginal,
+        slug,
         estado,
-        tags,
-      };
-      return data.links[linkIndex];
-    }
-    return null;
+      },
+    });
+  }
+  //DELETE
+  static async delete(id, userid) {
+    return await prisma.enlaces.deleteMany({
+      where: {
+        id,
+        usuario_id: userid,
+      },
+    });
   }
 }
-// Helper function to filter links based on estado, search, limit, and offset
 const filterLinks = (filteredLinks, { estado, search, limit, offset }) => {
   if (estado) {
     filteredLinks = filteredLinks.filter(
@@ -104,11 +94,7 @@ const filterLinks = (filteredLinks, { estado, search, limit, offset }) => {
     filteredLinks = filteredLinks.filter(
       (link) =>
         link.titulo.toLowerCase().includes(search.toLowerCase()) ||
-        link.urlAcortada.toLowerCase().includes(search.toLowerCase()) ||
-        link.urlOriginal.toLowerCase().includes(search.toLowerCase()) ||
-        link.tags.some((tag) =>
-          tag.toLowerCase().includes(search.toLowerCase()),
-        ),
+        link.urlOriginal.toLowerCase().includes(search.toLowerCase()),
     );
   }
   if (limit !== undefined) {

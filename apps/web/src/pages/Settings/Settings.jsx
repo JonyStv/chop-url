@@ -1,12 +1,14 @@
 import "./Settings.css";
 import { useAuthStore } from "../../store/authStore";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useNotificationStore } from "../../store/notificationStore";
 import { apiJson } from "../../config/api.js";
 const regexEmail =
   /[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?/;
 function Settings() {
-  const { user, accessToken, setAccessToken } = useAuthStore();
+  const navigate = useNavigate();
+  const { user, accessToken, setAccessToken, logout } = useAuthStore();
   const notify = useNotificationStore((s) => s.notify);
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
@@ -88,6 +90,27 @@ function Settings() {
         break;
     }
   };
+  const handleDeleteAccount = async () => {
+    const ok = await notify.confirm(
+      "Esta acción eliminará tu cuenta permanentemente. Por favor, confirma.",
+    );
+    if (ok) {
+      await apiJson(`/users/${user.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .then((data) => {
+          notify("Cuenta eliminada exitosamente", "success");
+          console.log("Cuenta eliminada:", data);
+          logout();
+          navigate("/identify"); // Redirige al usuario a la página de logout o inicio de sesión
+        })
+        .catch((error) => {
+          console.error("Error eliminando la cuenta:", error);
+          notify("Error eliminando la cuenta", "error");
+        });
+    }
+  };
   return (
     <div className="settings-page">
       <section className="ajustes-header-section">
@@ -166,6 +189,14 @@ function Settings() {
           <p>Límite de enlaces: {user?.limiteEnlaces || 0}</p>
         </div>
       </section>
+      <button
+        onClick={() => {
+          handleDeleteAccount();
+        }}
+        className="delete-account-button"
+      >
+        Eliminar Cuenta
+      </button>
     </div>
   );
 }
