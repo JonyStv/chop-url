@@ -25,6 +25,7 @@ export class RedirectController {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
     };
+    console.log(result);
     await AnalyticModel.create({
       enlace_id: linkData.id,
       usuario_id: linkData.usuario_id,
