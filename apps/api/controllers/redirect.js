@@ -16,9 +16,9 @@ export class RedirectController {
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
-    const device = result.contains("mobile")
+    const device = result.includes("mobile")
       ? "Mobile"
-      : result.contains("tablet")
+      : result.includes("tablet")
         ? "Tablet"
         : "Desktop";
     const geo = {
