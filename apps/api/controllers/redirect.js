@@ -16,10 +16,12 @@ export class RedirectController {
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
-    const device = result.includes("mobile")
-      ? "Mobile"
-      : result.includes("tablet")
-        ? "Tablet"
+    const ua = result.ua.toLowerCase();
+
+    const device = ua.includes("tablet")
+      ? "Tablet"
+      : ua.includes("mobile")
+        ? "Mobile"
         : "Desktop";
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
