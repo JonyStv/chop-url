@@ -27,25 +27,21 @@ export class AnalyticModel {
       device_type,
       referrer,
     };
-    this.incrementClickCount(enlace_id);
+    await this.incrementClickCount(enlace_id);
     return await prisma.analiticas.create({
       data: analyticsData,
     });
   }
 
   static async incrementClickCount(enlaceId) {
-    let linkData = await LinkModel.getById(enlaceId);
-    if (!linkData) {
-      throw new Error("Link not found");
-    }
-    let totalClicksSum = (linkData.totalClicks =
-      (linkData.totalClicks || 0) + 1);
     return await prisma.enlaces.update({
       where: {
         id: enlaceId,
       },
       data: {
-        total_clicks: totalClicksSum,
+        total_clicks: {
+          increment: 1, // Incrementar de forma atómica en la BD
+        },
       },
     });
   }
