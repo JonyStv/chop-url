@@ -8,6 +8,7 @@ export class RedirectController {
     if (!slug) {
       return res.status(400).json({ error: "Slug is required" });
     }
+    const ip = req.ip;
     const parser = new UAParser(req.headers);
     const result = parser.getResult();
 
@@ -15,7 +16,11 @@ export class RedirectController {
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
-    const ip = req.ip;
+    const device = result.contains("mobile")
+      ? "Mobile"
+      : result.contains("tablet")
+        ? "Tablet"
+        : "Desktop";
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
@@ -29,7 +34,7 @@ export class RedirectController {
       city: geo.city,
       browser: result.browser.name || "Unknown",
       os: result.os.name || "Unknown",
-      device_type: result.device.type || "desktop",
+      device_type: device,
       referrer: req.headers["referer"] || "Directo",
     }).catch((err) => {
       console.error("Error creating analytic:", err);
