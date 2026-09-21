@@ -25,5 +25,16 @@
       "source": "/((?!assets/|favicon.svg|icons.svg).*)",
       "destination": "/api/index.mjs"
     }
+  ],
+  "headers": [
+    {
+      "source": "/apps/api/*",
+      "headers": [
+        {
+          "key": "Accept-CH",
+          "value": "Sec-CH-UA, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Arch, Sec-CH-UA-Model, Sec-CH-UA-Bitness"
+        }
+      ]
+    }
   ]
 }

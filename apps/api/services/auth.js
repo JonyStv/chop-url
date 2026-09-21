@@ -153,10 +153,6 @@ export const refresh = async (refreshToken, ip, dispositivo) => {
 
   const session = await UserModel.findSessionByToken(refreshToken);
   if (!session) {
-    console.error(
-      "Sesión no encontrada o ya cerrada en la base de datos con este token." +
-        refreshToken,
-    );
     throw new AppError("Sesión no encontrada o ya cerrada.", 401);
   }
 

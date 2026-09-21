@@ -4,6 +4,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
+    allowedHosts: ["localhost", ".trycloudflare.com", ".vercel.app"],
     proxy: {
       "/api": {
         target: "http://localhost:3000", // El puerto de tu backend local

@@ -7,7 +7,11 @@
   margin: 0;
   padding: 0;
 }
-
+p {
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
 .url-shortener-section,
 .url-performance-section {
   text-align: center;
@@ -43,6 +47,9 @@
   width: 70%;
   align-self: center;
 }
+.title-input {
+  margin-bottom: 0.5rem;
+}
 .svg-toggle {
   margin-top: 1rem;
   cursor: pointer;
@@ -63,6 +70,13 @@
   }
   .slug-input,
   .title-input {
+    width: 90%;
+  }
+  p {
+    font-size: 0.9rem;
+  }
+  .optional-inputs {
+    padding: 0.5rem;
     width: 90%;
   }
 }

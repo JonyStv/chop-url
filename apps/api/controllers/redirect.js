@@ -8,15 +8,14 @@ export class RedirectController {
     if (!slug) {
       return res.status(400).json({ error: "Slug is required" });
     }
-    const ua = req.headers["user-agent"];
-    const parser = new UAParser(ua);
+    const parser = new UAParser(req.headers);
     const result = parser.getResult();
 
     const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
-
+    console.log(result);
     const ip = req.ip;
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
@@ -33,6 +32,15 @@ export class RedirectController {
       os: result.os.name || "Unknown",
       device_type: result.device.type || "desktop",
       referrer: req.headers["referer"] || "Directo",
+    });
+    console.log({
+      "sec-ch-ua": req.headers["sec-ch-ua"],
+      "sec-ch-ua-platform": req.headers["sec-ch-ua-platform"],
+      "sec-ch-ua-platform-version": req.headers["sec-ch-ua-platform-version"],
+      "sec-ch-ua-mobile": req.headers["sec-ch-ua-mobile"],
+      "sec-ch-ua-arch": req.headers["sec-ch-ua-arch"],
+      "sec-ch-ua-model": req.headers["sec-ch-ua-model"],
+      result,
     });
     return res.redirect(302, linkData.url_original);
   }

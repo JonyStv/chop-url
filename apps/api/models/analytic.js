@@ -24,7 +24,7 @@ export class AnalyticModel {
       city,
       browser,
       os,
-      deviceType,
+      device_type: deviceType,
       referrer,
     };
     return await prisma.analiticas.create({
@@ -125,7 +125,9 @@ export class AnalyticModel {
     const referrers = getDistribution("referrer", 5);
 
     const primaryCountry =
-      countries.labels.length > 0 ? countries.labels[0] : "N/A";
+      countries.labels[0] === "N/A"
+        ? (countries.labels[1] ?? "N/A")
+        : (countries.labels[0] ?? "N/A");
 
     const averageCTR = Math.round(
       totalClicks > 0 ? (uniqueVisitors / totalClicks) * 100 : 0,

@@ -5,11 +5,14 @@ import { analyticsRouter } from "./routes/analytics.js";
 import { redirectRouter } from "./routes/redirect.js";
 import { authRouter } from "./routes/auth.js";
 import { userRouter } from "./routes/users.js";
+
 import { corsMiddleware } from "./middleware/cors.js";
+import { uaMiddleware } from "./middleware/ua.js";
 
 const app = express();
 app.set("trust proxy", true); // Para obtener la IP real del cliente detrás de un proxy
 app.use(corsMiddleware);
+app.use(uaMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 

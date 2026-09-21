@@ -1,7 +1,7 @@
 import StatCard from "../../components/StatCard/StatCard";
 import InputForm from "../../components/InputForm/InputForm";
 import "./Home.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { apiJson } from "../../config/api.js";
 
@@ -25,12 +25,27 @@ function Home({}) {
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [isOptionalInputsVisible, setIsOptionalInputsVisible] = useState(false);
 
+  const inputFormRef = useRef(null);
+
+  const resetForm = () => {
+    setUrl("");
+    setSlug("");
+    setTitulo("");
+    setIsValidUrl(false);
+  };
   const handleUrlChange = (event) => {
     const value = event.target.value;
     setUrl(value);
     setIsValidUrl(URL_REGEX.test(value));
   };
-
+  const handleOptionalKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (inputFormRef.current) {
+        inputFormRef.current.submit();
+      }
+    }
+  };
   useEffect(() => {
     setLoading(true);
     if (!user?.id) return;
@@ -55,6 +70,7 @@ function Home({}) {
           rendimiento.
         </p>
         <InputForm
+          ref={inputFormRef}
           svgPath="M9 15l6 -6 M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464 M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"
           type="text"
           placeholder="Pega tu URL aquí"
@@ -65,10 +81,7 @@ function Home({}) {
           extraData={{ slug, titulo }}
           onSuccess={(data) => {
             console.log("Enlace creado exitosamente:", data);
-            setUrl("");
-            setSlug("");
-            setTitulo("");
-            setIsValidUrl(false);
+            resetForm();
           }}
         />
         <svg
@@ -95,6 +108,7 @@ function Home({}) {
             className="slug-input"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
+            onKeyDown={handleOptionalKeyDown}
           />
           <input
             type="text"
@@ -102,6 +116,7 @@ function Home({}) {
             className="title-input"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
+            onKeyDown={handleOptionalKeyDown}
           />
         </div>
       </section>
