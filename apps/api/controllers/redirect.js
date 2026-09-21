@@ -11,23 +11,23 @@ export class RedirectController {
     const ip = req.ip;
     const parser = new UAParser(req.headers);
     const result = parser.getResult();
-
+    console.log("User-Agent Result:", result);
     const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
     const ua = result.ua.toLowerCase();
 
-    const device = ua.includes("tablet")
-      ? "Tablet"
-      : ua.includes("mobile")
-        ? "Mobile"
-        : "Desktop";
+    const device =
+      result.device.type || ua.includes("tablet")
+        ? "Tablet"
+        : ua.includes("mobile")
+          ? "Mobile"
+          : "Desktop";
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
     };
-    console.log(result);
     await AnalyticModel.create({
       enlace_id: linkData.id,
       usuario_id: linkData.usuario_id,
