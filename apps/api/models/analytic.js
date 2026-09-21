@@ -76,7 +76,6 @@ export class AnalyticModel {
         },
       });
     }
-
     // Filtrar por intervalo de fechas si se proporciona
     if (startDate) {
       const start = new Date(startDate);
@@ -121,7 +120,7 @@ export class AnalyticModel {
     };
 
     const countries = getDistribution("country", 5);
-    const devices = getDistribution("deviceType", 5);
+    const devices = getDistribution("device_type", 5);
     const referrers = getDistribution("referrer", 5);
 
     const primaryCountry =

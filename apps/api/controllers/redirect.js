@@ -15,13 +15,12 @@ export class RedirectController {
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
-    console.log(result);
     const ip = req.ip;
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
     };
-    AnalyticModel.create({
+    await AnalyticModel.create({
       enlace_id: linkData.id,
       usuario_id: linkData.usuario_id,
       visitor_id: req.cookies?.visitorId || "vis_anon",
@@ -32,15 +31,8 @@ export class RedirectController {
       os: result.os.name || "Unknown",
       device_type: result.device.type || "desktop",
       referrer: req.headers["referer"] || "Directo",
-    });
-    console.log({
-      "sec-ch-ua": req.headers["sec-ch-ua"],
-      "sec-ch-ua-platform": req.headers["sec-ch-ua-platform"],
-      "sec-ch-ua-platform-version": req.headers["sec-ch-ua-platform-version"],
-      "sec-ch-ua-mobile": req.headers["sec-ch-ua-mobile"],
-      "sec-ch-ua-arch": req.headers["sec-ch-ua-arch"],
-      "sec-ch-ua-model": req.headers["sec-ch-ua-model"],
-      result,
+    }).catch((err) => {
+      console.error("Error creating analytic:", err);
     });
     return res.redirect(302, linkData.url_original);
   }
