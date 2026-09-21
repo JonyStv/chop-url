@@ -42,7 +42,7 @@ function TableRow({
         <td className="link-column">{urlAcortada}</td>
         <td className="link-column">{enlace.url_original}</td>
         <td className="properties-column">{fechaCreacion}</td>
-        <td className="properties-column">{enlace.totalClicks || 0}</td>
+        <td className="properties-column">{enlace.total_clicks || 0}</td>
         <td className="status">
           <p
             className={`${enlace.estado === "Activo" ? "active" : "inactive"}`}
@@ -72,7 +72,7 @@ function TableRow({
       <td className="link-column">{urlAcortada}</td>
       <td className="link-column">{enlace.url_original}</td>
       <td className="properties-column">{fechaCreacion}</td>
-      <td className="properties-column">{enlace.totalClicks || 0}</td>
+      <td className="properties-column">{enlace.total_clicks || 0}</td>
       <td className="status">
         <p className={`${enlace.estado === "Activo" ? "active" : "inactive"}`}>
           {enlace.estado}

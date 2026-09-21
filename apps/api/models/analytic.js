@@ -27,10 +27,10 @@ export class AnalyticModel {
       device_type: deviceType,
       referrer,
     };
+    this.incrementClickCount(enlace_id);
     return await prisma.analiticas.create({
       data: analyticsData,
     });
-    this.incrementClickCount(enlace_id);
   }
 
   static async incrementClickCount(enlaceId) {
