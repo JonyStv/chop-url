@@ -12,6 +12,11 @@ export class RedirectController {
     const parser = new UAParser(req.headers);
     const result = parser.getResult();
     console.log("User-Agent Result:", result);
+    console.log(
+      result.device.isMobile,
+      result.device.isTablet,
+      result.device.isDesktop,
+    );
     const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
