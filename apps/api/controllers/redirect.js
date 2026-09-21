@@ -12,23 +12,18 @@ export class RedirectController {
     const parser = new UAParser(req.headers);
     const result = parser.getResult();
     console.log("User-Agent Result:", result);
-    console.log(
-      result.device.isMobile,
-      result.device.isTablet,
-      result.device.isDesktop,
-    );
+
     const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {
       return res.status(404).json({ error: "Link not found" });
     }
     const ua = result.ua.toLowerCase();
 
-    const device =
-      result.device.type || ua.includes("tablet")
-        ? "Tablet"
-        : ua.includes("mobile")
-          ? "Mobile"
-          : "Desktop";
+    const isTablet = result.device.type === "tablet" || ua.includes("tablet");
+    const isMobile = result.device.type === "mobile" || ua.includes("mobile");
+
+    const device = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
+
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",

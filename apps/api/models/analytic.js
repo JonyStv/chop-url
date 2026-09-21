@@ -12,7 +12,7 @@ export class AnalyticModel {
     city,
     browser,
     os,
-    deviceType,
+    device_type,
     referrer,
   }) {
     const analyticsData = {
@@ -24,7 +24,7 @@ export class AnalyticModel {
       city,
       browser,
       os,
-      device_type: deviceType,
+      device_type,
       referrer,
     };
     this.incrementClickCount(enlace_id);
