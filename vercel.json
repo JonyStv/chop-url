@@ -28,7 +28,7 @@
   ],
   "headers": [
     {
-      "source": "/apps/api/*",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Accept-CH",
