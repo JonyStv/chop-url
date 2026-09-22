@@ -14,7 +14,6 @@ function Header() {
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
-  console.log(width);
   return (
     <>
       <button
@@ -41,9 +40,9 @@ function Header() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="#007aff"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <path d="M17 5l-10 14" />
           </svg>
