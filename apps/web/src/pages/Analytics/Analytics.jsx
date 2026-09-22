@@ -87,7 +87,7 @@ function Analytics() {
         <div className="button-group-analytics">
           <p className="link-selected-name">
             {selectedLinkId !== null
-              ? links.find((e) => e.id === selectedLinkId)?.urlAcortada
+              ? "/" + links.find((e) => e.id === selectedLinkId)?.slug
               : "Datos Globales"}
           </p>
           <button

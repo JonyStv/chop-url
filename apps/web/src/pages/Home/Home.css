@@ -39,6 +39,12 @@ p {
     display: none;
   }
 }
+.optional-inputs-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-text-muted);
+  text-align: center;
+}
 .slug-input,
 .title-input {
   margin-top: 0.5rem;
@@ -65,18 +71,15 @@ p {
 }
 @media (max-width: 768px) {
   .optional-inputs {
-    width: 80%;
+    width: 100%;
     min-width: unset;
+    padding: 0.5rem;
   }
   .slug-input,
   .title-input {
-    width: 90%;
+    width: 95%;
   }
   p {
     font-size: 0.9rem;
-  }
-  .optional-inputs {
-    padding: 0.5rem;
-    width: 90%;
   }
 }

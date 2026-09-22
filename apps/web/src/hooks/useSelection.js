@@ -43,7 +43,7 @@ export default function useSelection({ initial = [], single = false } = {}) {
     (ids) => {
       if (!ids) return;
       if (single) {
-        setSelected(ids.length > 0 ? new Set([ids[0]]) : new Set());
+        return; // In single-select mode, we don't allow selecting all.
       } else {
         setSelected(new Set(ids));
       }

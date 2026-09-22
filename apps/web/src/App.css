@@ -118,3 +118,8 @@ input:focus {
     transform: rotate(360deg);
   }
 }
+@media (max-width: 768px) {
+  .loading {
+    left: 45%;
+  }
+}

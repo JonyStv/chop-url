@@ -21,6 +21,7 @@ function Home({}) {
   // Validación de URL
   const [url, setUrl] = useState("");
   const [slug, setSlug] = useState("");
+  const displaySlugValue = slug ? "/" + slug : "";
   const [titulo, setTitulo] = useState("");
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [isOptionalInputsVisible, setIsOptionalInputsVisible] = useState(false);
@@ -102,17 +103,21 @@ function Home({}) {
         <div
           className={`optional-inputs ${!isOptionalInputsVisible ? "hidden" : ""}`}
         >
+          <p className="optional-inputs-title">Ajustes Opcionales</p>
           <input
             type="text"
-            placeholder="Pega tu slug aquí (opcional)"
+            placeholder="/slug "
             className="slug-input"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
+            value={displaySlugValue}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/^\/+/, "");
+              setSlug(raw);
+            }}
             onKeyDown={handleOptionalKeyDown}
           />
           <input
             type="text"
-            placeholder="Pega tu título aquí (opcional)"
+            placeholder="Titulo "
             className="title-input"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}

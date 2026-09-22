@@ -28,9 +28,6 @@ function App() {
       <Component />
     </Suspense>
   );
-  if (isLoading) {
-    return <div className="loading"></div>;
-  }
   return (
     <>
       <NotificationContainer />
