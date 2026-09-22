@@ -5,6 +5,10 @@ export function NoNamed({ enlace, mode }) {
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
 
   const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
+  const urlAcortadaVisible = urlAcortada.replace(/https?:\/\//g, "");
+  const urlOriginal = enlace.url_original
+    .replace(/https?:\/\//g, "")
+    .replace(/www\./g, "");
   const fechaCreacion = new Date(enlace.fecha_creacion).toLocaleDateString(
     "es-ES",
     {
@@ -17,23 +21,23 @@ export function NoNamed({ enlace, mode }) {
     <>
       <td className="link-column">
         {mode === "select" ? (
-          <span>{urlAcortada}</span>
+          <span>{urlAcortadaVisible}</span>
         ) : (
           <a href={urlAcortada} target="_blank" rel="noopener">
-            {urlAcortada}
+            {urlAcortadaVisible}
           </a>
         )}
       </td>
       <td className="link-column">
         {mode === "select" ? (
-          <span>{enlace.url_original}</span>
+          <span>{urlOriginal}</span>
         ) : (
           <a
             href={enlace.url_original}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {enlace.url_original}
+            {urlOriginal}
           </a>
         )}
       </td>

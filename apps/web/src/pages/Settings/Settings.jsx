@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotificationStore } from "../../store/notificationStore";
 import { apiJson } from "../../config/api.js";
+import SubPlan from "../../components/SubPlan/SubPlan.jsx";
 const regexEmail =
   /[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?/;
 function Settings() {
@@ -178,16 +179,19 @@ function Settings() {
         </div>
       </section>
       <section className="ajustes-section subscription-section">
-        <div>
-          <h4>Plan de Suscripción</h4>
-          <p>Actualmente estás en el plan {user?.plan || "gratuito"}.</p>
-          <button>Actualizar Plan</button>
+        <div className="subscription-info">
+          <div>
+            <h4>Plan de Suscripción</h4>
+            <p>Actualmente estás en el plan {user?.plan || "gratuito"}.</p>
+            <button>Actualizar Plan</button>
+          </div>
+          <div>
+            <h4>Limites de uso</h4>
+            <p>Enlaces creados: {user?.enlacesCreados || 0}</p>
+            <p>Límite de enlaces: {user?.limiteEnlaces || 0}</p>
+          </div>
         </div>
-        <div>
-          <h4>Limites de uso</h4>
-          <p>Enlaces creados: {user?.enlacesCreados || 0}</p>
-          <p>Límite de enlaces: {user?.limiteEnlaces || 0}</p>
-        </div>
+        {/* <SubPlan /> */}
       </section>
       <button
         onClick={() => {
