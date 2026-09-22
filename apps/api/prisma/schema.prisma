@@ -1,12 +1,14 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+  moduleFormat="cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model analiticas {
+model analitica {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   enlace_id   String    @db.Uuid
   usuario_id  String    @db.Uuid
@@ -19,28 +21,31 @@ model analiticas {
   device_type String?   @db.VarChar(50)
   referrer    String?   @db.VarChar(50)
   timestamp   DateTime? @default(now()) @db.Timestamptz(6)
-  enlaces     enlaces   @relation(fields: [enlace_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_analytics_enlace")
-  usuarios    usuarios  @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_analytics_usuario")
+  enlace      enlace    @relation(fields: [enlace_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_analitica_enlace")
+  usuario     usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_analitica_usuario")
 
-  @@index([enlace_id], map: "idx_analiticas_enlace_id")
-  @@index([timestamp], map: "idx_analiticas_timestamp")
-  @@index([usuario_id], map: "idx_analiticas_usuario_id")
+  @@index([enlace_id], map: "idx_analitica_enlace_id")
+  @@index([timestamp], map: "idx_analitica_timestamp")
+  @@index([usuario_id], map: "idx_analitica_usuario_id")
+  @@map("analitica")
 }
 
-model enlaces {
-  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  usuario_id     String       @db.Uuid
-  slug           String       @unique @db.VarChar(50)
+model enlace {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuario_id     String      @db.Uuid
+  slug           String      @unique @db.VarChar(50)
   url_original   String
-  titulo         String?      @db.VarChar(100)
-  fecha_creacion DateTime?    @default(now()) @db.Timestamptz(6)
-  estado         String       @default("Activo") @db.VarChar(100)
-  total_clicks   Int?         @default(0)
-  analiticas     analiticas[]
-  usuarios       usuarios     @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_enlaces_usuario")
+  titulo         String?     @db.VarChar(100)
+  fecha_creacion DateTime?   @default(now()) @db.Timestamptz(6)
+  estado         String      @default("Activo") @db.VarChar(100)
+  total_clicks   Int?        @default(0)
+  analitica      analitica[]
+  usuario        usuario     @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_enlace_usuario")
+
+  @@map("enlace")
 }
 
-model sesiones {
+model sesion {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   usuario_id       String   @db.Uuid
   token            String   @unique
@@ -48,22 +53,113 @@ model sesiones {
   fecha_expiracion DateTime @db.Timestamptz(6)
   ip               String?  @db.VarChar(50)
   dispositivo      String?
-  usuarios         usuarios @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sesiones_usuario")
+  usuario          usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sesion_usuario")
 
-  @@index([token], map: "idx_sesiones_token")
-  @@index([usuario_id], map: "idx_sesiones_usuario_id")
+  @@index([token], map: "idx_sesion_token")
+  @@index([usuario_id], map: "idx_sesion_usuario_id")
+  @@map("sesion")
 }
 
-model usuarios {
-  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email          String       @unique @db.VarChar(100)
-  password       String       @db.VarChar(255)
-  nombre         String       @db.VarChar(50)
-  fecha_registro DateTime     @default(now()) @db.Timestamptz(6)
-  plan           String       @default("gratuito") @db.VarChar(30)
-  limite_enlaces Int          @default(10)
-  activo         Boolean      @default(true)
-  analiticas     analiticas[]
-  enlaces        enlaces[]
-  sesiones       sesiones[]
+model usuario {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email          String        @unique @db.VarChar(100)
+  password       String        @db.VarChar(255)
+  nombre         String        @db.VarChar(50)
+  fecha_registro DateTime      @default(now()) @db.Timestamptz(6)
+  plan           String        @default("gratuito") @db.VarChar(30)
+  limite_enlaces Int           @default(10)
+  activo         Boolean       @default(true)
+  plan_id        String        @default("free") @db.VarChar(50)
+  analitica      analitica[]
+  enlace         enlace[]
+  sesion         sesion[]
+  subscription   subscription?
+  usage_counter  usage_counter[]
+
+  @@map("usuario")
+}
+
+model plan {
+  id          String  @id @db.VarChar(50)
+  name        String  @db.VarChar(100)
+  description String?
+
+  price           Decimal @db.Decimal(10, 2)
+  currency        String  @default("EUR") @db.VarChar(3)
+  billing_interval String @default("month") @db.VarChar(10)
+
+  max_links                Int?    @map("max_links")
+  max_clicks_per_month     BigInt? @map("max_clicks_per_month")
+  analytics_retention_days Int?    @map("analytics_retention_days")
+  custom_slug              Boolean @default(false) @map("custom_slug")
+  custom_domain            Boolean @default(false) @map("custom_domain")
+  api_access               Boolean @default(false) @map("api_access")
+  remove_branding          Boolean @default(false) @map("remove_branding")
+  export_data              Boolean @default(false) @map("export_data")
+  support_level            String  @default("email") @db.VarChar(20)
+
+  stripe_price_id String? @unique @db.VarChar(255)
+
+  is_active  Boolean @default(true) @map("is_active")
+  sort_order Int     @default(0) @map("sort_order")
+
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+
+  subscription subscription[]
+
+  @@index([is_active, sort_order])
+  @@map("plan")
+}
+
+model subscription {
+  id         String  @id @default(uuid()) @db.Uuid
+  usuario_id String  @db.Uuid
+  usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  plan_id String @db.VarChar(50)
+  plan    plan   @relation(fields: [plan_id], references: [id])
+
+  status String @default("active") @db.VarChar(20)
+
+  current_period_start DateTime? @map("current_period_start")
+  current_period_end   DateTime? @map("current_period_end")
+  cancel_at_period_end Boolean   @default(false) @map("cancel_at_period_end")
+  canceled_at          DateTime? @map("canceled_at")
+
+  stripe_customer_id     String? @unique @db.VarChar(255)
+  stripe_subscription_id String? @unique @db.VarChar(255)
+  stripe_price_id        String? @db.VarChar(255)
+
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+
+  @@unique([usuario_id])
+  @@index([status])
+  @@map("subscription")
+}
+
+model stripe_event {
+  id           String   @id @db.VarChar(255)
+  type         String   @db.VarChar(100)
+  processed_at DateTime @default(now()) @map("processed_at")
+  payload      Json?
+
+  @@map("stripe_event")
+}
+
+model usage_counter {
+  id         String  @id @default(uuid()) @db.Uuid
+  usuario_id String  @db.Uuid
+  usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  period String @db.VarChar(7)
+  metric String @db.VarChar(50)
+  value  BigInt @default(0)
+
+  updated_at DateTime @updatedAt @map("updated_at")
+
+  @@unique([usuario_id, period, metric])
+  @@index([usuario_id, period, metric])
+  @@map("usage_counter")
 }

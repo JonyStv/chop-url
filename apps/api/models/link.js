@@ -16,13 +16,13 @@ export class LinkModel {
       titulo,
       estado: "Activo",
     };
-    return await prisma.enlaces.create({
+    return await prisma.enlace.create({
       data: newLink,
     });
   }
   //READ
   static async getAll({ estado, search, limit, offset }) {
-    let filteredLinks = await prisma.enlaces.findMany();
+    let filteredLinks = await prisma.enlace.findMany();
     filteredLinks = filterLinks(filteredLinks, {
       estado,
       search,
@@ -33,7 +33,7 @@ export class LinkModel {
   }
 
   static async getByUserId(userid, { estado, search, limit, offset }) {
-    let filteredLinks = await prisma.enlaces.findMany({
+    let filteredLinks = await prisma.enlace.findMany({
       where: {
         usuario_id: userid,
       },
@@ -47,14 +47,14 @@ export class LinkModel {
     return filteredLinks;
   }
   static async getBySlug(slug) {
-    return await prisma.enlaces.findUnique({
+    return await prisma.enlace.findUnique({
       where: {
         slug,
       },
     });
   }
   static async getById(id) {
-    return await prisma.enlaces.findUnique({
+    return await prisma.enlace.findUnique({
       where: {
         id,
       },
@@ -62,7 +62,7 @@ export class LinkModel {
   }
   //UPDATE
   static async update(id, { titulo, urlOriginal, slug, estado }) {
-    return await prisma.enlaces.update({
+    return await prisma.enlace.update({
       where: {
         id,
       },
@@ -76,7 +76,7 @@ export class LinkModel {
   }
   //DELETE
   static async delete(id, userid) {
-    return await prisma.enlaces.deleteMany({
+    return await prisma.enlace.deleteMany({
       where: {
         id,
         usuario_id: userid,

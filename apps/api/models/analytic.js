@@ -28,13 +28,13 @@ export class AnalyticModel {
       referrer,
     };
     await this.incrementClickCount(enlace_id);
-    return await prisma.analiticas.create({
+    return await prisma.analitica.create({
       data: analyticsData,
     });
   }
 
   static async incrementClickCount(enlaceId) {
-    return await prisma.enlaces.update({
+    return await prisma.enlace.update({
       where: {
         id: enlaceId,
       },
@@ -47,7 +47,7 @@ export class AnalyticModel {
   }
   //READ
   static async getByUserId(userid) {
-    return await prisma.analiticas.findMany({
+    return await prisma.analitica.findMany({
       where: {
         usuario_id: userid,
       },
@@ -154,7 +154,7 @@ export class AnalyticModel {
     prevEnd.setDate(currentEnd.getDate() - 7);
 
     const [currentData, previousData] = await Promise.all([
-      prisma.analiticas.findMany({
+      prisma.analitica.findMany({
         where: {
           ...baseWhere,
           timestamp: {
@@ -163,7 +163,7 @@ export class AnalyticModel {
           },
         },
       }),
-      prisma.analiticas.findMany({
+      prisma.analitica.findMany({
         where: {
           ...baseWhere,
           timestamp: {

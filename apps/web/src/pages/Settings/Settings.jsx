@@ -191,7 +191,7 @@ function Settings() {
             <p>Límite de enlaces: {user?.limiteEnlaces || 0}</p>
           </div>
         </div>
-        {/* <SubPlan /> */}
+        <SubPlan />
       </section>
       <button
         onClick={() => {

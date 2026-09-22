@@ -5,6 +5,7 @@ import { analyticsRouter } from "./routes/analytics.js";
 import { redirectRouter } from "./routes/redirect.js";
 import { authRouter } from "./routes/auth.js";
 import { userRouter } from "./routes/users.js";
+import plansRouter from "./routes/plans.js";
 
 import { corsMiddleware } from "./middleware/cors.js";
 
@@ -18,6 +19,7 @@ app.use(["/users", "/api/users"], userRouter);
 app.use(["/auth", "/api/auth"], authRouter);
 app.use(["/links", "/api/links"], linksRouter);
 app.use(["/analytics", "/api/analytics"], analyticsRouter);
+app.use(["/plans", "/api/plans"], plansRouter);
 app.use("/", redirectRouter);
 
 // Middleware centralizado de manejo de errores

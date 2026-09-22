@@ -22,7 +22,7 @@ export class UserModel {
       activo,
     };
 
-    return await prisma.usuarios.create({
+    return await prisma.usuario.create({
       data: newUser,
     });
   }
@@ -34,7 +34,7 @@ export class UserModel {
       ip,
       dispositivo,
     };
-    return await prisma.sesiones.create({
+    return await prisma.sesion.create({
       data: newSession,
     });
   }
@@ -46,18 +46,18 @@ export class UserModel {
     return sanitizedUser;
   }
   static async findByEmail(email) {
-    return await prisma.usuarios.findUnique({
+    return await prisma.usuario.findUnique({
       where: { email },
     });
   }
   static async findById(id) {
     const numericId = id;
-    return await prisma.usuarios.findUnique({
+    return await prisma.usuario.findUnique({
       where: { id: numericId },
     });
   }
   static async findSessionByToken(token) {
-    return await prisma.sesiones.findUnique({
+    return await prisma.sesion.findUnique({
       where: { token },
     });
   }
@@ -69,7 +69,7 @@ export class UserModel {
     const user = await this.findById(id);
     if (!user) return null;
 
-    return await prisma.usuarios.update({
+    return await prisma.usuario.update({
       where: { id },
       data: updates,
     });
@@ -79,7 +79,7 @@ export class UserModel {
     const user = await this.findById(id);
     if (!user) return null;
 
-    return await prisma.usuarios.update({
+    return await prisma.usuario.update({
       where: { id },
       data: { password: newHashedPassword },
     });
@@ -89,13 +89,13 @@ export class UserModel {
     const session = await this.findSessionByToken(token);
     if (!session) return false;
 
-    await prisma.sesiones.delete({
+    await prisma.sesion.delete({
       where: { token },
     });
     return true;
   }
   static async removeAllSessionsForUser(userId) {
-    await prisma.sesiones.deleteMany({
+    await prisma.sesion.deleteMany({
       where: { usuario_id: userId },
     });
   }
@@ -103,7 +103,7 @@ export class UserModel {
     const user = await this.findById(id);
     if (!user) return null;
 
-    await prisma.usuarios.delete({
+    await prisma.usuario.delete({
       where: { id },
     });
     return true;
