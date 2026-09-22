@@ -3,6 +3,7 @@ import React from "react";
 
 export function NoNamed({ enlace, mode }) {
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
+
   const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
   const fechaCreacion = new Date(enlace.fecha_creacion).toLocaleDateString(
     "es-ES",

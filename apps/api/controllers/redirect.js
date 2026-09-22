@@ -22,7 +22,7 @@ export class RedirectController {
     const isMobile = result.device.type === "mobile" || ua.includes("mobile");
 
     const device = isTablet ? "Tablet" : isMobile ? "Mobile" : "Desktop";
-
+    const referrer = req.get("referer") || req.get("referrer");
     const geo = {
       country: req.headers["x-vercel-ip-country"] || "N/A",
       city: req.headers["x-vercel-ip-city"] || "N/A",
@@ -37,7 +37,7 @@ export class RedirectController {
       browser: result.browser.name || "Unknown",
       os: result.os.name || "Unknown",
       device_type: device,
-      referrer: req.headers["referer"] || "Directo",
+      referrer: referrer || "Directo",
     }).catch((err) => {
       console.error("Error creating analytic:", err);
     });
