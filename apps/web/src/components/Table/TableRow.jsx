@@ -19,7 +19,7 @@ export function NoNamed({ enlace, mode }) {
         {mode === "select" ? (
           <span>{urlAcortada}</span>
         ) : (
-          <a href={urlAcortada} target="_blank" rel="noopener noreferrer">
+          <a href={urlAcortada} target="_blank" rel="noopener">
             {urlAcortada}
           </a>
         )}
