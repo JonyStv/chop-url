@@ -174,22 +174,15 @@ table button {
 .selector-link-row {
   cursor: pointer;
   &:hover {
-    background-color: var(--color-button-secondary-hover);
+    background-color: var(--color-button-secondary);
     transition: background-color 0.3s ease;
   }
   &.selected {
-    background-color: var(--color-button-secondary);
+    background-color: var(--color-button-secondary-hover);
+    transition: background-color 0.3s ease;
   }
 }
 @media (max-width: 768px) {
-  .selector-link-row {
-    &:hover {
-      background-color: var(--color-bg-surface);
-    }
-    &.selected {
-      background-color: var(--color-button-secondary);
-    }
-  }
   .table-section {
     border-radius: 0;
     border-left: none;

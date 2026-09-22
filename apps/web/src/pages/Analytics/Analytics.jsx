@@ -30,6 +30,12 @@ function Analytics() {
     countries: null,
     devices: null,
     referrers: null,
+    comparison: {
+      totalClicks: 0,
+      uniqueVisitors: 0,
+      primaryCountryClicks: 0,
+      averageCTR: 0,
+    },
   });
   const [links, setLinks] = useState([]);
 
@@ -128,10 +134,26 @@ function Analytics() {
       </section>
 
       <section className="stat-cards-container">
-        <StatCard title="Visitantes Únicos" value={summary.uniqueVisitors} />
-        <StatCard title="CTR Promedio" value={summary.averageCTR} />
-        <StatCard title="Total de Clicks" value={summary.totalClicks} />
-        <StatCard title="País Principal" value={summary.primaryCountry} />
+        <StatCard
+          title="Total de Clicks"
+          value={summary.totalClicks}
+          comparisonValue={summary.comparison.totalClicks}
+        />
+        <StatCard
+          title="Visitantes Únicos"
+          value={summary.uniqueVisitors}
+          comparisonValue={summary.comparison.uniqueVisitors}
+        />
+        <StatCard
+          title="País Principal"
+          value={summary.primaryCountry}
+          comparisonValue={summary.comparison.primaryCountryClicks}
+        />
+        <StatCard
+          title="CTR Promedio"
+          value={summary.averageCTR}
+          comparisonValue={summary.comparison.averageCTR}
+        />
       </section>
 
       <section className="graphic-cards-container">

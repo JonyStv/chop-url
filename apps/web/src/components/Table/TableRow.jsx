@@ -1,6 +1,7 @@
 // TableRow.jsx
 import React from "react";
-export function NoNamed({ enlace }) {
+
+export function NoNamed({ enlace, mode }) {
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
   const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
   const fechaCreacion = new Date(enlace.fecha_creacion).toLocaleDateString(
@@ -14,14 +15,26 @@ export function NoNamed({ enlace }) {
   return (
     <>
       <td className="link-column">
-        <a href={urlAcortada} target="_blank" rel="noopener noreferrer">
-          {urlAcortada}
-        </a>
+        {mode === "select" ? (
+          <span>{urlAcortada}</span>
+        ) : (
+          <a href={urlAcortada} target="_blank" rel="noopener noreferrer">
+            {urlAcortada}
+          </a>
+        )}
       </td>
       <td className="link-column">
-        <a href={enlace.url_original} target="_blank" rel="noopener noreferrer">
-          {enlace.url_original}
-        </a>
+        {mode === "select" ? (
+          <span>{enlace.url_original}</span>
+        ) : (
+          <a
+            href={enlace.url_original}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {enlace.url_original}
+          </a>
+        )}
       </td>
       <td className="properties-column">{fechaCreacion}</td>
       <td className="properties-column">{enlace.total_clicks || 0}</td>
@@ -61,7 +74,7 @@ function TableRow({
             <label htmlFor={checkboxId} className="checkbox-label"></label>
           </td>
         )}
-        <NoNamed enlace={enlace} />
+        <NoNamed enlace={enlace} mode={mode} />
       </tr>
     );
   }
@@ -81,7 +94,7 @@ function TableRow({
           <label htmlFor={checkboxId} className="checkbox-label"></label>
         </td>
       )}
-      <NoNamed enlace={enlace} />
+      <NoNamed enlace={enlace} mode={mode} />
     </tr>
   );
 }

@@ -15,6 +15,12 @@ function Home({}) {
     uniqueVisitors: 0,
     primaryCountry: "N/A",
     averageCTR: 0,
+    comparison: {
+      totalClicks: 0,
+      uniqueVisitors: 0,
+      primaryCountryClicks: 0,
+      averageCTR: 0,
+    },
   });
   const [loading, setLoading] = useState(false);
 
@@ -131,21 +137,25 @@ function Home({}) {
           title="Clicks Totales"
           value={summary.totalClicks}
           svgPath="M3 12l3 0M12 3l0 3M7.8 7.8l-2.2 -2.2M16.2 7.8l2.2 -2.2M7.8 16.2l-2.2 2.2M12 12l9 3l-4 2l-2 4l-3 -9"
+          comparisonValue={summary.comparison.totalClicks}
         />
         <StatCard
           title="Visitantes Unicos"
           value={summary.uniqueVisitors}
           svgPath="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z"
+          comparisonValue={summary.comparison.uniqueVisitors}
         />
         <StatCard
           title="Pais Principal"
           value={summary.primaryCountry}
           svgPath="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0 M3.6 9h16.8 M3.6 15h16.8 M11.5 3a17 17 0 0 0 0 18 M12.5 3a17 17 0 0 1 0 18"
+          comparisonValue={summary.comparison.primaryCountryClicks}
         />
         <StatCard
           title="CTR Promedio"
           value={summary.averageCTR}
           svgPath="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5 M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5 M14 10.5a1.5 1.5 0 0 1 3 0v1.5 M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47 M5 3l-1 -1 M4 7h-1 M14 3l1 -1 M15 6h1"
+          comparisonValue={summary.comparison.averageCTR}
         />
       </section>
 

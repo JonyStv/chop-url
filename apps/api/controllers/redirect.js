@@ -11,7 +11,6 @@ export class RedirectController {
     const ip = req.ip;
     const parser = new UAParser(req.headers);
     const result = parser.getResult();
-    console.log("User-Agent Result:", result);
 
     const linkData = await LinkModel.getBySlug(slug);
     if (!linkData) {

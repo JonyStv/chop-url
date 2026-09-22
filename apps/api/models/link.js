@@ -94,7 +94,8 @@ const filterLinks = (filteredLinks, { estado, search, limit, offset }) => {
     filteredLinks = filteredLinks.filter(
       (link) =>
         link.titulo.toLowerCase().includes(search.toLowerCase()) ||
-        link.urlOriginal.toLowerCase().includes(search.toLowerCase()),
+        link.url_original.toLowerCase().includes(search.toLowerCase()) ||
+        link.slug.toLowerCase().includes(search.toLowerCase()),
     );
   }
   if (limit !== undefined) {

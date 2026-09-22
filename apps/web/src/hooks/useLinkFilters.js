@@ -29,6 +29,7 @@ export default function useLinkFilters(options = {}) {
 
   // Petición a la API con ambos filtros (estado + búsqueda)
   useEffect(() => {
+    if (!userId) return;
     const params = new URLSearchParams();
 
     if (statusFilter !== "all") {
@@ -46,7 +47,7 @@ export default function useLinkFilters(options = {}) {
     apiJson(`/links/${userId}${query ? `?${query}` : ""}`)
       .then((json) => setFilteredEnlaces(json))
       .catch((err) => console.error("Error al obtener enlaces:", err));
-  }, [statusFilter, debouncedSearchTerm]);
+  }, [statusFilter, debouncedSearchTerm, userId]);
   // Estadísticas detalladas de filtros
   const filterStats = useMemo(() => {
     const activeFilters = [];

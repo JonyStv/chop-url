@@ -35,9 +35,18 @@ article footer {
   p {
     color: var(--color-success);
     font-size: 0.9rem;
+    width: 100%;
   }
   svg {
     width: 26px;
     height: 26px;
+  }
+}
+@media (max-width: 768px) {
+  .stats-section {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+  article footer p {
+    width: 100%;
   }
 }
