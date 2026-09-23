@@ -116,7 +116,7 @@ function Table({
           <th className="link-column">Enlace Original</th>
           <th className="properties-column">Fecha de Creación</th>
           <th className="properties-column">Clics</th>
-          <th className="properties-column">Estado</th>
+          {mode === "manage" && <th className="properties-column">Editar</th>}
         </tr>
       </thead>
       <TableBody
@@ -159,7 +159,7 @@ function Table({
               </button>
             </td>
           )}
-          <td colSpan={shouldRenderCheckboxes ? 3 : 4}>
+          <td colSpan={shouldRenderCheckboxes ? 3 : 2}>
             <p>
               {isEmpty
                 ? "No hay resultados para mostrar"

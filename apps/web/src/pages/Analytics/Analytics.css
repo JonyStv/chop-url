@@ -189,50 +189,44 @@
   padding: 0;
   margin: 0;
   width: 100%;
-  min-width: 700px; /* ← Mantén un mínimo para que no se rompa */
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
-/* ✅ Asegurar que la tabla respete los anchos */
+/* ✅ Asegurar que la tabla respete los anchos y trunque correctamente */
 .table-select-mode thead th,
 .table-select-mode tbody td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
   text-overflow: ellipsis;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
-/* ✅ Anchos de columnas para el modo select */
+/* ✅ Anchos proporcionales para aprovechar el 100% del ancho en modo select (4 columnas) */
 .table-select-mode thead th:nth-child(1),
 .table-select-mode tbody td:nth-child(1) {
-  width: 20%; /* Enlace Acortado */
+  width: 25%; /* Enlace Acortado */
+  text-align: left;
+  max-width: 250px;
 }
 
 .table-select-mode thead th:nth-child(2),
 .table-select-mode tbody td:nth-child(2) {
-  width: 35%; /* Enlace Original */
+  width: 45%; /* Enlace Original (mas espacio para URLs largas) */
+  text-align: left;
 }
 
 .table-select-mode thead th:nth-child(3),
 .table-select-mode tbody td:nth-child(3) {
-  width: 15%; /* Fecha */
+  width: 25%; /* Fecha */
+  text-align: center;
 }
 
 .table-select-mode thead th:nth-child(4),
 .table-select-mode tbody td:nth-child(4) {
-  width: 15%; /* Clics */
-}
-
-.table-select-mode thead th:nth-child(5),
-.table-select-mode tbody td:nth-child(5) {
-  width: 15%; /* Estado */
-}
-
-/* ✅ URLs largas se rompen */
-.table-select-mode tbody td:nth-child(2) {
-  word-break: break-all;
-  max-width: 300px;
+  width: 25%; /* Clics */
+  text-align: center;
 }
 
 /* ✅ Scrollbar personalizado */

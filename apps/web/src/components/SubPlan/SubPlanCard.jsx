@@ -1,4 +1,7 @@
 import "./SubPlan.css";
+import { useAuthStore } from "../../store/authStore.js";
+import { useNotificationStore } from "../../store/notificationStore.js";
+import { apiJson } from "../../config/api.js";
 
 const FEATURE_LABELS = {
   maxLinks: "Enlaces máximos",
@@ -27,6 +30,17 @@ function formatValue(key, value) {
 }
 
 export default function SubPlanCard({ plan }) {
+  const { user } = useAuthStore();
+  const notify = useNotificationStore((s) => s.notify);
+  const handleUpdatePlan = (planId) => {
+    if (planId === user?.plan_id) {
+      return notify("Ya estás suscrito a este plan", "info");
+    }
+    notify.confirm(
+      `¿Estás seguro de que deseas cambiar al plan "${plan.name}"?`,
+      () => {},
+    );
+  };
   const isFree = plan.price === 0;
 
   return (
@@ -45,7 +59,10 @@ export default function SubPlanCard({ plan }) {
         </span>
       </div>
 
-      <button className="subscribe-button">
+      <button
+        className="subscribe-button"
+        onClick={() => handleUpdatePlan(plan.id)}
+      >
         {isFree ? "Empezar gratis" : "Suscribirse"}
       </button>
 

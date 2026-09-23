@@ -70,6 +70,7 @@ model usuario {
   fecha_registro DateTime      @default(now()) @db.Timestamptz(6)
   plan           String        @default("gratuito") @db.VarChar(30)
   limite_enlaces Int           @default(10)
+  enlaces_creados Int         @default(0)
   activo         Boolean       @default(true)
   plan_id        String        @default("free") @db.VarChar(50)
   analitica      analitica[]

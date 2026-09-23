@@ -60,12 +60,6 @@
   margin: 0;
   max-width: 100%;
   box-sizing: border-box;
-  svg {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-  }
   &::-webkit-scrollbar {
     height: 8px;
   }
@@ -117,9 +111,40 @@ select {
     width: 70%;
   }
 }
-.link-column {
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* ✅ Anchos proporcionales para aprovechar el 100% del ancho en modo select (4 columnas) */
+Table thead th:nth-child(1),
+Table tbody td:nth-child(1) {
+  width: 40px; /* CheckBox */
+  text-align: left;
+  max-width: 250px;
+}
+
+Table thead th:nth-child(2),
+Table tbody td:nth-child(2) {
+  text-align: left;
+  max-width: 0px;
+  min-width: 200px;
+}
+
+Table thead th:nth-child(3),
+Table tbody td:nth-child(3) {
+  width: 35%; /* Enlace Original (mas espacio para URLs largas) */
+  text-align: left;
+  max-width: 250px;
+}
+
+Table thead th:nth-child(4),
+Table tbody td:nth-child(4) {
+  width: 20%; /* Fecha */
+  text-align: center;
+}
+Table thead th:nth-child(5),
+Table tbody td:nth-child(5) {
+  width: 20%; /* Clics */
+  text-align: center;
+}
+Table thead th:nth-child(6),
+Table tbody td:nth-child(6) {
+  width: 40px; /* Acciones */
+  text-align: center;
 }

@@ -28,10 +28,12 @@ export type AggregateUsuario = {
 
 export type UsuarioAvgAggregateOutputType = {
   limite_enlaces: number | null
+  enlaces_creados: number | null
 }
 
 export type UsuarioSumAggregateOutputType = {
   limite_enlaces: number | null
+  enlaces_creados: number | null
 }
 
 export type UsuarioMinAggregateOutputType = {
@@ -42,6 +44,7 @@ export type UsuarioMinAggregateOutputType = {
   fecha_registro: Date | null
   plan: string | null
   limite_enlaces: number | null
+  enlaces_creados: number | null
   activo: boolean | null
   plan_id: string | null
 }
@@ -54,6 +57,7 @@ export type UsuarioMaxAggregateOutputType = {
   fecha_registro: Date | null
   plan: string | null
   limite_enlaces: number | null
+  enlaces_creados: number | null
   activo: boolean | null
   plan_id: string | null
 }
@@ -66,6 +70,7 @@ export type UsuarioCountAggregateOutputType = {
   fecha_registro: number
   plan: number
   limite_enlaces: number
+  enlaces_creados: number
   activo: number
   plan_id: number
   _all: number
@@ -74,10 +79,12 @@ export type UsuarioCountAggregateOutputType = {
 
 export type UsuarioAvgAggregateInputType = {
   limite_enlaces?: true
+  enlaces_creados?: true
 }
 
 export type UsuarioSumAggregateInputType = {
   limite_enlaces?: true
+  enlaces_creados?: true
 }
 
 export type UsuarioMinAggregateInputType = {
@@ -88,6 +95,7 @@ export type UsuarioMinAggregateInputType = {
   fecha_registro?: true
   plan?: true
   limite_enlaces?: true
+  enlaces_creados?: true
   activo?: true
   plan_id?: true
 }
@@ -100,6 +108,7 @@ export type UsuarioMaxAggregateInputType = {
   fecha_registro?: true
   plan?: true
   limite_enlaces?: true
+  enlaces_creados?: true
   activo?: true
   plan_id?: true
 }
@@ -112,6 +121,7 @@ export type UsuarioCountAggregateInputType = {
   fecha_registro?: true
   plan?: true
   limite_enlaces?: true
+  enlaces_creados?: true
   activo?: true
   plan_id?: true
   _all?: true
@@ -211,6 +221,7 @@ export type UsuarioGroupByOutputType = {
   fecha_registro: Date
   plan: string
   limite_enlaces: number
+  enlaces_creados: number
   activo: boolean
   plan_id: string
   _count: UsuarioCountAggregateOutputType | null
@@ -246,6 +257,7 @@ export type usuarioWhereInput = {
   fecha_registro?: Prisma.DateTimeFilter<"usuario"> | Date | string
   plan?: Prisma.StringFilter<"usuario"> | string
   limite_enlaces?: Prisma.IntFilter<"usuario"> | number
+  enlaces_creados?: Prisma.IntFilter<"usuario"> | number
   activo?: Prisma.BoolFilter<"usuario"> | boolean
   plan_id?: Prisma.StringFilter<"usuario"> | string
   analitica?: Prisma.AnaliticaListRelationFilter
@@ -263,6 +275,7 @@ export type usuarioOrderByWithRelationInput = {
   fecha_registro?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
   analitica?: Prisma.analiticaOrderByRelationAggregateInput
@@ -283,6 +296,7 @@ export type usuarioWhereUniqueInput = Prisma.AtLeast<{
   fecha_registro?: Prisma.DateTimeFilter<"usuario"> | Date | string
   plan?: Prisma.StringFilter<"usuario"> | string
   limite_enlaces?: Prisma.IntFilter<"usuario"> | number
+  enlaces_creados?: Prisma.IntFilter<"usuario"> | number
   activo?: Prisma.BoolFilter<"usuario"> | boolean
   plan_id?: Prisma.StringFilter<"usuario"> | string
   analitica?: Prisma.AnaliticaListRelationFilter
@@ -300,6 +314,7 @@ export type usuarioOrderByWithAggregationInput = {
   fecha_registro?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
   _count?: Prisma.usuarioCountOrderByAggregateInput
@@ -320,6 +335,7 @@ export type usuarioScalarWhereWithAggregatesInput = {
   fecha_registro?: Prisma.DateTimeWithAggregatesFilter<"usuario"> | Date | string
   plan?: Prisma.StringWithAggregatesFilter<"usuario"> | string
   limite_enlaces?: Prisma.IntWithAggregatesFilter<"usuario"> | number
+  enlaces_creados?: Prisma.IntWithAggregatesFilter<"usuario"> | number
   activo?: Prisma.BoolWithAggregatesFilter<"usuario"> | boolean
   plan_id?: Prisma.StringWithAggregatesFilter<"usuario"> | string
 }
@@ -332,6 +348,7 @@ export type usuarioCreateInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
@@ -349,6 +366,7 @@ export type usuarioUncheckedCreateInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -366,6 +384,7 @@ export type usuarioUpdateInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
@@ -383,6 +402,7 @@ export type usuarioUncheckedUpdateInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -400,6 +420,7 @@ export type usuarioCreateManyInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
 }
@@ -412,6 +433,7 @@ export type usuarioUpdateManyMutationInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -424,6 +446,7 @@ export type usuarioUncheckedUpdateManyInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -441,12 +464,14 @@ export type usuarioCountOrderByAggregateInput = {
   fecha_registro?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
 }
 
 export type usuarioAvgOrderByAggregateInput = {
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
 }
 
 export type usuarioMaxOrderByAggregateInput = {
@@ -457,6 +482,7 @@ export type usuarioMaxOrderByAggregateInput = {
   fecha_registro?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
 }
@@ -469,12 +495,14 @@ export type usuarioMinOrderByAggregateInput = {
   fecha_registro?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
 }
 
 export type usuarioSumOrderByAggregateInput = {
   limite_enlaces?: Prisma.SortOrder
+  enlaces_creados?: Prisma.SortOrder
 }
 
 export type usuarioCreateNestedOneWithoutAnaliticaInput = {
@@ -567,6 +595,7 @@ export type usuarioCreateWithoutAnaliticaInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
@@ -583,6 +612,7 @@ export type usuarioUncheckedCreateWithoutAnaliticaInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
@@ -615,6 +645,7 @@ export type usuarioUpdateWithoutAnaliticaInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
@@ -631,6 +662,7 @@ export type usuarioUncheckedUpdateWithoutAnaliticaInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -647,6 +679,7 @@ export type usuarioCreateWithoutEnlaceInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
@@ -663,6 +696,7 @@ export type usuarioUncheckedCreateWithoutEnlaceInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -695,6 +729,7 @@ export type usuarioUpdateWithoutEnlaceInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
@@ -711,6 +746,7 @@ export type usuarioUncheckedUpdateWithoutEnlaceInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -727,6 +763,7 @@ export type usuarioCreateWithoutSesionInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
@@ -743,6 +780,7 @@ export type usuarioUncheckedCreateWithoutSesionInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -775,6 +813,7 @@ export type usuarioUpdateWithoutSesionInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
@@ -791,6 +830,7 @@ export type usuarioUncheckedUpdateWithoutSesionInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -807,6 +847,7 @@ export type usuarioCreateWithoutSubscriptionInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
@@ -823,6 +864,7 @@ export type usuarioUncheckedCreateWithoutSubscriptionInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -855,6 +897,7 @@ export type usuarioUpdateWithoutSubscriptionInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
@@ -871,6 +914,7 @@ export type usuarioUncheckedUpdateWithoutSubscriptionInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -887,6 +931,7 @@ export type usuarioCreateWithoutUsage_counterInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
@@ -903,6 +948,7 @@ export type usuarioUncheckedCreateWithoutUsage_counterInput = {
   fecha_registro?: Date | string
   plan?: string
   limite_enlaces?: number
+  enlaces_creados?: number
   activo?: boolean
   plan_id?: string
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -935,6 +981,7 @@ export type usuarioUpdateWithoutUsage_counterInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
@@ -951,6 +998,7 @@ export type usuarioUncheckedUpdateWithoutUsage_counterInput = {
   fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1025,6 +1073,7 @@ export type usuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   fecha_registro?: boolean
   plan?: boolean
   limite_enlaces?: boolean
+  enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
   analitica?: boolean | Prisma.usuario$analiticaArgs<ExtArgs>
@@ -1043,6 +1092,7 @@ export type usuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   fecha_registro?: boolean
   plan?: boolean
   limite_enlaces?: boolean
+  enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
 }, ExtArgs["result"]["usuario"]>
@@ -1055,6 +1105,7 @@ export type usuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   fecha_registro?: boolean
   plan?: boolean
   limite_enlaces?: boolean
+  enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
 }, ExtArgs["result"]["usuario"]>
@@ -1067,11 +1118,12 @@ export type usuarioSelectScalar = {
   fecha_registro?: boolean
   plan?: boolean
   limite_enlaces?: boolean
+  enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
 }
 
-export type usuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "nombre" | "fecha_registro" | "plan" | "limite_enlaces" | "activo" | "plan_id", ExtArgs["result"]["usuario"]>
+export type usuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "nombre" | "fecha_registro" | "plan" | "limite_enlaces" | "enlaces_creados" | "activo" | "plan_id", ExtArgs["result"]["usuario"]>
 export type usuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   analitica?: boolean | Prisma.usuario$analiticaArgs<ExtArgs>
   enlace?: boolean | Prisma.usuario$enlaceArgs<ExtArgs>
@@ -1100,6 +1152,7 @@ export type $usuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     fecha_registro: Date
     plan: string
     limite_enlaces: number
+    enlaces_creados: number
     activo: boolean
     plan_id: string
   }, ExtArgs["result"]["usuario"]>
@@ -1537,6 +1590,7 @@ export interface usuarioFieldRefs {
   readonly fecha_registro: Prisma.FieldRef<"usuario", 'DateTime'>
   readonly plan: Prisma.FieldRef<"usuario", 'String'>
   readonly limite_enlaces: Prisma.FieldRef<"usuario", 'Int'>
+  readonly enlaces_creados: Prisma.FieldRef<"usuario", 'Int'>
   readonly activo: Prisma.FieldRef<"usuario", 'Boolean'>
   readonly plan_id: Prisma.FieldRef<"usuario", 'String'>
 }

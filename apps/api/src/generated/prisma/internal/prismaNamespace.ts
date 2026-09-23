@@ -1108,6 +1108,7 @@ export const UsuarioScalarFieldEnum = {
   fecha_registro: 'fecha_registro',
   plan: 'plan',
   limite_enlaces: 'limite_enlaces',
+  enlaces_creados: 'enlaces_creados',
   activo: 'activo',
   plan_id: 'plan_id'
 } as const

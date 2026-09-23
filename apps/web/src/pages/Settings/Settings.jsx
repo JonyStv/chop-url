@@ -52,6 +52,7 @@ function Settings() {
         });
     }
   };
+
   return (
     <div className="settings-page">
       <section className="ajustes-header-section">
@@ -70,7 +71,7 @@ function Settings() {
         <div className="subscription-info">
           <div className="info-card">
             <h4>Plan actual</h4>
-            <p className="plan-name">{user?.plan || "Gratuito"}</p>
+            <p className="plan-name">{user?.plan_id || "Gratuito"}</p>
             <button
               className="upgrade-button"
               onClick={() => setIsSubVisible((v) => !v)}
@@ -83,20 +84,21 @@ function Settings() {
             <h4>Límites de uso</h4>
             <div className="usage-row">
               <span>Enlaces creados</span>
-              <strong>{user?.enlacesCreados || 0}</strong>
+              <strong>{user?.enlaces_creados || 0}</strong>
             </div>
             <div className="usage-row">
               <span>Límite de enlaces</span>
               <strong>{user?.limite_enlaces || 0}</strong>
             </div>
-            {user?.limiteEnlaces > 0 && (
+            {user?.limite_enlaces > 0 && (
               <div className="usage-bar">
                 <div
                   className="usage-bar-fill"
                   style={{
                     width: `${Math.min(
                       100,
-                      ((user?.enlacesCreados || 0) / user.limite_enlaces) * 100,
+                      ((user?.enlaces_creados || 0) / user.limite_enlaces) *
+                        100,
                     )}%`,
                   }}
                 />

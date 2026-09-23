@@ -15,7 +15,7 @@ export default function TableBody({
     return (
       <tbody>
         <tr>
-          <td colSpan={shouldRenderCheckboxes ? 6 : 5} className="empty-state">
+          <td colSpan={shouldRenderCheckboxes ? 6 : 4} className="empty-state">
             No hay enlaces para mostrar
           </td>
         </tr>

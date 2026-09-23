@@ -5,7 +5,7 @@ import InputForm from "../../components/InputForm/InputForm";
 import useLinkFilters from "../../hooks/useLinkFilters"; // ← Nuevo hook
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore.js";
-
+import EditCard from "../../components/EditCard/EditCard.jsx";
 import { NavLink } from "react-router-dom";
 
 function Links({}) {
@@ -132,6 +132,9 @@ function Links({}) {
           accessToken={accessToken}
           onDeleteSuccess={removeEnlaces}
         />
+      </section>
+      <section className="edit-card-section">
+        <EditCard />
       </section>
     </div>
   );

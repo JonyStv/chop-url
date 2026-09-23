@@ -16,6 +16,16 @@ export class LinkModel {
       titulo,
       estado: "Activo",
     };
+    await prisma.usuario.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        enlaces_creados: {
+          increment: 1,
+        },
+      },
+    });
     return await prisma.enlace.create({
       data: newLink,
     });

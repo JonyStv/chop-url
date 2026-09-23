@@ -1,9 +1,10 @@
 // TableRow.jsx
 import React from "react";
+import { useEditStore } from "../../store/editStore.js";
 
 export function NoNamed({ enlace, mode }) {
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
-
+  const { openEditModal } = useEditStore();
   const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
   const urlAcortadaVisible = urlAcortada.replace(/https?:\/\//g, "");
   const urlOriginal = enlace.url_original
@@ -19,7 +20,7 @@ export function NoNamed({ enlace, mode }) {
   );
   return (
     <>
-      <td className="link-column">
+      <td className="link-column shortened">
         {mode === "select" ? (
           <span>{urlAcortadaVisible}</span>
         ) : (
@@ -28,7 +29,7 @@ export function NoNamed({ enlace, mode }) {
           </a>
         )}
       </td>
-      <td className="link-column">
+      <td className="link-column original">
         {mode === "select" ? (
           <span>{urlOriginal}</span>
         ) : (
@@ -43,11 +44,26 @@ export function NoNamed({ enlace, mode }) {
       </td>
       <td className="properties-column">{fechaCreacion}</td>
       <td className="properties-column">{enlace.total_clicks || 0}</td>
-      <td className="status">
-        <p className={`${enlace.estado === "Activo" ? "active" : "inactive"}`}>
-          {enlace.estado}
-        </p>
-      </td>
+      {mode === "manage" && (
+        <td className="edit-column">
+          <svg
+            className="edit-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#607d8b"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            onClick={() => openEditModal(enlace)}
+          >
+            <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+            <path d="M13.5 6.5l4 4" />
+          </svg>
+        </td>
+      )}
     </>
   );
 }

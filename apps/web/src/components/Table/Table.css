@@ -23,15 +23,25 @@ a {
   }
 }
 .checkbox-column {
-  width: 40px;
+  width: 48px;
   text-align: center;
 }
 .link-column {
-  width: 200px;
   text-align: left;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-column span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .properties-column {
-  width: 150px;
+  width: 140px;
   text-align: center;
 }
 .table-content {
@@ -155,20 +165,19 @@ table button {
   border-radius: 0.25rem;
   transition: background-color 0.3s ease;
 }
-.status {
+.edit-column {
   text-align: center;
   vertical-align: middle;
-  p {
-    display: inline-block;
-    margin: 0 auto;
-    padding: 0rem 0.75rem;
-    border-radius: 0.75rem;
-  }
-  .active {
-    background-color: var(--color-button-primary);
-  }
-  .inactive {
-    background-color: var(--color-text-error);
+  .edit-icon {
+    background-color: var(--color-button-secondary);
+    border-radius: 5px;
+    padding: 0.25rem;
+    &:hover {
+      background-color: var(--color-button-secondary-hover);
+      border: 1px solid #fffa;
+      scale: 1.05;
+      transition: scale 0.3s ease;
+    }
   }
 }
 .selector-link-row {

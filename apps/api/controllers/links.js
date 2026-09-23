@@ -49,14 +49,14 @@ export class LinkController {
   }
   static async update(req, res) {
     const { id } = req.params;
-    const { titulo, urlOriginal, urlAcortada, estado, tags } = req.body;
+    const { titulo, urlOriginal, slug, estado } = req.body;
     const updatedLink = await LinkModel.update(id, {
       titulo,
       urlOriginal,
-      urlAcortada,
+      slug,
       estado,
-      tags,
     });
+
     if (!updatedLink) {
       res.status(404).json({ error: "Link not found" });
     }
