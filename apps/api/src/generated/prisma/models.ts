@@ -8,12 +8,12 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/analitica'
-export type * from './models/enlace'
-export type * from './models/sesion'
-export type * from './models/usuario'
-export type * from './models/plan'
-export type * from './models/subscription'
-export type * from './models/stripe_event'
-export type * from './models/usage_counter'
-export type * from './commonInputTypes'
+export type * from './models/analitica.ts'
+export type * from './models/enlace.ts'
+export type * from './models/sesion.ts'
+export type * from './models/usuario.ts'
+export type * from './models/plan.ts'
+export type * from './models/subscription.ts'
+export type * from './models/stripe_event.ts'
+export type * from './models/usage_counter.ts'
+export type * from './commonInputTypes.ts'
