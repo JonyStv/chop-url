@@ -5,7 +5,10 @@
   "outputDirectory": "apps/web/dist",
   "functions": {
     "api/index.mjs": {
-      "includeFiles": "apps/api/data.json"
+      "includeFiles": "src/generated/prisma/**"
+    },
+    "server.js": {
+      "includeFiles": "src/generated/prisma/**"
     }
   },
   "rewrites": [
