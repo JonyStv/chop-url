@@ -6,9 +6,6 @@
   "functions": {
     "api/index.mjs": {
       "includeFiles": "src/generated/prisma/**"
-    },
-    "server.js": {
-      "includeFiles": "src/generated/prisma/**"
     }
   },
   "rewrites": [
