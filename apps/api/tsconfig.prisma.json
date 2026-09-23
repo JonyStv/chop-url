@@ -4,7 +4,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "outDir": "./generated/prisma-js",
-    "rootDir": "./src/generated/prisma"
+    "rootDir": "./src/generated/prisma",
+    "skipLibCheck": true,
+    "declaration": false
   },
-  "include": ["./src/generated/prisma"]
+  "include": ["./src/generated/prisma/**/*"]
 }
