@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "postinstall": "prisma generate",
-    "build": "prisma generate && node server.js",
+    "build": "prisma generate",
     "dev": "node --env-file=.env --watch server.js",
     "start": "node --env-file=.env server.js",
     "test": "node --env-file=.env.test --test test/*.test.js",
