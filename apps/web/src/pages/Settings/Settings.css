@@ -54,31 +54,148 @@
   background: var(--color-button-disabled);
   cursor: not-allowed;
 }
+/* ============================================
+   Sección de suscripción
+   ============================================ */
 .ajustes-section.subscription-section {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  button {
-    background: var(--color-button-primary);
-    color: var(--color-text-primary-inverse);
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-    border-radius: 0.25rem;
-    transition: background-color 0.3s ease;
-  }
-  div {
-    flex-direction: row;
-  }
-}
-.subscription-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  p {
-    margin: 0;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.subscription-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ============================================
+   Grid de los dos bloques de info
+   ============================================ */
+.subscription-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .subscription-info {
+    grid-template-columns: 1fr;
   }
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: var(--color-bg-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.info-card h4 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Bloque: Plan actual
+   ============================================ */
+.plan-name {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-accent);
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+}
+
+.upgrade-button {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-button-primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.upgrade-button:hover {
+  background: var(--color-button-primary-hover);
+}
+
+.upgrade-button:active {
+  transform: scale(0.97);
+}
+
+.upgrade-button:focus-visible {
+  outline: 2px solid var(--color-text-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Bloque: Límites de uso
+   ============================================ */
+.usage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.usage-row strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Barra de progreso */
+.usage-bar {
+  margin-top: 0.25rem;
+  height: 6px;
+  width: 100%;
+  background: var(--color-bg-interactive-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.usage-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-text-accent),
+    var(--color-button-primary)
+  );
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ============================================
+   Sección de planes (SubPlan)
+   ============================================ */
+.subscription-section .sub-plan-container {
+  padding: 0.5rem 0 0;
+  margin: 0;
+  max-width: none;
 }
 .delete-account-button {
   background: var(--color-button-danger);

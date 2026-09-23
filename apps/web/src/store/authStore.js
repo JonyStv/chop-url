@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { apiFetch } from "../config/api.js";
-
+let initPromise = null; // Para evitar múltiples llamadas simultáneas a initAuth
 export const useAuthStore = create((set, get) => ({
   isAuthenticated: false,
   user: null,
@@ -13,42 +13,49 @@ export const useAuthStore = create((set, get) => ({
 
   // Intenta restaurar la sesión usando la cookie refreshToken
   initAuth: async () => {
-    try {
-      const check = await apiFetch("/auth/session");
+    // Si ya hay una ejecución en curso, reutilízala
+    if (initPromise) return initPromise;
 
-      // 204 = no hay sesión → no intentamos refresh
-      if (check.status === 204) {
-        return set({
+    initPromise = (async () => {
+      set({ isLoading: true });
+      try {
+        const check = await apiFetch("/auth/session");
+
+        if (check.status === 204) {
+          set({
+            accessToken: null,
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          return;
+        }
+
+        const refreshRes = await apiFetch("/auth/refresh", { method: "POST" });
+        if (!refreshRes.ok) throw new Error("No refresh");
+
+        const { accessToken } = await refreshRes.json();
+
+        const meRes = await apiFetch("/auth/me", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (!meRes.ok) throw new Error("Failed to get user");
+
+        const { user } = await meRes.json();
+        set({ accessToken, user, isAuthenticated: true, isLoading: false });
+      } catch {
+        set({
           accessToken: null,
           user: null,
           isAuthenticated: false,
           isLoading: false,
         });
+      } finally {
+        initPromise = null; // permite reintentar en el futuro (p.ej. tras logout)
       }
+    })();
 
-      // hay sesión → ahora sí refresh
-      const refreshRes = await apiFetch("/auth/refresh", {
-        method: "POST",
-      });
-      if (!refreshRes.ok) throw new Error("No refresh");
-
-      const { accessToken } = await refreshRes.json();
-
-      const meRes = await apiFetch("/auth/me", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!meRes.ok) throw new Error("Failed to get user");
-
-      const { user } = await meRes.json();
-      set({ accessToken, user, isAuthenticated: true, isLoading: false });
-    } catch {
-      set({
-        accessToken: null,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
-    }
+    return initPromise;
   },
 
   // Cerrar sesión (centralizado)
