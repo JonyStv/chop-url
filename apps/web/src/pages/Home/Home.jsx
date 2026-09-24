@@ -158,11 +158,6 @@ function Home({}) {
           comparisonValue={summary.comparison.averageCTR}
         />
       </section>
-
-      <section className="url-performance-section">
-        <h2>Rendimiento del URL en el Tiempo</h2>
-        <canvas id="urlPerformanceChart" width="400" height="200"></canvas>
-      </section>
     </div>
   );
 }

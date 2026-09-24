@@ -81,8 +81,12 @@ export const register = async ({
   if (existingUser) {
     throw new AppError("El correo electrónico ya está registrado.", 400);
   }
-
-  const newUser = await UserModel.create({ email, password, nombre });
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await UserModel.create({
+    email,
+    password: hashedPassword,
+    nombre,
+  });
 
   const payload = { id: newUser.id, email: newUser.email };
   const accessToken = signAccessToken(payload);

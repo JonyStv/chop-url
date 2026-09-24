@@ -1,6 +1,5 @@
 import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
-
 export class UserModel {
   //CREATE
   static async create({
@@ -11,11 +10,9 @@ export class UserModel {
     limiteEnlaces = 10,
     activo = true,
   }) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = {
       email,
-      password: hashedPassword,
+      password,
       nombre,
       plan,
       limite_enlaces: limiteEnlaces,

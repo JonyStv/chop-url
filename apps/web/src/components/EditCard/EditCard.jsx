@@ -1,13 +1,39 @@
 import "./EditCard.css";
 import { useEditStore } from "../../store/editStore.js";
-import { useState } from "react";
-import { apiFetch, apiJson } from "../../config/api.js";
-import { data } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { apiJson } from "../../config/api.js";
 
 function EditCard() {
   const { isOpen, currentLink, closeEditModal } = useEditStore();
-  const [updatedLink, setUpdatedLink] = useState(currentLink || {});
+
+  // 1. Inicializamos el estado siempre con strings vacíos para evitar inputs "no controlados"
+  const [updatedLink, setUpdatedLink] = useState({
+    titulo: "",
+    url_original: "",
+    slug: "",
+  });
+  const [placeholderLink, setPlaceholderLink] = useState({
+    titulo: "",
+    url_original: "",
+    slug: "",
+  });
   const [loading, setLoading] = useState(false);
+
+  // 2. Cargamos los datos reales del enlace cuando se abre el modal
+  useEffect(() => {
+    if (isOpen && currentLink) {
+      setUpdatedLink({
+        titulo: "",
+        url_original: "",
+        slug: "",
+      });
+      setPlaceholderLink({
+        titulo: currentLink.titulo || "",
+        url_original: currentLink.url_original || "",
+        slug: currentLink.slug || "",
+      });
+    }
+  }, [isOpen, currentLink]);
 
   if (!isOpen) return null;
 
@@ -15,29 +41,28 @@ function EditCard() {
     e.preventDefault();
     setLoading(true);
     try {
-      const updatedEnlace = await apiJson(`/links/${currentLink.id}`, {
+      await apiJson(`/links/${currentLink.id}`, {
         method: "PUT",
         body: JSON.stringify({
-          titulo: updatedLink.titulo || currentLink.titulo,
-          urlOriginal: updatedLink.url_original || currentLink.url_original,
-          slug: updatedLink.slug || currentLink.slug,
-          estado: currentLink.estado,
+          titulo: updatedLink.titulo,
+          urlOriginal: updatedLink.url_original,
+          slug: updatedLink.slug,
+          estado: currentLink.estado, // Mantenemos el estado original
         }),
       });
-      closeEditModal();
+      closeEditModal(); // Cerramos el modal al terminar con éxito
     } catch (error) {
       console.error("Error al actualizar el enlace:", error);
     } finally {
       setLoading(false);
-      clearInputs();
     }
   };
-  const clearInputs = () => {
-    setUpdatedLink({});
-  };
-  const fechaCreacion = new Date(
-    currentLink?.fecha_creacion,
-  ).toLocaleDateString();
+
+  // 3. Prevenimos el error "Invalid Date" si currentLink.fecha_creacion es null/undefined
+  const fechaCreacion = currentLink?.fecha_creacion
+    ? new Date(currentLink.fecha_creacion).toLocaleDateString()
+    : "Sin fecha";
+
   return (
     <div className="edit-card-overlay">
       <div className="edit-card">
@@ -50,18 +75,18 @@ function EditCard() {
               <input
                 type="text"
                 value={updatedLink.titulo}
-                placeholder={currentLink?.titulo || "Sin título"}
+                placeholder={placeholderLink.titulo}
                 onChange={(e) =>
                   setUpdatedLink({ ...updatedLink, titulo: e.target.value })
                 }
-              ></input>
+              />
             </label>
             <label>
               URL Original:
               <input
                 type="text"
-                placeholder={currentLink?.url_original || "Sin URL"}
                 value={updatedLink.url_original}
+                placeholder={placeholderLink.url_original}
                 onChange={(e) =>
                   setUpdatedLink({
                     ...updatedLink,
@@ -74,8 +99,8 @@ function EditCard() {
               Slug:
               <input
                 type="text"
-                placeholder={currentLink?.slug || "Sin slug"}
                 value={updatedLink.slug}
+                placeholder={placeholderLink.slug}
                 onChange={(e) =>
                   setUpdatedLink({ ...updatedLink, slug: e.target.value })
                 }
