@@ -125,6 +125,10 @@
   box-shadow: var(--shadow-elevation-1);
   padding: 1rem;
   margin-bottom: 2rem;
+  .link-selected-name {
+    background-color: var(--color-button-secondary);
+    width: 150px;
+  }
 }
 /* Selector de enlaces en overlay */
 .analytics-table-overlay {

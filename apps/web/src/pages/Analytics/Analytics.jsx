@@ -2,6 +2,7 @@
 import "./Analytics.css";
 import StatCard from "../../components/StatCard/StatCard.jsx";
 import GraphicCard from "../../components/GraphicCard/GraphicCard.jsx";
+import ChartCard from "../../components/ChartCard/ChartCard.jsx";
 import Table from "../../components/Table/Table.jsx";
 import Calendar, {
   formatDisplayDate,
@@ -174,8 +175,16 @@ function Analytics() {
         />
       </section>
       <section className="url-performance-section">
-        <h2>Rendimiento del URL en el Tiempo</h2>
-        <canvas id="urlPerformanceChart" width="400" height="200"></canvas>
+        <p className="link-selected-name">
+          {selectedLinkId !== null
+            ? "Link:" + "/" + links.find((e) => e.id === selectedLinkId)?.slug
+            : "Datos Globales"}
+        </p>
+        <ChartCard
+          title="Rendimiento de Enlaces"
+          description="Muestra el rendimiento de tus enlaces a lo largo del tiempo."
+          data={summary.clicksOverTime}
+        />
       </section>
       {selecterLinkOpen && (
         <section
