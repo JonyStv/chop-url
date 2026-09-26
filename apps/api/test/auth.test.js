@@ -4,6 +4,8 @@ import { prisma } from "../config/db.js ";
 import { UserModel } from "../models/user.js";
 import * as authService from "../services/auth.js";
 import bcrypt from "bcryptjs";
+import { refresh as refreshService } from "../services/auth.js";
+import { signRefreshToken } from "../utils/jwt.js";
 
 describe("Auth Service - Unit Tests", () => {
   //Variables Globales
@@ -160,6 +162,43 @@ describe("Auth Service - Unit Tests", () => {
         undefined,
         "Por seguridad, el register no debe devolver la contraseña (ni siquiera el hash)",
       );
+    });
+  });
+  describe("Flujo de Refresh Token", () => {
+    test("deberia refrescar correctamente los tokens", async () => {
+      const mockUser = {
+        id: "user-123",
+        email: "test@example.com",
+        nombre: "Test User",
+        activo: true,
+      };
+      const refreshToken = signRefreshToken({
+        id: mockUser.id,
+        email: mockUser.email,
+      });
+      // Mock the behavior of the database
+      mock.method(UserModel, "findSessionByToken", async () => ({
+        id: "sesion-1",
+        token: refreshToken,
+        usuario_id: mockUser.id,
+      }));
+      mock.method(UserModel, "findById", async () => mockUser);
+      mock.method(UserModel, "removeSession", async () => true);
+      mock.method(UserModel, "createSession", async () => ({
+        id: "sesion-2",
+        token: "new-mock-refresh-token",
+      }));
+
+      // 2. ACT
+      const result = await refreshService(
+        refreshToken,
+        "127.0.0.1",
+        "Test Device",
+      );
+
+      // 3. ASSERT
+      assert.ok(result.accessToken);
+      assert.ok(result.refreshToken);
     });
   });
 });

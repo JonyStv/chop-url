@@ -19,6 +19,21 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  h1 {
+    margin: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+  p {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
 }
 
 .ajustes-section {
@@ -31,8 +46,26 @@
   border-radius: 0.5rem;
   box-shadow: var(--shadow-elevation-1);
   margin: 0;
-  h4 {
-    margin-bottom: 1rem;
+  h4,
+  h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+  p {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+  input {
+    margin-top: 0.5rem;
   }
   button {
     background: var(--color-button-primary);
@@ -68,14 +101,6 @@
   box-shadow: var(--shadow-elevation-1);
 }
 
-.subscription-header h3 {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-}
-
 /* ============================================
    Grid de los dos bloques de info
    ============================================ */
@@ -101,7 +126,7 @@
   border-radius: 10px;
 }
 
-.info-card h4 {
+.info-card h3 {
   margin: 0;
   font-size: 0.8rem;
   font-weight: 600;
@@ -219,7 +244,6 @@
 @media (max-width: 768px) {
   .ajustes-section {
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    gap: 3rem;
   }
 }

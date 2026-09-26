@@ -24,10 +24,7 @@ ChartJS.register(
   Filler,
 );
 
-export const ChartCard = ({
-  data = [],
-  titulo = "Clics a lo largo del tiempo",
-}) => {
+export const ChartCard = ({ data = [], titulo = "Evolución de Clics" }) => {
   const chartData = {
     labels: data.map((d) => d.fecha),
     datasets: [
@@ -53,10 +50,11 @@ export const ChartCard = ({
       },
       title: {
         display: true,
-        text: titulo,
+        text: titulo.toUpperCase(),
         font: {
-          size: 16,
+          size: 18,
         },
+        color: "#94a3b8",
       },
       tooltip: {
         mode: "index",

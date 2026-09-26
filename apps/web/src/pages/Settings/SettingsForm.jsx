@@ -86,7 +86,7 @@ export default function SettingsForm({ model }) {
     <div>
       {model === "profile" ? (
         <>
-          <h4>Perfil</h4>
+          <h3>Perfil</h3>
           <p>
             Nombre Completo:{" "}
             <input
@@ -117,7 +117,7 @@ export default function SettingsForm({ model }) {
         <>
           {" "}
           {/* 👈 fragmento */}
-          <h4>Seguridad</h4>
+          <h3>Seguridad</h3>
           <p>
             Contraseña actual:
             <input

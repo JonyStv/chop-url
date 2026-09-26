@@ -18,9 +18,13 @@ article.graphic-card {
 }
 
 .graphic-card-header h3 {
+  margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
   margin: 0 0 0.2rem 0;
   font-size: 1.15rem;
-  color: var(--color-text-primary);
   text-align: center;
 }
 

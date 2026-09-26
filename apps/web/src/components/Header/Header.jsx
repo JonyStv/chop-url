@@ -31,7 +31,7 @@ function Header() {
         onClick={closeSidebar}
       />
       <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`} id="sidebar">
-        <div className="sidebar-header">
+        <a href="/" className="sidebar-header">
           <svg
             className="sidebar-logo"
             xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@ function Header() {
             <path d="M17 5l-10 14" />
           </svg>
           <h2 className="sidebar-title">ChopURL</h2>
-        </div>
+        </a>
         <Navigation onNavigate={closeSidebar} />
       </aside>
     </>
