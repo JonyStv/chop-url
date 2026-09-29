@@ -7,69 +7,6 @@ import {
 } from "../utils/jwt.js";
 import { AppError } from "../utils/errors.js";
 
-export const changePassword = async (
-  userId,
-  { currentPassword, newPassword },
-  meta = {},
-) => {
-  // Validate input
-  if (
-    typeof currentPassword !== "string" ||
-    typeof newPassword !== "string" ||
-    !currentPassword ||
-    !newPassword
-  ) {
-    throw new AppError("Se requiere la contraseña actual y la nueva.", 400);
-  }
-  if (currentPassword === newPassword) {
-    throw new AppError(
-      "La nueva contraseña no puede ser la misma que la actual.",
-      400,
-    );
-  }
-  if (newPassword.length < 6) {
-    throw new AppError(
-      "La nueva contraseña debe tener al menos 6 caracteres.",
-      400,
-    );
-  }
-  // Find the user
-  const user = await UserModel.findById(userId);
-  if (!user) throw new AppError("Usuario no encontrado.", 404);
-  if (!user.activo) throw new AppError("Usuario inactivo.", 403);
-
-  // Verify current password
-  const ok = await UserModel.comparePassword(currentPassword, user.password);
-  if (!ok) throw new AppError("Contraseña actual incorrecta.", 401);
-
-  // Hash the new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  const userUpdated = await UserModel.updatePassword(userId, hashedPassword);
-
-  // Invalidate all sessions for this user
-  await UserModel.removeAllSessionsForUser(userId);
-
-  // Create a new session for the user
-  const accessToken = signAccessToken({
-    id: userUpdated.id,
-    email: userUpdated.email,
-  });
-  const refreshToken = signRefreshToken({
-    id: userUpdated.id,
-    email: userUpdated.email,
-  });
-  await UserModel.createSession({
-    usuarioId: userUpdated.id,
-    token: refreshToken,
-    ip: meta.ip || "",
-    dispositivo: meta.dispositivo || "",
-  });
-
-  return {
-    accessToken,
-    refreshToken,
-  };
-};
 export const register = async ({
   email,
   password,
@@ -184,10 +121,72 @@ export const refresh = async (refreshToken, ip, dispositivo) => {
     refreshToken: newRefreshToken,
   };
 };
-
-export const logout = async (refreshToken) => {
-  if (refreshToken) {
-    await UserModel.removeSession(refreshToken);
+export const changePassword = async (
+  userId,
+  { currentPassword, newPassword },
+  meta = {},
+) => {
+  // Validate input
+  if (
+    typeof currentPassword !== "string" ||
+    typeof newPassword !== "string" ||
+    !currentPassword ||
+    !newPassword
+  ) {
+    throw new AppError("Se requiere la contraseña actual y la nueva.", 400);
   }
-  return true;
+  if (currentPassword === newPassword) {
+    throw new AppError(
+      "La nueva contraseña no puede ser la misma que la actual.",
+      400,
+    );
+  }
+  if (newPassword.length < 6) {
+    throw new AppError(
+      "La nueva contraseña debe tener al menos 6 caracteres.",
+      400,
+    );
+  }
+  // Find the user
+  const user = await UserModel.findById(userId);
+  if (!user) throw new AppError("Usuario no encontrado.", 404);
+  if (!user.activo) throw new AppError("Usuario inactivo.", 403);
+
+  // Verify current password
+  const ok = await UserModel.comparePassword(currentPassword, user.password);
+  if (!ok) throw new AppError("Contraseña actual incorrecta.", 401);
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const userUpdated = await UserModel.updatePassword(userId, hashedPassword);
+
+  // Invalidate all sessions for this user
+  await UserModel.removeAllSessionsForUser(userId);
+
+  // Create a new session for the user
+  const accessToken = signAccessToken({
+    id: userUpdated.id,
+    email: userUpdated.email,
+  });
+  const refreshToken = signRefreshToken({
+    id: userUpdated.id,
+    email: userUpdated.email,
+  });
+  await UserModel.createSession({
+    usuarioId: userUpdated.id,
+    token: refreshToken,
+    ip: meta.ip || "",
+    dispositivo: meta.dispositivo || "",
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+export const logout = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new AppError("Token de refresco requerido para cerrar sesión.", 400);
+  }
+  return await UserModel.removeSession(refreshToken);
 };

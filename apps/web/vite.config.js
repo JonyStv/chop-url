@@ -8,7 +8,7 @@ export default defineConfig({
     allowedHosts: ["localhost", ".trycloudflare.com", ".vercel.app"],
     proxy: {
       "/api": {
-        target: "http://localhost:3000", // El puerto de tu backend local
+        target: "http://localhost:3001", // El puerto de tu backend local
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

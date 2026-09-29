@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
+import { AppError } from "../utils/errors.js";
 export class UserModel {
   //CREATE
   static async create({
@@ -84,7 +85,7 @@ export class UserModel {
   //REMOVE
   static async removeSession(token) {
     const session = await this.findSessionByToken(token);
-    if (!session) return false;
+    if (!session) throw new AppError("Sesión no encontrada", 404);
 
     await prisma.sesion.delete({
       where: { token },

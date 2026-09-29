@@ -5,7 +5,7 @@ import { UserModel } from "../models/user.js";
 import * as authService from "../services/auth.js";
 import bcrypt from "bcryptjs";
 import { refresh as refreshService } from "../services/auth.js";
-import { signRefreshToken } from "../utils/jwt.js";
+import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
 
 describe("Auth Service - Unit Tests", () => {
   //Variables Globales
@@ -199,6 +199,195 @@ describe("Auth Service - Unit Tests", () => {
       // 3. ASSERT
       assert.ok(result.accessToken);
       assert.ok(result.refreshToken);
+    });
+    test("deberia fallar si el refresh token es invalido", async () => {
+      const invalidRefreshToken = "invalid-token";
+      await assert.rejects(
+        refreshService(invalidRefreshToken, "127.0.0.1", "Test Device"),
+        (error) =>
+          error.statusCode === 401 || error.message.includes("inválido"),
+      );
+    });
+    test("deberia fallar si el token no existe en la tabla de sesiones", async () => {
+      const mockUser = {
+        id: "user-123",
+        email: "test@email.es",
+        nombre: "Test User",
+        activo: true,
+      };
+      const refreshToken = signRefreshToken({
+        id: mockUser.id,
+        email: mockUser.email,
+      });
+      // Mock the behavior of the database
+      mock.method(UserModel, "findSessionByToken", async () => null);
+      await assert.rejects(
+        refreshService(refreshToken, "127.0.0.1", "Test Device"),
+        (error) =>
+          error.statusCode === 401 || error.message.includes("no existe"),
+      );
+    });
+  });
+  describe("Flujo de Change Password", () => {
+    test("deberia hashear la nueva contraseña y actualizarla en la base de datos, ademas de cerrar sesiones.", async () => {
+      const mockUser = {
+        id: 1,
+        email: "test@test.com",
+        password: "hashedOldPass",
+        activo: true,
+      };
+      const hashedNewPassword = await bcrypt.hash("newSecurePassword456", 10);
+
+      // Mock: updatePassword devuelve el usuario con la nueva contraseña hasheada
+      mock.method(UserModel, "updatePassword", async () => {
+        return { ...mockUser, password: hashedNewPassword };
+      });
+
+      // Mock: findById devuelve el usuario actual
+      mock.method(UserModel, "findById", async () => mockUser);
+
+      // Mock: comparePassword verifica la contraseña actual
+      mock.method(UserModel, "comparePassword", async () => true);
+
+      // Mock: removeAllSessionsForUser elimina sesiones
+      mock.method(UserModel, "removeAllSessionsForUser", async () => {
+        /* ... */
+      });
+
+      // Mock: createSession crea nueva sesión
+      mock.method(UserModel, "createSession", async () => {
+        /* ... */
+      });
+
+      // Act
+      const result = await authService.changePassword(
+        1,
+        { currentPassword: "oldPass", newPassword: "newSecurePassword456" },
+        { ip: "127.0.0.1", dispositivo: "test" },
+      );
+
+      // Assert: hash correcto
+      await assert.ok(
+        await bcrypt.compare("newSecurePassword456", hashedNewPassword),
+        "La nueva contraseña no fue hasheada correctamente",
+      );
+
+      // Assert: las sesiones se invalidaron
+      assert.ok(
+        UserModel.removeAllSessionsForUser.mock.calls.length === 1,
+        "Se esperaba que se invalidaran todas las sesiones del usuario",
+      );
+
+      // Assert: nueva sesión creada
+      const createSessionCalls = UserModel.createSession.mock.calls;
+      assert.ok(
+        createSessionCalls.length === 1,
+        "Se esperaba que se creara una nueva sesión para el usuario",
+      );
+      assert.strictEqual(
+        createSessionCalls[0].arguments[0].usuarioId,
+        mockUser.id,
+        "La nueva sesión no fue creada para el usuario correcto",
+      );
+
+      // Assert: retorna los tokens
+      assert.ok(
+        result.accessToken,
+        "Se esperaba un accessToken en el resultado",
+      );
+      assert.ok(
+        result.refreshToken,
+        "Se esperaba un refreshToken en el resultado",
+      );
+    });
+    test("deberia fallar si la contraseña actual es incorrecta", async () => {
+      const mockUser = {
+        id: 1,
+        email: "test@test.com",
+        password: "hashedOldPass",
+        activo: true,
+      };
+
+      // Mock: findById devuelve el usuario actual
+      mock.method(UserModel, "findById", async () => mockUser);
+
+      // Mock: comparePassword devuelve false (contraseña incorrecta)
+      mock.method(UserModel, "comparePassword", async () => false);
+
+      await assert.rejects(
+        authService.changePassword(
+          1,
+          {
+            currentPassword: "wrongOldPass",
+            newPassword: "newSecurePassword456",
+          },
+          { ip: "127.0.0.1", dispositivo: "test" },
+        ),
+        (error) =>
+          error.statusCode === 401 ||
+          error.message.includes("actual incorrecta"),
+      );
+    });
+  });
+  describe("Flujo de Logout", () => {
+    let prismaSesionDeleteOriginal;
+    beforeEach(() => {
+      // Guardar el método original antes de la prueba
+      prismaSesionDeleteOriginal = prisma.sesion.delete;
+    });
+    afterEach(() => {
+      // Restaurar el método original después de la prueba
+      prisma.sesion.delete = prismaSesionDeleteOriginal;
+      mock.restoreAll();
+    });
+    test("deberia eliminar la sesion correctamente", async () => {
+      const mockUser = {
+        id: 1,
+        email: "test@test.com",
+        password: "hashedPass",
+        activo: true,
+      };
+      const mockRefreshToken = signRefreshToken({
+        id: mockUser.id,
+        email: mockUser.email,
+      });
+
+      // Mock: findSessionByToken devuelve la sesión existente
+      mock.method(UserModel, "findSessionByToken", async () => ({
+        id: "sesion-1",
+        token: mockRefreshToken,
+        usuario_id: mockUser.id,
+      }));
+
+      // Mock: removeSession elimina la sesión
+      mock.method(UserModel, "removeSession", async () => true);
+
+      // Act
+      const result = await authService.logout(mockRefreshToken);
+
+      // Assert
+      assert.strictEqual(
+        result,
+        true,
+        "Se esperaba que la sesión se eliminara correctamente",
+      );
+    });
+    test("deberia fallar si la sesion no existe", async () => {
+      const mockRefreshToken = "nonexistent-token";
+
+      // Mock: findSessionByToken devuelve null (sesión no encontrada)
+      mock.method(UserModel, "findSessionByToken", async () => null);
+
+      // Mock: prisma.sesion.delete lanza error cuando no encuentra
+      prisma.sesion.delete = async () => {
+        throw new Error("Sesión no encontrada");
+      };
+      // Act & Assert
+      await assert.rejects(
+        authService.logout(mockRefreshToken),
+        (error) =>
+          error.statusCode === 404 || error.message.includes("no existe"),
+      );
     });
   });
 });
