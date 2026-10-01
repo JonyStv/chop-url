@@ -6,7 +6,7 @@ const REGEX_EMAIL =
   /[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?/;
 
 export default function SettingsForm({ model }) {
-  const { user } = useAuthStore();
+  const { user, setAccessToken, accessToken } = useAuthStore();
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");

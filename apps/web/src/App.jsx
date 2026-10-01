@@ -13,6 +13,8 @@ const Home = lazy(() => import("./pages/Home/Home.jsx"));
 const Links = lazy(() => import("./pages/Links/Links.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics/Analytics.jsx"));
 const Settings = lazy(() => import("./pages/Settings/Settings.jsx"));
+const BillingSuccess = lazy(() => import("./pages/Billing/BillingSuccess.jsx"));
+const BillingCancel = lazy(() => import("./pages/Billing/BillingCancel.jsx"));
 const Identify = lazy(() => import("./pages/Identify/Identify.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound.jsx"));
 function App() {
@@ -41,6 +43,22 @@ function App() {
             element={
               <ProtectedRoute redirectTo="/identify" requireAuth={true}>
                 {withSuspense(Settings)}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="billing/success"
+            element={
+              <ProtectedRoute redirectTo="/identify" requireAuth={true}>
+                {withSuspense(BillingSuccess)}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="billing/cancel"
+            element={
+              <ProtectedRoute redirectTo="/identify" requireAuth={true}>
+                {withSuspense(BillingCancel)}
               </ProtectedRoute>
             }
           />

@@ -7,9 +7,68 @@ export const useAuthStore = create((set, get) => ({
   accessToken: null,
   isLoading: true, // nuevo: para mostrar loading mientras se verifica la sesión
 
-  setAccessToken: (token) => set({ accessToken: token }),
+  setAccessToken: (token) => {
+    try {
+      if (token) {
+        localStorage.setItem("accessToken", token);
+      } else {
+        localStorage.removeItem("accessToken");
+      }
+    } catch {
+      // localStorage no disponible en algunos entornos
+    }
+    set({ accessToken: token });
+  },
   setUser: (user) => set({ user }),
   setIsAuthenticated: (value) => set({ isAuthenticated: value }),
+
+  refreshUser: async () => {
+    try {
+      const res = await apiFetch("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${get().accessToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("No se pudo obtener el usuario");
+      }
+
+      const { user } = await res.json();
+      set({ user });
+      return user;
+    } catch {
+      return null;
+    }
+  },
+
+  refreshSubscriptionStatus: async () => {
+    try {
+      const data = await apiFetch("/subscriptions/me").then((res) => {
+        if (!res.ok) {
+          throw new Error("No se pudo obtener la suscripción");
+        }
+        return res.json();
+      });
+
+      const nextUser = get().user
+        ? {
+            ...get().user,
+            plan_id: data?.plan?.id ?? get().user?.plan_id,
+            plan_name: data?.plan?.name ?? get().user?.plan_name,
+            subscription_status: data?.subscription?.status ?? get().user?.subscription_status,
+          }
+        : get().user;
+
+      if (nextUser) {
+        set({ user: nextUser });
+      }
+
+      return data;
+    } catch {
+      return null;
+    }
+  },
 
   // Intenta restaurar la sesión usando la cookie refreshToken
   initAuth: async () => {
@@ -66,6 +125,11 @@ export const useAuthStore = create((set, get) => ({
       });
     } catch {
       /* silenciar */
+    }
+    try {
+      localStorage.removeItem("accessToken");
+    } catch {
+      // localStorage no disponible en algunos entornos
     }
     set({ accessToken: null, user: null, isAuthenticated: false });
   },

@@ -7,13 +7,21 @@ import { redirectRouter } from "./routes/redirect.js";
 import { authRouter } from "./routes/auth.js";
 import { userRouter } from "./routes/users.js";
 import plansRouter from "./routes/plans.js";
+import subscriptionsRouter from "./routes/subscriptions.js";
 
 import { corsMiddleware } from "./middleware/cors.js";
 import { globalLimiter } from "./middleware/rateLimit.js";
 import { httpLogger } from "./middleware/httpLogger.js";
 import { logger } from "./utils/logger.js";
+import { stripeWebhookHandler } from "./controllers/stripeWebhook.js";
 
 const app = express();
+
+app.post(
+  "/api/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhookHandler,
+);
 
 // Security: Trust proxy for Vercel/proxy compatibility
 app.set("trust proxy", 1);
@@ -38,7 +46,7 @@ app.use(
     },
     frameguard: { action: "deny" },
     xssFilter: true,
-  })
+  }),
 );
 
 // Security: CORS with credentials
@@ -64,13 +72,14 @@ app.use(["/auth", "/api/auth"], authRouter);
 app.use(["/links", "/api/links"], linksRouter);
 app.use(["/analytics", "/api/analytics"], analyticsRouter);
 app.use(["/plans", "/api/plans"], plansRouter);
+app.use(["/subscriptions", "/api/subscriptions"], subscriptionsRouter);
 app.use("/", redirectRouter);
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Error interno del servidor.";
-  
+
   logger.error({
     statusCode,
     message,
@@ -78,7 +87,7 @@ app.use((err, req, res, next) => {
     path: req.path,
     error: err.stack,
   });
-  
+
   res.status(statusCode).json({ message });
 });
 

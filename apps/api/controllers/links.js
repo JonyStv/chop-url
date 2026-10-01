@@ -1,4 +1,6 @@
 import { LinkModel } from "../models/link.js";
+import { SubscriptionService } from "../services/subscription.js";
+import { AppError } from "../utils/errors.js";
 
 export class LinkController {
   static async getAll(req, res) {
@@ -33,6 +35,17 @@ export class LinkController {
   }
   static async create(req, res) {
     const { titulo, urlOriginal, slug, userId } = req.body;
+
+    if (typeof userId === "string" || typeof userId === "number") {
+      const canCreate = await SubscriptionService.canCreateLink(userId);
+      if (!canCreate) {
+        throw new AppError(
+          "No puedes crear más enlaces con tu plan actual o tu suscripción no está activa.",
+          403,
+        );
+      }
+    }
+
     const newLink = await LinkModel.create({
       titulo,
       urlOriginal,

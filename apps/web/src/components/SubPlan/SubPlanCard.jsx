@@ -32,14 +32,32 @@ function formatValue(key, value) {
 export default function SubPlanCard({ plan }) {
   const { user } = useAuthStore();
   const notify = useNotificationStore((s) => s.notify);
-  const handleUpdatePlan = (planId) => {
+  const handleUpdatePlan = async (planId) => {
     if (planId === user?.plan_id) {
-      return notify("Ya estás suscrito a este plan", "info");
+      return notify.info("Ya estás suscrito a este plan");
     }
-    notify.confirm(
+
+    const confirmed = await notify.confirm(
       `¿Estás seguro de que deseas cambiar al plan "${plan.name}"?`,
-      () => {},
     );
+
+    if (!confirmed) return;
+
+    try {
+      const data = await apiJson("/subscriptions/checkout", {
+        method: "POST",
+        body: JSON.stringify({ planId }),
+      });
+
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      notify.error("No se pudo iniciar el proceso de suscripción");
+    } catch (error) {
+      notify.error(error.message || "No se pudo iniciar el proceso de suscripción");
+    }
   };
   const isFree = plan.price === 0;
 
