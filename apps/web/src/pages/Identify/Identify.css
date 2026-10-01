@@ -69,3 +69,7 @@
 .back-button:focus .back-button__icon {
   transform: translateX(-2px);
 }
+.logo {
+  width: 11rem;
+  height: 2.5rem;
+}

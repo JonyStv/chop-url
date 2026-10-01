@@ -26,6 +26,11 @@ h2 {
   align-items: center;
   margin-bottom: 1rem;
 }
+.sidebar-logo {
+  margin-top: 0.5rem;
+  width: 11rem;
+  height: 2.5rem;
+}
 .sidebar-title {
   font-size: 1.8rem;
   color: var(--color-text-primary);

@@ -31,6 +31,18 @@ function Identify() {
   const handleLoginSubmit = (event) => {
     setLoading(true);
     event.preventDefault();
+    if (!email || !password) {
+      notify("Todos los campos son obligatorios.", "error");
+      console.error("Todos los campos son obligatorios.");
+      setLoading(false);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      notify("Correo electrónico inválido.", "error");
+      console.error("Correo electrónico inválido.");
+      setLoading(false);
+      return;
+    }
     apiJson("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
@@ -108,7 +120,7 @@ function Identify() {
   return (
     <div className="identifier-page">
       <header>
-        <h1>Chop/URL</h1>
+        <img src="./../../../public/logo.png" alt="Logo" className="logo" />
       </header>
       <main>
         <NavLink className="back-button" to="/">

@@ -32,21 +32,11 @@ function Header() {
       />
       <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`} id="sidebar">
         <a href="/" className="sidebar-header">
-          <svg
+          <img
+            src="./../../../public/logo.png"
+            alt="Logo"
             className="sidebar-logo"
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#007aff"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M17 5l-10 14" />
-          </svg>
-          <h2 className="sidebar-title">ChopURL</h2>
+          />
         </a>
         <Navigation onNavigate={closeSidebar} />
       </aside>
