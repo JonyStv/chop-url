@@ -12,6 +12,9 @@ export const corsMiddleware = cors({
     if (origin.endsWith(".vercel.app")) {
       return callback(null, true);
     }
+    if (origin.includes("stvdev.com")) {
+      return callback(null, true);
+    }
     return callback(new Error("No permitido por CORS"));
   },
   credentials: true,
