@@ -34,6 +34,9 @@ export const env = {
     : isProduction,
   cookieSameSite:
     process.env.COOKIE_SAME_SITE || (isProduction ? "none" : "lax"),
+  logLevel: process.env.LOG_LEVEL || "info",
+  databaseUrl: process.env.DATABASE_URL,
+  directDatabaseUrl: process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL,
 };
 
 if (
@@ -42,6 +45,10 @@ if (
     env.refreshTokenSecret.includes("change_me"))
 ) {
   throw new Error(
-    "JWT_ACCESS_SECRET y JWT_REFRESH_SECRET deben configurarse en producción.",
+    "JWT_ACCESS_SECRET y JWT_REFRESH_SECRET deben configurarse en producción."
   );
+}
+
+if (!env.databaseUrl) {
+  throw new Error("DATABASE_URL debe configurarse.");
 }

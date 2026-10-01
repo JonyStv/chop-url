@@ -18,7 +18,7 @@ export const register = async ({
   if (existingUser) {
     throw new AppError("El correo electrónico ya está registrado.", 400);
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 12);
   const newUser = await UserModel.create({
     email,
     password: hashedPassword,
@@ -157,7 +157,7 @@ export const changePassword = async (
   if (!ok) throw new AppError("Contraseña actual incorrecta.", 401);
 
   // Hash the new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
   const userUpdated = await UserModel.updatePassword(userId, hashedPassword);
 
   // Invalidate all sessions for this user

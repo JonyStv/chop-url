@@ -39,7 +39,7 @@ export class LinkController {
       slug,
       userId,
     });
-    res.status(201).json(newLink);
+    return res.status(201).json(newLink);
   }
   static async delete(req, res) {
     const { id } = req.params;

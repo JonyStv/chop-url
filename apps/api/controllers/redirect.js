@@ -45,7 +45,7 @@ export class RedirectController {
   }
 }
 // Función para analizar el referer y determinar la fuente de tráfico
-function parseReferrer(req) {
+export function parseReferrer(req) {
   // 1. Obtener la cabecera HTTP de Referer/Referrer de la petición
   const rawReferrer =
     req.get("referer") ||
@@ -105,7 +105,7 @@ function parseReferrer(req) {
   }
 }
 
-function formatKnownDomain(domain) {
+export function formatKnownDomain(domain) {
   const d = domain.toLowerCase();
   if (d.includes("google")) return "Google";
   if (d.includes("instagram")) return "Instagram";

@@ -14,7 +14,7 @@ describe("Auth Service - Unit Tests", () => {
 
   beforeEach(async () => {
     if (!passwordHasheada) {
-      passwordHasheada = await bcrypt.hash(passwordParaElTest, 10);
+      passwordHasheada = await bcrypt.hash(passwordParaElTest, 12);
     }
   });
   afterEach(() => {

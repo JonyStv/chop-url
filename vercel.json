@@ -5,8 +5,13 @@
   "outputDirectory": "apps/web/dist",
   "functions": {
     "api/index.mjs": {
-      "includeFiles": "src/generated/prisma/**"
+      "includeFiles": "src/generated/prisma/**",
+      "memory": 1024,
+      "maxDuration": 60
     }
+  },
+  "env": {
+    "NODE_ENV": "production"
   },
   "rewrites": [
     {
@@ -24,6 +29,21 @@
     {
       "source": "/((?!assets/|favicon.svg|icons.svg).*)",
       "destination": "/api/index.mjs"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
     }
   ]
 }
