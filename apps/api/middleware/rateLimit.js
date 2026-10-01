@@ -1,4 +1,4 @@
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import { env } from "../config/env.js";
 
 // Global rate limiter: 100 requests per 15 minutes
