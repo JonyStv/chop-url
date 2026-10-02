@@ -33,7 +33,7 @@ function Header() {
       <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`} id="sidebar">
         <a href="/" className="sidebar-header">
           <img
-            src="./../../../public/logo.png"
+            src="/logo.png"
             alt="Logo"
             className="sidebar-logo"
           />

@@ -217,8 +217,8 @@ export class SubscriptionService {
       subscription_data: {
         metadata: { userId: user.id, planId: plan.id },
       },
-      success_url: `${process.env.FRONTEND_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/billing/cancel`,
+      success_url: `${process.env.PUBLIC_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.PUBLIC_URL}/billing/cancel`,
     });
   }
 
