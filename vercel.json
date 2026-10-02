@@ -15,7 +15,7 @@
       "destination": "/api"
     },
     {
-      "source": "/(dashboard|analytics|settings|identify|links)(/.*)?",
+      "source": "/(dashboard|analytics|settings|identify|links|billing)(/.*)?",
       "destination": "/index.html"
     },
     {
