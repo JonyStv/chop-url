@@ -21,7 +21,18 @@ export const useAuthStore = create((set, get) => ({
   },
   setUser: (user) => set({ user }),
   setIsAuthenticated: (value) => set({ isAuthenticated: value }),
-
+  incrementEnlacesCreados: () =>
+  set((state) => ({
+    user: state.user
+      ? { ...state.user, enlaces_creados: (state.user.enlaces_creados ?? 0) + 1 }
+      : state.user,
+  })),
+  decrementEnlacesCreados: (count) =>
+  set((state) => ({
+    user: state.user
+      ? { ...state.user, enlaces_creados: Math.max((state.user.enlaces_creados ?? 1) - count, 0) }
+      : state.user,
+  })),
   refreshUser: async () => {
     try {
       const res = await apiFetch("/auth/me", {
@@ -56,7 +67,7 @@ export const useAuthStore = create((set, get) => ({
             ...get().user,
             plan_id: data?.plan?.id ?? get().user?.plan_id,
             plan_name: data?.plan?.name ?? get().user?.plan_name,
-            subscription_status: data?.subscription?.status ?? get().user?.subscription_status,
+            subscription_period_end: data?.subscription?.currentPeriodEnd ?? null,
           }
         : get().user;
 

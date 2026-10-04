@@ -86,6 +86,16 @@ export class LinkModel {
   }
   //DELETE
   static async delete(id, userid) {
+    await prisma.usuario.update({
+      where: {
+        id: userid,
+      },
+      data: {
+        enlaces_creados: {
+          decrement: 1,
+        },
+      },
+    });
     return await prisma.enlace.deleteMany({
       where: {
         id,

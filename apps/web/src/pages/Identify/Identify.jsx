@@ -120,7 +120,7 @@ function Identify() {
   return (
     <div className="identifier-page">
       <header>
-        <img src="./../../../public/logo.png" alt="Logo" className="logo" />
+        <img src="logo.png" alt="Logo" className="logo" />
       </header>
       <main>
         <NavLink className="back-button" to="/">

@@ -57,8 +57,7 @@ const getPlanStatusMeta = (status = "active") => {
 
 function Settings() {
   const navigate = useNavigate();
-  const { user, accessToken, logout, refreshSubscriptionStatus } =
-    useAuthStore();
+  const { user, accessToken, logout, refreshSubscriptionStatus } = useAuthStore();
   const notify = useNotificationStore((s) => s.notify);
 
   const [isSubVisible, setIsSubVisible] = useState(false);
@@ -66,14 +65,14 @@ function Settings() {
   const subscriptionStatus = user?.subscription_status || "active";
   const statusMeta = getPlanStatusMeta(subscriptionStatus);
   const currentPlanId = user?.plan_id || "free";
-  const currentPlanName =
-    plans.find((plan) => plan.id === currentPlanId)?.name ||
-    user?.plan_name ||
-    "Gratuito";
-  const currentLimitedLinks =
-    plans.find((plan) => plan.id === currentPlanId)?.max_links ??
-    user?.limite_enlaces ??
-    0;
+  const isFree = currentPlanId === "free";
+  const plan = plans.find((p) => p.id === currentPlanId);
+  const currentPlanName = plan?.name || user?.plan_name || "Gratuito";
+  const raw = plan?.features.maxLinks;
+  const currentLimitedLinks = raw === null ? Infinity : raw ?? 0;
+  const currentPlanDueDate = user?.subscription_period_end && !isFree? new Date(user.subscription_period_end).toLocaleDateString() : "";
+  
+  
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -184,12 +183,15 @@ function Settings() {
 
         <div className="subscription-info">
           <div className="info-card">
-            <h4>Plan actual</h4>
             <div className="plan-summary">
-              <p className="plan-name">{currentPlanName}</p>
+              <h4>Plan actual</h4>
               <span className={`status-badge status-${statusMeta.tone}`}>
                 {statusMeta.label}
               </span>
+            </div>
+            <div className="plan-summary">
+              <h2 className="plan-name">{currentPlanName}</h2>
+              <h2 className="plan-due-date">{currentPlanDueDate}</h2>
             </div>
 
             <p className="status-message">{statusMeta.message}</p>
@@ -202,7 +204,7 @@ function Settings() {
                 {isSubVisible ? "Ocultar planes" : "Actualizar Plan"}
               </button>
 
-              {canCancel && (
+              {canCancel && !isFree && (
                 <button
                   className="upgrade-button danger-button"
                   onClick={handleCancelSubscription}
@@ -230,7 +232,7 @@ function Settings() {
             </div>
             <div className="usage-row">
               <span>Límite de enlaces</span>
-              <strong>{currentLimitedLinks}</strong>
+              <strong>{currentLimitedLinks === Infinity ? "Ilimitado" : currentLimitedLinks}</strong>
             </div>
             {currentLimitedLinks > 0 && (
               <div className="usage-bar">

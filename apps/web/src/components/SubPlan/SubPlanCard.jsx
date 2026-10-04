@@ -9,8 +9,8 @@ const FEATURE_LABELS = {
   analyticsRetentionDays: "Retención de analíticas (dias)",
   customSlug: "Slug personalizado",
   customDomain: "Dominio personalizado",
-  apiAccess: "Acceso a la API",
-  removeBranding: "Sin marca",
+  // apiAccess: "Acceso a la API",
+  // removeBranding: "Sin marca",
   exportData: "Exportar datos",
   supportLevel: "Soporte",
 };
@@ -78,21 +78,26 @@ export default function SubPlanCard({ plan }) {
       </div>
 
       <button
-        className="subscribe-button"
+        className={`subscribe-button ${plan.id === user?.plan_id ? "active" : ""}`}
         onClick={() => handleUpdatePlan(plan.id)}
+        disabled={plan.id === user?.plan_id}
       >
-        {isFree ? "Empezar gratis" : "Suscribirse"}
+        {plan.id === user?.plan_id
+  ? "Plan actual"
+  : isFree
+    ? "Empezar gratis"
+    : "Suscribirse" }
       </button>
 
       <ul className="features">
-        {Object.entries(plan.features).map(([feature, value]) => (
-          <li key={feature}>
-            <span className="feature-label">
-              {FEATURE_LABELS[feature] ?? feature}
-            </span>
-            <span className="feature-value">{formatValue(feature, value)}</span>
-          </li>
-        ))}
+        {Object.entries(plan.features)
+          .filter(([feature]) => feature in FEATURE_LABELS)
+          .map(([feature, value]) => (
+            <li key={feature}>
+              <span className="feature-label">{FEATURE_LABELS[feature]}</span>
+              <span className="feature-value">{formatValue(feature, value)}</span>
+            </li>
+          ))}
       </ul>
     </div>
   );

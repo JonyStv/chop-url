@@ -25,7 +25,7 @@ const InputForm = forwardRef(
     ref,
   ) => {
     const notify = useNotificationStore((s) => s.notify);
-    const { user } = useAuthStore();
+    const { user, incrementEnlacesCreados } = useAuthStore();
     const formRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
@@ -65,6 +65,7 @@ const InputForm = forwardRef(
         .then((data) => {
           notify("Enlace acortado con éxito", "success");
           if (typeof onSuccess === "function") onSuccess(data);
+          incrementEnlacesCreados();
         })
         .catch((err) => {
           notify("Error al acortar el enlace", "error");

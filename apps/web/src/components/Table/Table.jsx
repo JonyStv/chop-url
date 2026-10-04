@@ -5,6 +5,7 @@ import useSelection from "../../hooks/useSelection.js";
 import usePagination from "../../hooks/usePagination.js";
 import { useNotificationStore } from "../../store/notificationStore.js";
 import { apiFetch } from "../../config/api.js";
+import { useAuthStore } from "../../store/authStore.js";
 
 const MAX_LINKS_PER_PAGE = 8;
 
@@ -18,7 +19,7 @@ function Table({
   accessToken,
 }) {
   const notify = useNotificationStore((s) => s.notify);
-
+  const { decrementEnlacesCreados } = useAuthStore();
   const isSelectMode = mode === "select";
   const shouldRenderCheckboxes = !isSelectMode;
   const selectHandler = onSelectLink || handleSelectLink;
@@ -90,6 +91,7 @@ function Table({
       if (typeof onDeleteSuccess === "function") {
         onDeleteSuccess(idsToDelete);
       }
+      decrementEnlacesCreados(idsToDelete.length);
     } catch (error) {
       console.error("Error al eliminar los enlaces:", error);
     }

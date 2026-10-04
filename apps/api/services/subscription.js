@@ -204,11 +204,25 @@ export class SubscriptionService {
     if (!stripe) {
       throw new AppError("Stripe no está configurado en este entorno.", 500);
     }
-
     const plan = await prisma.plan.findUnique({ where: { id: planId } });
-    if (!plan || !plan.stripe_price_id)
+    if (!plan || (!plan.stripe_price_id && plan.id !== "free")) {
       throw new AppError("Plan no disponible", 400);
-
+    }
+    if (plan.id === "free") {
+      await SubscriptionModel.upsertForUser({
+        usuarioId: user.id,
+        planId: "free",
+        status: "active",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        cancelAtPeriodEnd: false,
+        canceledAt: null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        stripePriceId: null,
+      });
+      return { url: `${process.env.PUBLIC_URL}/settings` };
+    }
     return stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: user.email,
@@ -265,11 +279,11 @@ export class SubscriptionService {
       usuarioId: resolvedUserId,
       planId: finalPlanId,
       status: stripeSubscription.status ?? "active",
-      currentPeriodStart: stripeSubscription.current_period_start
-        ? new Date(stripeSubscription.current_period_start * 1000)
+      currentPeriodStart: stripeSubscription.items.data[0].current_period_start
+        ? new Date(stripeSubscription.items.data[0].current_period_start * 1000)
         : null,
-      currentPeriodEnd: stripeSubscription.current_period_end
-        ? new Date(stripeSubscription.current_period_end * 1000)
+      currentPeriodEnd: stripeSubscription.items.data[0].current_period_end
+        ? new Date(stripeSubscription.items.data[0].current_period_end * 1000)
         : null,
       cancelAtPeriodEnd: Boolean(stripeSubscription.cancel_at_period_end),
       canceledAt: stripeSubscription.canceled_at
