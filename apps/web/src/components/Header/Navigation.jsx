@@ -64,7 +64,10 @@ function Navigation({ onNavigate }) {
           </NavLink>
         ) : (
           <>
-            <p className="user-name">{user?.nombre || user?.email}</p>
+            <div className="user-info">
+              <p className="user-name">{user?.nombre || user?.email}</p>
+              <span className="user-plan">{user?.plan}</span>
+            </div>
             <button className="logout-button" onClick={handleLogout}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

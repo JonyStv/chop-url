@@ -306,9 +306,8 @@ export class SubscriptionService {
     if (!subscription || !status || !["active", "trialing"].includes(status)) {
       throw new AppError("Tu suscripción no está activa.", 403);
     }
-    if (subscription.cancelAtPeriodEnd) {
-      throw new AppError("Tu suscripción está pendiente de cancelación.", 403);
-    }
+    // Si la suscripción está pendiente de cancelación (cancel_at_period_end),
+    // el usuario sigue teniendo acceso a los features hasta el fin de periodo.
     return { subscription, plan };
   }
 
@@ -316,14 +315,18 @@ export class SubscriptionService {
     const current = await this.getCurrentSubscriptionForUser(usuarioId);
     const subscription = current.subscription;
 
-    const freePlan = await prisma.plan.findUnique({ where: { id: "free" } });
-    if (!freePlan) {
-      throw new AppError("No existe el plan gratuito.", 500);
+    // No permitir cancelar si no hay suscripción o ya está cancelada
+    if (!subscription || !subscription.stripeSubscriptionId) {
+      throw new AppError("No tienes una suscripción activa.", 400);
     }
 
-    if (subscription?.stripeSubscriptionId && stripe) {
+    // Cancelar en Stripe con efecto al fin de periodo (no inmediato)
+    if (stripe) {
       try {
-        await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
+        await stripe.subscriptions.cancel(subscription.stripeSubscriptionId, {
+          invoice_now: false,
+          prorate: false,
+        });
       } catch (error) {
         console.warn(
           "No se pudo cancelar la suscripción en Stripe; se mantiene el cambio local:",
@@ -332,21 +335,126 @@ export class SubscriptionService {
       }
     }
 
-    const now = new Date();
-
+    // Marcar la suscripción como "cancel_at_period_end" SIN cambiar el plan.
+    // El downgrade a free ocurrirá cuando Stripe envíe customer.subscription.deleted
+    // al final del período (o customer.subscription.updated si se anula antes).
     await SubscriptionModel.upsertForUser({
       usuarioId,
-      planId: "free",
-      status: "active",
-      currentPeriodStart: now,
-      currentPeriodEnd: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-      cancelAtPeriodEnd: false,
-      canceledAt: now,
-      stripeCustomerId: subscription?.stripeCustomerId ?? null,
-      stripeSubscriptionId: subscription?.stripeSubscriptionId ?? null,
-      stripePriceId: freePlan.stripe_price_id ?? null,
+      planId: subscription.planId, // mantener el plan actual hasta el fin de periodo
+      status: subscription.status ?? "active",
+      currentPeriodStart: subscription.currentPeriodStart,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      cancelAtPeriodEnd: true,
+      canceledAt: new Date(),
+      stripeCustomerId: subscription.stripeCustomerId ?? null,
+      stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
+      stripePriceId: subscription.stripePriceId ?? null,
     });
 
     return this.getCurrentSubscriptionForUser(usuarioId);
+  }
+
+  /**
+   * Cambia el plan de una suscripción activa de Stripe (upgrade/downgrade) sin salir de la app.
+   *
+   * - prorationBehavior "create_prorations": upgrade inmediato, se cobra la diferencia proporcional.
+   * - prorationBehavior "none": el cambio surte efecto al fin de periodo actual (downgrade sin cargo inmediato).
+   * - prorationBehavior "always_invoice": fuerza factura con proration incluso si es negativo (crédito).
+   */
+  static async switchPlan(usuarioId, newPlanId, prorationBehavior = "create_prorations") {
+    if (!stripe) {
+      throw new AppError("Stripe no está configurado en este entorno.", 500);
+    }
+
+    if (!["create_prorations", "none", "always_invoice"].includes(prorationBehavior)) {
+      throw new AppError("prorationBehavior no válido", 400);
+    }
+
+    const current = await this.getCurrentSubscriptionForUser(usuarioId);
+    const subscription = current?.subscription;
+
+    if (!subscription?.stripeSubscriptionId) {
+      throw new AppError("No tienes una suscripción activa en Stripe.", 400);
+    }
+
+    // Si el usuario quiere bajar al plan gratuito, Stripe no lo soporta via items update.
+    // En su lugar, cancelamos (diferida) y aplicamos el plan free localmente.
+    const newPlan = await prisma.plan.findUnique({ where: { id: newPlanId } });
+    if (!newPlan) {
+      throw new AppError("Plan no encontrado.", 404);
+    }
+
+    if (newPlan.id === "free" || !newPlan.stripe_price_id) {
+      // Downgrade a free: cancelar Stripe subscription con efecto al fin de periodo.
+      // NO cambiamos el plan_id localmente todavía — el usuario conserva el plan pagado
+      // hasta el fin de periodo. El webhook customer.subscription.deleted rebajará a free.
+      await stripe.subscriptions.cancel(subscription.stripeSubscriptionId, {
+        invoice_now: false,
+        prorate: false,
+      });
+
+      await SubscriptionModel.upsertForUser({
+        usuarioId,
+        planId: subscription.planId, // mantener plan pagado hasta fin de periodo
+        status: subscription.status ?? "active",
+        currentPeriodStart: subscription.currentPeriodStart,
+        currentPeriodEnd: subscription.currentPeriodEnd,
+        cancelAtPeriodEnd: true,
+        canceledAt: subscription.canceledAt ?? null,
+        stripeCustomerId: subscription.stripeCustomerId ?? null,
+        stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
+        stripePriceId: subscription.stripePriceId ?? null,
+      });
+
+      return this.getCurrentSubscriptionForUser(usuarioId);
+    }
+
+    // Upgrade/Downgrade entre planes pagos: actualizar la suscripción de Stripe
+    const stripeSub = await stripe.subscriptions.update(
+      subscription.stripeSubscriptionId,
+      {
+        items: [{ price: newPlan.stripe_price_id }],
+        proration_behavior: prorationBehavior,
+      },
+    );
+
+    await SubscriptionModel.upsertForUser({
+      usuarioId,
+      planId: newPlan.id,
+      status: stripeSub.status ?? subscription.status,
+      currentPeriodStart: new Date(stripeSub.current_period_start * 1000),
+      currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
+      cancelAtPeriodEnd: Boolean(stripeSub.cancel_at_period_end),
+      canceledAt: stripeSub.canceled_at ? new Date(stripeSub.canceled_at * 1000) : null,
+      stripeCustomerId: stripeSub.customer ?? subscription.stripeCustomerId,
+      stripeSubscriptionId: stripeSub.id ?? subscription.stripeSubscriptionId,
+      stripePriceId: newPlan.stripe_price_id,
+    });
+
+    return this.getCurrentSubscriptionForUser(usuarioId);
+  }
+
+  /**
+   * Crea una sesión del Portal de Facturación de Stripe,
+   * donde el usuario puede gestionar su método de pago, facturas e historial.
+   */
+  static async createBillingPortalSession(usuarioId) {
+    if (!stripe) {
+      throw new AppError("Stripe no está configurado en este entorno.", 500);
+    }
+
+    const current = await this.getCurrentSubscriptionForUser(usuarioId);
+    const customerId = current?.subscription?.stripeCustomerId;
+
+    if (!customerId) {
+      throw new AppError("No tienes un cliente de Stripe asociado.", 400);
+    }
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${process.env.PUBLIC_URL}/settings`,
+    });
+
+    return session;
   }
 }

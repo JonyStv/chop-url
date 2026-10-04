@@ -63,7 +63,21 @@ export const stripeWebhookHandler = async (req, res) => {
             })
           : null;
 
-        const planId = plan?.id ?? "free";
+        // Si la suscripción fue eliminada (deleted) y el plan encontrado no es free,
+        // rebajar al plan gratuito localmente.
+        const planId =
+          event.type === "customer.subscription.deleted" &&
+          (!plan || plan.id !== "free")
+            ? "free"
+            : plan?.id ?? "free";
+
+        // Si la suscripción fue cancelada y el plan es free, limpiar los datos de Stripe
+        const stripeCustomerId =
+          event.type === "customer.subscription.deleted" ? null : subscription.customer;
+        const stripeSubscriptionId =
+          event.type === "customer.subscription.deleted" ? null : subscription.id;
+        const stripePriceIdFinal =
+          event.type === "customer.subscription.deleted" ? null : stripePriceId;
 
         await SubscriptionModel.upsertForUser({
           usuarioId: userId,
@@ -75,9 +89,9 @@ export const stripeWebhookHandler = async (req, res) => {
           canceledAt: subscription.canceled_at
             ? new Date(subscription.canceled_at * 1000)
             : null,
-          stripeCustomerId: subscription.customer,
-          stripeSubscriptionId: subscription.id,
-          stripePriceId,
+          stripeCustomerId,
+          stripeSubscriptionId,
+          stripePriceId: stripePriceIdFinal,
         });
 
         break;

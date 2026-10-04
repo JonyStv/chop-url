@@ -146,7 +146,6 @@
   font-weight: 700;
   color: var(--color-text-accent);
   text-transform: capitalize;
-  letter-spacing: -0.02em;
 }
 
 .upgrade-button {

@@ -30,7 +30,7 @@ function formatValue(key, value) {
 }
 
 export default function SubPlanCard({ plan }) {
-  const { user } = useAuthStore();
+  const { user, refreshSubscriptionStatus } = useAuthStore();
   const notify = useNotificationStore((s) => s.notify);
   const handleUpdatePlan = async (planId) => {
     if (planId === user?.plan_id) {
@@ -38,12 +38,34 @@ export default function SubPlanCard({ plan }) {
     }
 
     const confirmed = await notify.confirm(
-      `¿Estás seguro de que deseas cambiar al plan "${plan.name}"?`,
+      `¿Estás seguro de que deseas cambiar al plan "${plan.name}?"`,
     );
 
     if (!confirmed) return;
 
     try {
+      // Si el usuario tiene una suscripción activa en Stripe, usar /switch para cambio sin salir de la app
+      const hasActiveStripe =
+        user?.subscription_status &&
+        ["active", "trialing", "cancel_at_period_end"].includes(user.subscription_status);
+
+      if (hasActiveStripe) {
+        // Downgrade a free: cancelación diferida (proration=none)
+        const prorationBehavior = planId === "free" ? "none" : "create_prorations";
+
+        const data = await apiJson("/subscriptions/switch", {
+          method: "PATCH",
+          body: JSON.stringify({ planId, prorationBehavior }),
+        });
+
+        if (data) {
+          await refreshSubscriptionStatus();
+          notify.success("Plan actualizado correctamente.");
+        }
+        return;
+      }
+
+      // Sin suscripción activa: usar checkout (ej. reactivación, nueva suscripción)
       const data = await apiJson("/subscriptions/checkout", {
         method: "POST",
         body: JSON.stringify({ planId }),

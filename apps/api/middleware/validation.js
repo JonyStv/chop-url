@@ -7,15 +7,10 @@ export const registerSchema = z.object({
     .string()
     .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(128, "La contraseña no puede exceder 128 caracteres"),
-  nombre: z
-    .string()
-    .min(1, "El nombre es obligatorio")
-    .max(50, "El nombre no puede exceder 50 caracteres"),
   username: z
     .string()
     .min(1, "El nombre de usuario es obligatorio")
-    .max(50, "El nombre de usuario no puede exceder 50 caracteres")
-    .optional(),
+    .max(50, "El nombre de usuario no puede exceder 50 caracteres"),
 });
 
 export const loginSchema = z.object({

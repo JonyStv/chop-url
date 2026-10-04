@@ -63,15 +63,37 @@ a.active {
 a {
   text-decoration: none;
 }
-
-.user-name {
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-  text-align: center;
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
   background-color: var(--color-bg-surface);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
+  gap: 1rem;
+}
+.user-name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+
+
+}
+.user-plan {
+  background: rgba(74, 138, 222, 0.12);
+  color: rgba(74, 138, 222, 1);
+  border: 1px solid rgba(74, 138, 222, 0.4);
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  align-items: center;
 }
 .logout-button {
   display: flex;

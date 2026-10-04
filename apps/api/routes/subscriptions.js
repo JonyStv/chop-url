@@ -61,6 +61,34 @@ router.post("/checkout", async (req, res, next) => {
   }
 });
 
+router.patch("/switch", async (req, res, next) => {
+  try {
+    const { planId, prorationBehavior = "create_prorations" } = req.body;
+    if (!planId) {
+      return res.status(400).json({ message: "Falta planId" });
+    }
+
+    const result = await SubscriptionService.switchPlan(
+      req.user.id,
+      planId,
+      prorationBehavior,
+    );
+
+    return res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/billing-portal", async (req, res, next) => {
+  try {
+    const result = await SubscriptionService.createBillingPortalSession(req.user.id);
+    res.json({ url: result.url });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/checkout/confirm", async (req, res, next) => {
   try {
     const { sessionId } = req.body;

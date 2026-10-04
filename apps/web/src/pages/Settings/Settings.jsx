@@ -70,7 +70,7 @@ function Settings() {
   const currentPlanName = plan?.name || user?.plan_name || "Gratuito";
   const raw = plan?.features.maxLinks;
   const currentLimitedLinks = raw === null ? Infinity : raw ?? 0;
-  const currentPlanDueDate = user?.subscription_period_end && !isFree? new Date(user.subscription_period_end).toLocaleDateString() : "";
+  const currentPlanDueDate = user?.subscription_period_end && !isFree ? new Date(user.subscription_period_end).toLocaleDateString('es-ES' ) : "";
   
   
   useEffect(() => {
@@ -203,6 +203,28 @@ function Settings() {
               >
                 {isSubVisible ? "Ocultar planes" : "Actualizar Plan"}
               </button>
+
+              {!isFree && (
+                <button
+                  className="upgrade-button"
+                  onClick={async () => {
+                    try {
+                      const data = await apiJson("/subscriptions/billing-portal", {
+                        method: "POST",
+                      });
+                      if (data?.url) {
+                        window.location.href = data.url;
+                      } else {
+                        notify.error("No se pudo abrir el portal de facturación");
+                      }
+                    } catch (error) {
+                      notify.error(error.message || "No se pudo abrir el portal de facturación");
+                    }
+                  }}
+                >
+                  Gestionar facturación
+                </button>
+              )}
 
               {canCancel && !isFree && (
                 <button
