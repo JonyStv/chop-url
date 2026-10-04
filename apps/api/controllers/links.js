@@ -58,10 +58,7 @@ export class LinkController {
     const { id } = req.params;
     const userid = req.user.id;
     const result = await LinkModel.delete(id, userid);
-    if (!result) {
-      return res.status(404).json({ message: "Link not found or not authorized" });
-    }
-    return res.status(200).json({ message: result.message });
+    return res.status(result.status).json({ message: result.message });
   }
   static async update(req, res) {
     const { id } = req.params;

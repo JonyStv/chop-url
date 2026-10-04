@@ -86,22 +86,23 @@ export class LinkModel {
   }
   //DELETE
   static async delete(id, userid) {
-    await prisma.usuario.update({
-      where: {
-        id: userid,
-      },
-      data: {
-        enlaces_creados: {
-          decrement: 1,
-        },
-      },
-    });
-    return await prisma.enlace.deleteMany({
+    const result = await prisma.enlace.deleteMany({
       where: {
         id,
         usuario_id: userid,
       },
     });
+
+    if (result.count === 0) {
+      return { count: 0, status: 404, message: "Enlace no encontrado" };
+    }
+
+    await prisma.usuario.update({
+      where: { id: userid },
+      data: { enlaces_creados: { decrement: 1 } },
+    });
+
+    return { count: result.count, status: 200, message: "Enlace eliminado correctamente" };
   }
 }
 const filterLinks = (filteredLinks, { estado, search, limit, offset }) => {
