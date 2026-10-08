@@ -43,6 +43,15 @@ router.post("/cancel", async (req, res, next) => {
   }
 });
 
+router.post("/reactivate", async (req, res, next) => {
+  try {
+    const result = await SubscriptionService.reactivateSubscription(req.user.id);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/checkout", async (req, res, next) => {
   try {
     const { planId } = req.body;

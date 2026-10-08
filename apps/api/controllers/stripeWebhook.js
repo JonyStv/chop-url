@@ -79,10 +79,14 @@ export const stripeWebhookHandler = async (req, res) => {
         const stripePriceIdFinal =
           event.type === "customer.subscription.deleted" ? null : stripePriceId;
 
+        const statusFinal = subscription.cancel_at_period_end
+          ? "cancel_at_period_end"
+          : subscription.status;
+
         await SubscriptionModel.upsertForUser({
           usuarioId: userId,
           planId,
-          status: subscription.status,
+          status: statusFinal,
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),

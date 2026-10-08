@@ -103,11 +103,31 @@ No existía. El usuario no podía gestionar método de pago, facturas o historia
 
 ---
 
+## ✅ Caso 3: Reactivación tras cancelación programada — IMPLEMENTADO
+
+### Estado previo
+
+El usuario con una cancelación programada (`cancel_at_period_end = true`) al intentar reactivar era enviado a Stripe Checkout para pagar de nuevo por un período que ya tenía pagado.
+
+### ✅ Solución implementada
+
+1. **Nuevo endpoint `POST /subscriptions/reactivate`** en `routes/subscriptions.js`.
+2. **Nuevo método `SubscriptionService.reactivateSubscription()`** en `services/subscription.js`:
+   - Llama a `stripe.subscriptions.update(id, { cancel_at_period_end: false })` para desmarcar la cancelación en Stripe.
+   - Actualiza la DB local conservando la suscripción y fijando `cancel_at_period_end: false` y `canceled_at: null`.
+3. **Protección en `createCheckoutSession` y `switchPlan`**:
+   - Si el usuario solicita un checkout para su mismo plan con cancelación pendiente, se reactiva automáticamente sin enviarlo a Stripe Checkout.
+   - Si cambia a otro plan pago mediante `switchPlan`, se pasa `cancel_at_period_end: false` a Stripe.
+4. **Boton de reactivación en `Settings.jsx`**:
+   - Llama a `POST /subscriptions/reactivate` y actualiza el estado de la suscripción sin recargar ni salir de la app.
+
+---
+
 ## Casos adicionales que deberías contemplar (PENDIENTES)
 
 | # | Caso | Estado actual | Recomendación |
 |---|------|--------------|---------------|
-| 1 | **Reactivation tras cancelación programada** | Frontend llama `/subscriptions/checkout` con el `planId` actual. Stripe reutiliza el customer y crea una nueva suscripción. | Si existe `cancel_at_period_end=true`, primero llamar a `stripe.subscriptions.update(id, { cancel_at_period_end: false })` antes del checkout. |
+| 1 | **Reactivación tras cancelación programada** | ✅ **IMPLEMENTADO:** `POST /subscriptions/reactivate` desmarca `cancel_at_period_end` en Stripe y en la DB local. | Verificado en `services/subscription.js` y `Settings.jsx`. |
 | 2 | **Expiración de trial** | No hay manejo de `trial`. | OK actualmente, observar si se añade trial. |
 | 3 | **Fallos de pago recurrente** | Webhook pone `status=past_due`. | Añadir: notificación al usuario, reintentos automáticos, o cancelación tras N fallos. |
 | 4 | **Cancelación inmediata vs diferida** | UI solo ofrece cancelación programada. | Añadir toggle: "Cancelar al final del periodo" vs "Cancelar ahora". |

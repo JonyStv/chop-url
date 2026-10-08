@@ -144,17 +144,12 @@ function Settings() {
     }
 
     try {
-      const response = await apiJson("/subscriptions/checkout", {
+      await apiJson("/subscriptions/reactivate", {
         method: "POST",
-        body: JSON.stringify({ planId: currentPlanId }),
       });
 
-      if (response.url) {
-        window.location.href = response.url;
-        return;
-      }
-
-      notify.error("No se pudo iniciar la reactivación del plan.");
+      await refreshSubscriptionStatus();
+      notify.success("Tu suscripción ha sido reactivada correctamente.");
     } catch (error) {
       notify(error.message || "No se pudo reactivar la suscripción.", "error");
     }
@@ -188,7 +183,7 @@ function Settings() {
             </div>
             <div className="plan-summary">
               <h2 className="plan-name">{currentPlanName}</h2>
-              <h2 className="plan-due-date">{subCancelAtPeriodEnd? "Finaliza: " + currentPlanDueDate : currentPlanDueDate}</h2>
+              <h3 className="plan-due-date">{(subCancelAtPeriodEnd? "Finaliza: " : "Siguiente Pago: ") + currentPlanDueDate}</h3>
             </div>
 
             <p className="status-message">{statusMeta.message}</p>

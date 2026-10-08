@@ -92,7 +92,7 @@ export class SubscriptionService {
         updatedAt: subscription.updated_at,
       },
       plan: normalizePlanResponse(plan),
-      isActive: ["active", "trialing"].includes(subscription.status),
+      isActive: ["active", "trialing", "cancel_at_period_end"].includes(subscription.status),
       features: plan
         ? {
             maxLinks: plan.max_links,
@@ -158,7 +158,7 @@ export class SubscriptionService {
     }
 
     const status = subscription?.status;
-    if (!status || !["active", "trialing"].includes(status)) {
+    if (!status || !["active", "trialing", "cancel_at_period_end"].includes(status)) {
       return false;
     }
 
@@ -221,6 +221,16 @@ export class SubscriptionService {
         stripeSubscriptionId: null,
         stripePriceId: null,
       });
+      return { url: `${process.env.PUBLIC_URL}/settings` };
+    }
+
+    const current = await this.getCurrentSubscriptionForUser(user.id);
+    if (
+      current?.subscription?.cancelAtPeriodEnd &&
+      current?.subscription?.stripeSubscriptionId &&
+      current?.subscription?.planId === plan.id
+    ) {
+      await this.reactivateSubscription(user.id);
       return { url: `${process.env.PUBLIC_URL}/settings` };
     }
     return stripe.checkout.sessions.create({
@@ -303,7 +313,7 @@ export class SubscriptionService {
       throw new AppError("No tienes un plan activo.", 403);
     }
     const status = subscription?.status;
-    if (!subscription || !status || !["active", "trialing"].includes(status)) {
+    if (!subscription || !status || !["active", "trialing", "cancel_at_period_end"].includes(status)) {
       throw new AppError("Tu suscripción no está activa.", 403);
     }
     // Si la suscripción está pendiente de cancelación (cancel_at_period_end),
@@ -327,6 +337,7 @@ export class SubscriptionService {
           invoice_now: false,
           prorate: false,
         });
+
       } catch (error) {
         console.warn(
           "No se pudo cancelar la suscripción en Stripe; se mantiene el cambio local:",
@@ -335,13 +346,13 @@ export class SubscriptionService {
       }
     }
 
-    // Marcar la suscripción como "cancel_at_period_end" SIN cambiar el plan.
+    // Marcar la suscripción con status "cancel_at_period_end" SIN cambiar el plan.
     // El downgrade a free ocurrirá cuando Stripe envíe customer.subscription.deleted
     // al final del período (o customer.subscription.updated si se anula antes).
     await SubscriptionModel.upsertForUser({
       usuarioId,
       planId: subscription.planId, // mantener el plan actual hasta el fin de periodo
-      status: subscription.status ?? "active",
+      status: "cancel_at_period_end",
       currentPeriodStart: subscription.currentPeriodStart,
       currentPeriodEnd: subscription.currentPeriodEnd,
       cancelAtPeriodEnd: true,
@@ -396,11 +407,11 @@ export class SubscriptionService {
       await SubscriptionModel.upsertForUser({
         usuarioId,
         planId: subscription.planId, // mantener plan pagado hasta fin de periodo
-        status: subscription.status ?? "active",
+        status: "cancel_at_period_end",
         currentPeriodStart: subscription.currentPeriodStart,
         currentPeriodEnd: subscription.currentPeriodEnd,
         cancelAtPeriodEnd: true,
-        canceledAt: subscription.canceledAt ?? null,
+        canceledAt: subscription.canceledAt ?? new Date(),
         stripeCustomerId: subscription.stripeCustomerId ?? null,
         stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
         stripePriceId: subscription.stripePriceId ?? null,
@@ -414,6 +425,7 @@ export class SubscriptionService {
       subscription.stripeSubscriptionId,
       {
         items: [{ price: newPlan.stripe_price_id }],
+        cancel_at_period_end: false,
         proration_behavior: prorationBehavior,
       },
     );
@@ -433,7 +445,45 @@ export class SubscriptionService {
 
     return this.getCurrentSubscriptionForUser(usuarioId);
   }
+  /**
+   * Reactiva una suscripción que estaba programada para cancelarse al final del periodo.
+   */
+  static async reactivateSubscription(usuarioId) {
+    const current = await this.getCurrentSubscriptionForUser(usuarioId);
+    const subscription = current?.subscription;
 
+    if (!subscription || !subscription.stripeSubscriptionId || !subscription.cancelAtPeriodEnd) {
+      throw new AppError("No hay una cancelación pendiente para reactivar.", 400);
+    }
+
+    if (stripe) {
+      try {
+        await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+          cancel_at_period_end: false,
+        });
+      } catch (error) {
+        console.warn(
+          "No se pudo reactivar la suscripción en Stripe; se intentará actualizar localmente:",
+          error.message,
+        );
+      }
+    }
+
+    await SubscriptionModel.upsertForUser({
+      usuarioId,
+      planId: subscription.planId,
+      status: subscription.status ?? "active",
+      currentPeriodStart: subscription.currentPeriodStart,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      cancelAtPeriodEnd: false,
+      canceledAt: null,
+      stripeCustomerId: subscription.stripeCustomerId ?? null,
+      stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
+      stripePriceId: subscription.stripePriceId ?? null,
+    });
+
+    return this.getCurrentSubscriptionForUser(usuarioId);
+  }
   /**
    * Crea una sesión del Portal de Facturación de Stripe,
    * donde el usuario puede gestionar su método de pago, facturas e historial.
