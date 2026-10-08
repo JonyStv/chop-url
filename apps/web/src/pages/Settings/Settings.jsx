@@ -71,7 +71,7 @@ function Settings() {
   const raw = plan?.features.maxLinks;
   const currentLimitedLinks = raw === null ? Infinity : raw ?? 0;
   const currentPlanDueDate = user?.subscription_period_end && !isFree ? new Date(user.subscription_period_end).toLocaleDateString('es-ES' ) : "";
-  
+  const subCancelAtPeriodEnd = user?.subscription_cancel_at_period_end || false;
   
   useEffect(() => {
     const fetchPlans = async () => {
@@ -160,9 +160,6 @@ function Settings() {
     }
   };
 
-  const canCancel = ["active", "trialing", "cancel_at_period_end"].includes(
-    subscriptionStatus,
-  );
 
   return (
     <div className="settings-page">
@@ -191,7 +188,7 @@ function Settings() {
             </div>
             <div className="plan-summary">
               <h2 className="plan-name">{currentPlanName}</h2>
-              <h2 className="plan-due-date">{currentPlanDueDate}</h2>
+              <h2 className="plan-due-date">{subCancelAtPeriodEnd? "Finaliza: " + currentPlanDueDate : currentPlanDueDate}</h2>
             </div>
 
             <p className="status-message">{statusMeta.message}</p>
@@ -226,7 +223,7 @@ function Settings() {
                 </button>
               )}
 
-              {canCancel && !isFree && (
+              {!subCancelAtPeriodEnd && !isFree && (
                 <button
                   className="upgrade-button danger-button"
                   onClick={handleCancelSubscription}
@@ -235,7 +232,7 @@ function Settings() {
                 </button>
               )}
 
-              {!canCancel && currentPlanId !== "free" && (
+              {subCancelAtPeriodEnd && currentPlanId !== "free" && (
                 <button
                   className="upgrade-button"
                   onClick={handleReactivateSubscription}

@@ -82,7 +82,6 @@ export default function SubPlanCard({ plan }) {
     }
   };
   const isFree = plan.price === 0;
-
   return (
     <div className={`sub-plan-card ${plan.id === "pro" ? "featured" : ""}`}>
       {plan.id === "pro" && <span className="badge">Más popular</span>}

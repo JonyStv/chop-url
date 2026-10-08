@@ -1110,7 +1110,11 @@ export const UsuarioScalarFieldEnum = {
   limite_enlaces: 'limite_enlaces',
   enlaces_creados: 'enlaces_creados',
   activo: 'activo',
-  plan_id: 'plan_id'
+  plan_id: 'plan_id',
+  email_verified_at: 'email_verified_at',
+  email_verification_token_hash: 'email_verification_token_hash',
+  email_verification_expires_at: 'email_verification_expires_at',
+  email_verification_sent_at: 'email_verification_sent_at'
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]

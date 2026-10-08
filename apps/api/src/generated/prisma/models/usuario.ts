@@ -47,6 +47,10 @@ export type UsuarioMinAggregateOutputType = {
   enlaces_creados: number | null
   activo: boolean | null
   plan_id: string | null
+  email_verified_at: Date | null
+  email_verification_token_hash: string | null
+  email_verification_expires_at: Date | null
+  email_verification_sent_at: Date | null
 }
 
 export type UsuarioMaxAggregateOutputType = {
@@ -60,6 +64,10 @@ export type UsuarioMaxAggregateOutputType = {
   enlaces_creados: number | null
   activo: boolean | null
   plan_id: string | null
+  email_verified_at: Date | null
+  email_verification_token_hash: string | null
+  email_verification_expires_at: Date | null
+  email_verification_sent_at: Date | null
 }
 
 export type UsuarioCountAggregateOutputType = {
@@ -73,6 +81,10 @@ export type UsuarioCountAggregateOutputType = {
   enlaces_creados: number
   activo: number
   plan_id: number
+  email_verified_at: number
+  email_verification_token_hash: number
+  email_verification_expires_at: number
+  email_verification_sent_at: number
   _all: number
 }
 
@@ -98,6 +110,10 @@ export type UsuarioMinAggregateInputType = {
   enlaces_creados?: true
   activo?: true
   plan_id?: true
+  email_verified_at?: true
+  email_verification_token_hash?: true
+  email_verification_expires_at?: true
+  email_verification_sent_at?: true
 }
 
 export type UsuarioMaxAggregateInputType = {
@@ -111,6 +127,10 @@ export type UsuarioMaxAggregateInputType = {
   enlaces_creados?: true
   activo?: true
   plan_id?: true
+  email_verified_at?: true
+  email_verification_token_hash?: true
+  email_verification_expires_at?: true
+  email_verification_sent_at?: true
 }
 
 export type UsuarioCountAggregateInputType = {
@@ -124,6 +144,10 @@ export type UsuarioCountAggregateInputType = {
   enlaces_creados?: true
   activo?: true
   plan_id?: true
+  email_verified_at?: true
+  email_verification_token_hash?: true
+  email_verification_expires_at?: true
+  email_verification_sent_at?: true
   _all?: true
 }
 
@@ -224,6 +248,10 @@ export type UsuarioGroupByOutputType = {
   enlaces_creados: number
   activo: boolean
   plan_id: string
+  email_verified_at: Date | null
+  email_verification_token_hash: string | null
+  email_verification_expires_at: Date | null
+  email_verification_sent_at: Date | null
   _count: UsuarioCountAggregateOutputType | null
   _avg: UsuarioAvgAggregateOutputType | null
   _sum: UsuarioSumAggregateOutputType | null
@@ -260,6 +288,10 @@ export type usuarioWhereInput = {
   enlaces_creados?: Prisma.IntFilter<"usuario"> | number
   activo?: Prisma.BoolFilter<"usuario"> | boolean
   plan_id?: Prisma.StringFilter<"usuario"> | string
+  email_verified_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
+  email_verification_token_hash?: Prisma.StringNullableFilter<"usuario"> | string | null
+  email_verification_expires_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
+  email_verification_sent_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
   analitica?: Prisma.AnaliticaListRelationFilter
   enlace?: Prisma.EnlaceListRelationFilter
   sesion?: Prisma.SesionListRelationFilter
@@ -278,6 +310,10 @@ export type usuarioOrderByWithRelationInput = {
   enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
+  email_verified_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_token_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_sent_at?: Prisma.SortOrderInput | Prisma.SortOrder
   analitica?: Prisma.analiticaOrderByRelationAggregateInput
   enlace?: Prisma.enlaceOrderByRelationAggregateInput
   sesion?: Prisma.sesionOrderByRelationAggregateInput
@@ -288,6 +324,7 @@ export type usuarioOrderByWithRelationInput = {
 export type usuarioWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  email_verification_token_hash?: string
   AND?: Prisma.usuarioWhereInput | Prisma.usuarioWhereInput[]
   OR?: Prisma.usuarioWhereInput[]
   NOT?: Prisma.usuarioWhereInput | Prisma.usuarioWhereInput[]
@@ -299,12 +336,15 @@ export type usuarioWhereUniqueInput = Prisma.AtLeast<{
   enlaces_creados?: Prisma.IntFilter<"usuario"> | number
   activo?: Prisma.BoolFilter<"usuario"> | boolean
   plan_id?: Prisma.StringFilter<"usuario"> | string
+  email_verified_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
+  email_verification_expires_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
+  email_verification_sent_at?: Prisma.DateTimeNullableFilter<"usuario"> | Date | string | null
   analitica?: Prisma.AnaliticaListRelationFilter
   enlace?: Prisma.EnlaceListRelationFilter
   sesion?: Prisma.SesionListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.subscriptionWhereInput> | null
   usage_counter?: Prisma.Usage_counterListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "email_verification_token_hash">
 
 export type usuarioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -317,6 +357,10 @@ export type usuarioOrderByWithAggregationInput = {
   enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
+  email_verified_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_token_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  email_verification_sent_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.usuarioCountOrderByAggregateInput
   _avg?: Prisma.usuarioAvgOrderByAggregateInput
   _max?: Prisma.usuarioMaxOrderByAggregateInput
@@ -338,6 +382,10 @@ export type usuarioScalarWhereWithAggregatesInput = {
   enlaces_creados?: Prisma.IntWithAggregatesFilter<"usuario"> | number
   activo?: Prisma.BoolWithAggregatesFilter<"usuario"> | boolean
   plan_id?: Prisma.StringWithAggregatesFilter<"usuario"> | string
+  email_verified_at?: Prisma.DateTimeNullableWithAggregatesFilter<"usuario"> | Date | string | null
+  email_verification_token_hash?: Prisma.StringNullableWithAggregatesFilter<"usuario"> | string | null
+  email_verification_expires_at?: Prisma.DateTimeNullableWithAggregatesFilter<"usuario"> | Date | string | null
+  email_verification_sent_at?: Prisma.DateTimeNullableWithAggregatesFilter<"usuario"> | Date | string | null
 }
 
 export type usuarioCreateInput = {
@@ -351,6 +399,10 @@ export type usuarioCreateInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
@@ -369,6 +421,10 @@ export type usuarioUncheckedCreateInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
@@ -387,6 +443,10 @@ export type usuarioUpdateInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
@@ -405,6 +465,10 @@ export type usuarioUncheckedUpdateInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -423,6 +487,10 @@ export type usuarioCreateManyInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
 }
 
 export type usuarioUpdateManyMutationInput = {
@@ -436,6 +504,10 @@ export type usuarioUpdateManyMutationInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type usuarioUncheckedUpdateManyInput = {
@@ -449,6 +521,10 @@ export type usuarioUncheckedUpdateManyInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UsuarioScalarRelationFilter = {
@@ -467,6 +543,10 @@ export type usuarioCountOrderByAggregateInput = {
   enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
+  email_verified_at?: Prisma.SortOrder
+  email_verification_token_hash?: Prisma.SortOrder
+  email_verification_expires_at?: Prisma.SortOrder
+  email_verification_sent_at?: Prisma.SortOrder
 }
 
 export type usuarioAvgOrderByAggregateInput = {
@@ -485,6 +565,10 @@ export type usuarioMaxOrderByAggregateInput = {
   enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
+  email_verified_at?: Prisma.SortOrder
+  email_verification_token_hash?: Prisma.SortOrder
+  email_verification_expires_at?: Prisma.SortOrder
+  email_verification_sent_at?: Prisma.SortOrder
 }
 
 export type usuarioMinOrderByAggregateInput = {
@@ -498,6 +582,10 @@ export type usuarioMinOrderByAggregateInput = {
   enlaces_creados?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   plan_id?: Prisma.SortOrder
+  email_verified_at?: Prisma.SortOrder
+  email_verification_token_hash?: Prisma.SortOrder
+  email_verification_expires_at?: Prisma.SortOrder
+  email_verification_sent_at?: Prisma.SortOrder
 }
 
 export type usuarioSumOrderByAggregateInput = {
@@ -598,6 +686,10 @@ export type usuarioCreateWithoutAnaliticaInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
@@ -615,6 +707,10 @@ export type usuarioUncheckedCreateWithoutAnaliticaInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
@@ -648,6 +744,10 @@ export type usuarioUpdateWithoutAnaliticaInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
@@ -665,6 +765,10 @@ export type usuarioUncheckedUpdateWithoutAnaliticaInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -682,6 +786,10 @@ export type usuarioCreateWithoutEnlaceInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
@@ -699,6 +807,10 @@ export type usuarioUncheckedCreateWithoutEnlaceInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
@@ -732,6 +844,10 @@ export type usuarioUpdateWithoutEnlaceInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
@@ -749,6 +865,10 @@ export type usuarioUncheckedUpdateWithoutEnlaceInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -766,6 +886,10 @@ export type usuarioCreateWithoutSesionInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
@@ -783,6 +907,10 @@ export type usuarioUncheckedCreateWithoutSesionInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
@@ -816,6 +944,10 @@ export type usuarioUpdateWithoutSesionInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
@@ -833,6 +965,10 @@ export type usuarioUncheckedUpdateWithoutSesionInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
@@ -850,6 +986,10 @@ export type usuarioCreateWithoutSubscriptionInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
@@ -867,6 +1007,10 @@ export type usuarioUncheckedCreateWithoutSubscriptionInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
@@ -900,6 +1044,10 @@ export type usuarioUpdateWithoutSubscriptionInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
@@ -917,6 +1065,10 @@ export type usuarioUncheckedUpdateWithoutSubscriptionInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -934,6 +1086,10 @@ export type usuarioCreateWithoutUsage_counterInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
@@ -951,6 +1107,10 @@ export type usuarioUncheckedCreateWithoutUsage_counterInput = {
   enlaces_creados?: number
   activo?: boolean
   plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
   analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
@@ -984,6 +1144,10 @@ export type usuarioUpdateWithoutUsage_counterInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
@@ -1001,6 +1165,10 @@ export type usuarioUncheckedUpdateWithoutUsage_counterInput = {
   enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1076,6 +1244,10 @@ export type usuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
+  email_verified_at?: boolean
+  email_verification_token_hash?: boolean
+  email_verification_expires_at?: boolean
+  email_verification_sent_at?: boolean
   analitica?: boolean | Prisma.usuario$analiticaArgs<ExtArgs>
   enlace?: boolean | Prisma.usuario$enlaceArgs<ExtArgs>
   sesion?: boolean | Prisma.usuario$sesionArgs<ExtArgs>
@@ -1095,6 +1267,10 @@ export type usuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
+  email_verified_at?: boolean
+  email_verification_token_hash?: boolean
+  email_verification_expires_at?: boolean
+  email_verification_sent_at?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type usuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1108,6 +1284,10 @@ export type usuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
+  email_verified_at?: boolean
+  email_verification_token_hash?: boolean
+  email_verification_expires_at?: boolean
+  email_verification_sent_at?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type usuarioSelectScalar = {
@@ -1121,9 +1301,13 @@ export type usuarioSelectScalar = {
   enlaces_creados?: boolean
   activo?: boolean
   plan_id?: boolean
+  email_verified_at?: boolean
+  email_verification_token_hash?: boolean
+  email_verification_expires_at?: boolean
+  email_verification_sent_at?: boolean
 }
 
-export type usuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "nombre" | "fecha_registro" | "plan" | "limite_enlaces" | "enlaces_creados" | "activo" | "plan_id", ExtArgs["result"]["usuario"]>
+export type usuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "nombre" | "fecha_registro" | "plan" | "limite_enlaces" | "enlaces_creados" | "activo" | "plan_id" | "email_verified_at" | "email_verification_token_hash" | "email_verification_expires_at" | "email_verification_sent_at", ExtArgs["result"]["usuario"]>
 export type usuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   analitica?: boolean | Prisma.usuario$analiticaArgs<ExtArgs>
   enlace?: boolean | Prisma.usuario$enlaceArgs<ExtArgs>
@@ -1155,6 +1339,10 @@ export type $usuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     enlaces_creados: number
     activo: boolean
     plan_id: string
+    email_verified_at: Date | null
+    email_verification_token_hash: string | null
+    email_verification_expires_at: Date | null
+    email_verification_sent_at: Date | null
   }, ExtArgs["result"]["usuario"]>
   composites: {}
 }
@@ -1593,6 +1781,10 @@ export interface usuarioFieldRefs {
   readonly enlaces_creados: Prisma.FieldRef<"usuario", 'Int'>
   readonly activo: Prisma.FieldRef<"usuario", 'Boolean'>
   readonly plan_id: Prisma.FieldRef<"usuario", 'String'>
+  readonly email_verified_at: Prisma.FieldRef<"usuario", 'DateTime'>
+  readonly email_verification_token_hash: Prisma.FieldRef<"usuario", 'String'>
+  readonly email_verification_expires_at: Prisma.FieldRef<"usuario", 'DateTime'>
+  readonly email_verification_sent_at: Prisma.FieldRef<"usuario", 'DateTime'>
 }
     
 

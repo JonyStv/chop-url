@@ -1,5 +1,6 @@
 import * as authService from "../services/auth.js";
 import { env } from "../config/env.js";
+import { emailService } from "../services/email.js";
 
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,
@@ -12,23 +13,26 @@ export class AuthController {
     try {
       const { username, nombre, password, email } = req.body;
       const nameToUse = nombre || username;
-
-      if (!email || !nameToUse || !password) {
-        return res
-          .status(400)
-          .json({ message: "Email, nombre y contraseña son obligatorios." });
-      }
-
       const ip = req.ip || req.socket.remoteAddress || "";
-      const dispositivo = req.headers["user-agent"] || "";
-
-      const { user, accessToken, refreshToken } = await authService.register({
+      const dispositivo = req.headers["user-agent"] || "";      
+      const { user, accessToken, refreshToken, rawToken } = await authService.register({
         email,
         password,
         nombre: nameToUse,
         ip,
         dispositivo,
       });
+
+      if (!email || !nameToUse || !password) {
+        return res
+          .status(400)
+          .json({ message: "Email, nombre y contraseña son obligatorios." });
+      }
+      emailService.sendVerification(user.email, user.nombre, rawToken)
+      .catch(err => console.error("Error sending verification email:", err));
+
+
+      
 
       res.cookie("refreshToken", refreshToken, REFRESH_COOKIE_OPTS);
       res.status(201).json({ user, accessToken });
@@ -64,7 +68,28 @@ export class AuthController {
       next(error);
     }
   }
+  static async verifyEmail(req, res, next) {
+    const { token } = req.query;
 
+    if (typeof token !== "string") {
+      return res.status(400).json({ message: "Token de verificación inválido." });
+    }
+
+    try {
+      await authService.verifyEmail(token);
+      return res.redirect(`${process.env.FRONTEND_URL}/`);
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      return res.redirect(`${process.env.FRONTEND_URL}/?error=${encodeURIComponent(error.message)}`);
+    }
+  }
+  static async resendVerificationEmail(req, res, next) {
+    const {email} = req.body;
+
+    await authService.resendVerificationEmail(email).catch(() => {});
+
+    res.status(200).json({ message: "Si el correo existe, se ha enviado un email de verificación." });
+  }
   static async refresh(req, res, next) {
     try {
       const token = req.cookies?.refreshToken;

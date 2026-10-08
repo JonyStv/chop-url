@@ -13,5 +13,7 @@ router.post("/logout", AuthController.logout);
 router.get("/me", authMiddleware, AuthController.me);
 router.get("/session", AuthController.checkSession);
 router.patch("/change-password", authMiddleware, validateRequest(changePasswordSchema), AuthController.changePassword);
+router.get("/verify-email", AuthController.verifyEmail);
+router.post("/resend-verification-email", AuthController.resendVerificationEmail);
 
 export { router as authRouter };

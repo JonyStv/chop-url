@@ -6,7 +6,6 @@ import { analyticsRouter } from "./routes/analytics.js";
 import { redirectRouter } from "./routes/redirect.js";
 import { authRouter } from "./routes/auth.js";
 import { userRouter } from "./routes/users.js";
-import { resendRouter } from "./routes/resend.js";
 import plansRouter from "./routes/plans.js";
 import subscriptionsRouter from "./routes/subscriptions.js";
 
@@ -74,7 +73,6 @@ app.use(["/links", "/api/links"], linksRouter);
 app.use(["/analytics", "/api/analytics"], analyticsRouter);
 app.use(["/plans", "/api/plans"], plansRouter);
 app.use(["/subscriptions", "/api/subscriptions"], subscriptionsRouter);
-app.use(["/resend", "/api/resend"], resendRouter);
 app.use("/", redirectRouter);
 
 // Centralized error handling middleware

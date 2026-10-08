@@ -115,22 +115,7 @@ function Identify() {
         setLoading(false);
       });
   };
-  const sendVerificationEmail = async (email) => {
-    try {
-      const response = await apiJson("/resend/verify-email", {
-        method: "POST",
-        body: JSON.stringify({
-          to: email,
-          subject: "Verificación de correo electrónico",
-          html: `<p>Gracias por registrarte. Por favor, haz clic en el siguiente enlace para verificar tu correo electrónico:</p>
-                 <a href="${window.location.origin}/verify?email=${encodeURIComponent(email)}">Verificar correo electrónico</a>`,
-        }),
-      });
-    } catch (error) {
-      console.error("Error al enviar el correo de verificación:", error.message);
-      notify("Error al enviar el correo de verificación.", "error");
-    }
-  };
+
   if (loading) {
     return <div className="loading"></div>;
   }

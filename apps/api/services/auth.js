@@ -6,7 +6,11 @@ import {
   verifyRefreshToken,
 } from "../utils/jwt.js";
 import { AppError } from "../utils/errors.js";
+import { prisma } from "../config/db.js";
+import crypto from "crypto";
+import { emailService } from "./email.js";
 
+const sha256 = (data) => crypto.createHash("sha256").update(data).digest("hex");
 export const register = async ({
   email,
   password,
@@ -19,16 +23,20 @@ export const register = async ({
     throw new AppError("El correo electrónico ya está registrado.", 400);
   }
   const hashedPassword = await bcrypt.hash(password, 12);
+  const rawToken = crypto.randomBytes(64).toString("hex");
   const newUser = await UserModel.create({
     email,
     password: hashedPassword,
     nombre,
+    email_verification_token_hash: sha256(rawToken),
+    email_verification_expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+    email_verification_sent_at: new Date(),
   });
 
   const payload = { id: newUser.id, email: newUser.email };
   const accessToken = signAccessToken(payload);
   const refreshToken = signRefreshToken(payload);
-
+  
   await UserModel.createSession({
     usuarioId: newUser.id,
     token: refreshToken,
@@ -40,6 +48,7 @@ export const register = async ({
     user: UserModel.sanitizeUser(newUser),
     accessToken,
     refreshToken,
+    rawToken, // Return the raw token for email verification
   };
 };
 
@@ -190,3 +199,44 @@ export const logout = async (refreshToken) => {
   }
   return await UserModel.removeSession(refreshToken);
 };
+
+export const verifyEmail = async (rawToken) => {
+  const tokenHash = sha256(rawToken);
+  const user = await prisma.usuario.findUnique({
+    where: { email_verification_token_hash: tokenHash },
+  });
+  if (!user) throw new Error("Token de verificación inválido o expirado.");
+  if (user.email_verified_at) throw new Error("El correo electrónico ya ha sido verificado.");
+  if (user.email_verification_expires_at < new Date()) throw new Error("El token de verificación ha expirado.");
+  
+  await prisma.usuario.update({
+    where: { id: user.id },
+    data: {
+      email_verified_at: new Date(),
+      email_verification_token_hash: null,
+      email_verification_expires_at: null,
+    },
+  });
+  return true;
+};
+export const resendVerificationEmail = async (email) => {
+  const user = await UserModel.findByEmail(email);
+  if (!user) throw new Error("Usuario no encontrado.");
+  if (user.email_verified_at) throw new Error("El correo electrónico ya ha sido verificado.");
+
+  if (user.email_verification_sent_at){
+    const diff = Date.now() - user.email_verification_sent_at.getTime();
+    if (diff < 5 * 60 * 1000) throw new Error("Espera 5 minutos antes de reenviar")
+  }
+  const rawToken = crypto.randomBytes(64).toString("hex");
+  await emailService.sendVerification(user.email, user.nombre, rawToken);
+  await prisma.usuario.update({
+    where: { id: user.id },
+    data: {
+      email_verification_token_hash: sha256(rawToken),
+      email_verification_expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      email_verification_sent_at: new Date(),
+    },
+  });
+  
+}

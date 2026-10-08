@@ -66,7 +66,7 @@ function Navigation({ onNavigate }) {
           <>
             <div className="user-info">
               <p className="user-name">{user?.nombre || user?.email}</p>
-              <span className="user-plan">{user?.plan}</span>
+              <span className="user-plan">{user?.plan_id}</span>
             </div>
             <button className="logout-button" onClick={handleLogout}>
               <svg

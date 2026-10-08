@@ -1,16 +1,20 @@
 import { useAuthStore } from "../../store/authStore";
 import { useNotificationStore } from "../../store/notificationStore";
 import { useState } from "react";
+import { apiJson } from "../../config/api";
+import {useEffect} from "react";
 
 const REGEX_EMAIL =
   /[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?/;
 
+
 export default function SettingsForm({ model }) {
-  const { user, setAccessToken, accessToken } = useAuthStore();
+  const { user,setUser, setAccessToken, accessToken } = useAuthStore();
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const isEmailVerified = user?.email_verified_at ? true : false;
   const notify = useNotificationStore((s) => s.notify);
   const handleChange = (e) => {
     const name = e.target.name;
@@ -75,13 +79,36 @@ export default function SettingsForm({ model }) {
       }),
     })
       .then((data) => {
-        notify("User updated successfully", "success");
+        notify("Usuario actualizado satisfactoriamente", "success");
         console.log("User updated:", data);
+        setUser(data);
       })
       .catch((error) => {
         console.error("Error updating user:", error);
+        if (error.message.includes("Unique constraint failed")) {
+          notify("El correo electrónico ya está en uso", "error");
+        } else {
+          notify("Error updating user", "error");
+        }
+      })
+      .finally(() => {
+        setNameInput("");
+        setEmailInput("");
       });
   };
+  const sendVerificationEmail = async (email) => {
+      try {
+        const response = await apiJson("/auth/resend-verification-email", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        });
+        notify("Correo de verificación enviado.", "success");
+        console.log("Correo de verificación enviado:", response);
+      } catch (error) {
+        console.error("Error al enviar el correo de verificación:", error.message);
+        notify("Error al enviar el correo de verificación.", "error");
+      }
+    };
   return (
     <div>
       {model === "profile" ? (
@@ -105,13 +132,23 @@ export default function SettingsForm({ model }) {
               onChange={(e) => handleChange(e)}
             />
           </p>
-          <button
-            onClick={(e) => handleSaveChanges(nameInput, emailInput)}
-            className={`save-changes-button${!nameInput && !emailInput ? " disabled" : ""}`}
-            disabled={!nameInput && !emailInput}
-          >
-            Guardar Cambios
-          </button>
+          <div className="settings-buttons">
+            <button
+              onClick={(e) => handleSaveChanges(nameInput, emailInput)}
+              className={`save-changes-button${!nameInput && !emailInput ? " disabled" : ""}`}
+              disabled={!nameInput && !emailInput}
+            >
+              Guardar Cambios
+            </button>
+            {!isEmailVerified && (
+            <button
+              onClick={(e) => sendVerificationEmail(user?.email)}
+              className="send-verification-email-button"
+            >
+              Verificar Correo
+            </button>
+            )}
+          </div>
         </>
       ) : (
         <>

@@ -67,10 +67,45 @@ export class UserModel {
     const user = await this.findById(id);
     if (!user) return null;
 
-    return await prisma.usuario.update({
-      where: { id },
-      data: updates,
-    });
+    const data = this.buildUpdateData(user, updates);
+
+    try {
+      return await prisma.usuario.update({
+        where: { id },
+        data,
+      });
+    } catch (err) {
+      if (err.code === 'P2002') {
+        throw new AppError('El correo electrónico ya está en uso', 400);
+      }
+      throw err;
+    }
+  }
+
+  static buildUpdateData(user, updates) {
+    const data = {};
+
+    // Whitelist de campos editables
+    const allowedFields = ['nombre', 'email'];
+    for (const field of allowedFields) {
+      if (updates[field] !== undefined) data[field] = updates[field];
+    }
+
+    // Si cambia el email, normalizar + resetear verificación
+    if (data.email) {
+      data.email = data.email.trim().toLowerCase();
+
+      if (data.email === user.email) {
+        delete data.email;   // no cambió, ignorar
+      } else {
+        data.email_verified_at = null;
+        data.email_verification_token_hash = null;
+        data.email_verification_expires_at = null;
+        data.email_verification_sent_at = null;
+      }
+    }
+
+    return data;
   }
 
   static async updatePassword(id, newHashedPassword) {

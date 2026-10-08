@@ -82,6 +82,10 @@
     width: 100%;
   }
 }
+.settings-buttons{
+    display: flex;
+    gap: 0.5rem;
+  }
 .save-changes-button.disabled,
 .change-password-button.disabled {
   color: #9ca3af;
