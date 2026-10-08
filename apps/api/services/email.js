@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { render } from 'react-email';
 import { createElement } from 'react';
-import { VerificationEmail } from '../templates/VerificationEmail.js';
+import { VerificationEmail } from '../templates/VerificationEmail';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
