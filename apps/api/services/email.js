@@ -1,13 +1,13 @@
 import { Resend } from 'resend';
 import { render } from 'react-email';
 import { createElement } from 'react';
-import { VerificationEmail } from '../templates/VerificationEmail';
+import { VerificationEmail } from '../templates/VerificationEmail.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const emailService = {
   async sendVerification(email, username, rawToken) {
-    const url = `${process.env.BACKEND_URL}/auth/verify-email?token=${rawToken}`;
+    const url = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
     const html = await render(
       createElement(VerificationEmail, { username, verifyUrl: url })
