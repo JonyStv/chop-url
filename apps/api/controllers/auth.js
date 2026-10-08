@@ -1,6 +1,6 @@
 import * as authService from "../services/auth.js";
 import { env } from "../config/env.js";
-import { emailService } from "../services/email.js";
+import * as emailService from "../services/email.js";
 
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,
@@ -28,7 +28,7 @@ export class AuthController {
           .status(400)
           .json({ message: "Email, nombre y contraseña son obligatorios." });
       }
-      emailService.sendVerification(user.email, user.nombre, rawToken)
+      await emailService.sendVerification(user.email, user.nombre, rawToken)
       .catch(err => console.error("Error sending verification email:", err));
 
 
