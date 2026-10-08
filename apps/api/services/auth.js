@@ -8,7 +8,7 @@ import {
 import { AppError } from "../utils/errors.js";
 import { prisma } from "../config/db.js";
 import crypto from "crypto";
-import { emailService } from "./email.js";
+import * as emailService from "./email.js";
 
 const sha256 = (data) => crypto.createHash("sha256").update(data).digest("hex");
 export const register = async ({
