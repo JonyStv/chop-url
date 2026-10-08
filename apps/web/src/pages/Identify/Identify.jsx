@@ -105,7 +105,6 @@ function Identify() {
         console.log("Registro exitoso:", data);
         handleSuccessfulIdentification(data);
         setIsRegisterFormVisible(false);
-        sendVerificationEmail(regEmail);
       })
       .catch((error) => {
         console.error("Error en el registro:", error.message);

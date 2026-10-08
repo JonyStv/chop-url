@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 
 export const sendVerification = async(email, username, rawToken) => {
-    const url = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+    const url = `${process.env.FRONTEND_URL}/auth/verify-email?token=${rawToken}`;
 
     const html = await render(
       createElement(VerificationEmail, { username, verifyUrl: url })
