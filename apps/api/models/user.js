@@ -10,6 +10,9 @@ export class UserModel {
     plan = "gratuito",
     limiteEnlaces = 10,
     activo = true,
+    email_verification_token_hash = null,
+    email_verification_expires_at = null,
+    email_verification_sent_at = null,
   }) {
     const newUser = {
       email,
@@ -18,6 +21,9 @@ export class UserModel {
       plan,
       limite_enlaces: limiteEnlaces,
       activo,
+      email_verification_token_hash,
+      email_verification_expires_at,
+      email_verification_sent_at,
     };
 
     return await prisma.usuario.create({
