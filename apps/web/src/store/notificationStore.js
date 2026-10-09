@@ -24,10 +24,12 @@ export const useNotificationStore = create((set, get) => {
 
   // 🔑 Confirmación: devuelve una Promesa<boolean>
   notify.confirm = (message, options = {}) => {
-    const previous = get().notifications.find((n) => n.kind === "confirm");
+    const previous = get().notifications.find(
+      (n) => n.kind === "confirm" || n.kind === "choice",
+    );
     if (previous) {
       // Si ya hay un confirm activo, lo rechazamos antes de crear uno nuevo
-      previous.resolve(false);
+      previous.resolve(previous.kind === "choice" ? null : false);
       remove(previous.id);
     }
     return new Promise((resolve) => {
@@ -41,6 +43,27 @@ export const useNotificationStore = create((set, get) => {
         resolve, // guardamos el resolve para llamarlo desde el componente
       });
       // opcional: guardar el id en el resolve para cerrar por fuera
+      resolve.id = id;
+    });
+  };
+
+  notify.choice = (message, choices, options = {}) => {
+    const previous = get().notifications.find(
+      (n) => n.kind === "confirm" || n.kind === "choice",
+    );
+    if (previous) {
+      previous.resolve(null);
+      remove(previous.id);
+    }
+    return new Promise((resolve) => {
+      const id = push({
+        kind: "choice",
+        message,
+        type: options.type ?? "warning",
+        choices,
+        timer: 0,
+        resolve,
+      });
       resolve.id = id;
     });
   };

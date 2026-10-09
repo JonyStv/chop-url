@@ -67,9 +67,15 @@ export const useAuthStore = create((set, get) => ({
             ...get().user,
             plan_id: data?.plan?.id ?? get().user?.plan_id,
             plan_name: data?.plan?.name ?? get().user?.plan_name,
+            plan_price: data?.plan?.price ?? get().user?.plan_price,
             subscription_period_end: data?.subscription?.currentPeriodEnd ?? null,
             subscription_status: data?.subscription?.status ?? get().user?.subscription_status,
             subscription_cancel_at_period_end: data?.subscription?.cancelAtPeriodEnd ?? get().user?.subscription_cancel_at_period_end,
+            scheduled_plan_id: data?.scheduledChange?.planId ?? null,
+            scheduled_plan_name: data?.scheduledChange?.planName ?? null,
+            scheduled_plan_price: data?.scheduledChange?.price ?? null,
+            scheduled_plan_currency: data?.scheduledChange?.currency ?? null,
+            scheduled_plan_effective_at: data?.scheduledChange?.effectiveAt ?? null,
           }
         : get().user;
 

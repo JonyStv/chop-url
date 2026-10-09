@@ -9,7 +9,7 @@ const URL_REGEX =
   /^(https?:\/\/)?(([\w-]+\.)+[\w-]+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/;
 
 function Home({}) {
-  const { user, accessToken } = useAuthStore();
+  const { user } = useAuthStore();
   const [summary, setSummary] = useState({
     totalClicks: 0,
     uniqueVisitors: 0,

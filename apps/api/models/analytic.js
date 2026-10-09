@@ -47,11 +47,96 @@ export class AnalyticModel {
   }
 
   // READ
-  static async getByUserId(userid) {
-    return await prisma.analitica.findMany({
+  static async getByUserId(userid, monthlyLimit = null) {
+    const analytics = await prisma.analitica.findMany({
       where: {
         usuario_id: userid,
       },
+    });
+    const visibleIds = await this.#getVisibleCurrentMonthIds(userid, monthlyLimit);
+    return this.#applyMonthlyCap(analytics, visibleIds, monthlyLimit);
+  }
+
+  static async #getVisibleCurrentMonthIds(usuarioId, monthlyLimit) {
+    if (monthlyLimit === null || monthlyLimit === undefined) {
+      return null;
+    }
+
+    const now = new Date();
+    const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    const monthEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+    const rows = await prisma.analitica.findMany({
+      where: {
+        usuario_id: usuarioId,
+        timestamp: { gte: monthStart, lt: monthEnd },
+      },
+      select: { id: true },
+      orderBy: [{ timestamp: "asc" }, { id: "asc" }],
+      take: Math.max(0, Number(monthlyLimit)),
+    });
+
+    return new Set(rows.map((row) => row.id));
+  }
+
+  static async getVisibleCurrentMonthClicksByLink(usuarioId, monthlyLimit) {
+    if (monthlyLimit === null || monthlyLimit === undefined) {
+      return null;
+    }
+
+    const now = new Date();
+    const monthStart = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+    );
+    const monthEnd = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
+    );
+    const rows = await prisma.analitica.findMany({
+      where: {
+        usuario_id: usuarioId,
+      },
+      select: { id: true, enlace_id: true, timestamp: true },
+      orderBy: [{ timestamp: "asc" }, { id: "asc" }],
+    });
+
+    const currentMonthRows = rows.filter(
+      (row) =>
+        row.timestamp >= monthStart &&
+        row.timestamp < monthEnd,
+    );
+    const visibleCurrentMonthIds = new Set(
+      currentMonthRows
+        .slice(0, Math.max(0, Number(monthlyLimit)))
+        .map((row) => row.id),
+    );
+
+    return rows.reduce((clicksByLink, row) => {
+      const isCurrentMonth =
+        row.timestamp >= monthStart && row.timestamp < monthEnd;
+      if (!isCurrentMonth || visibleCurrentMonthIds.has(row.id)) {
+        clicksByLink.set(
+          row.enlace_id,
+          (clicksByLink.get(row.enlace_id) ?? 0) + 1,
+        );
+      }
+      return clicksByLink;
+    }, new Map());
+  }
+
+  static #applyMonthlyCap(analytics, visibleCurrentMonthIds, monthlyLimit) {
+    if (monthlyLimit === null || monthlyLimit === undefined) {
+      return analytics;
+    }
+
+    const now = new Date();
+    const monthStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1);
+    const monthEnd = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1);
+
+    return analytics.filter((entry) => {
+      const timestamp = entry.timestamp?.getTime();
+      if (timestamp === undefined || timestamp < monthStart || timestamp >= monthEnd) {
+        return true;
+      }
+      return visibleCurrentMonthIds.has(entry.id);
     });
   }
 
@@ -119,91 +204,99 @@ export class AnalyticModel {
     };
   }
 
-  // Corregido: newDate() -> new Date()
-  static #getWeekRange(referenceDate = new Date(), offsetWeeks = 0) {
-    const date = new Date(referenceDate);
-    const day = date.getDay(); // 0 (Domingo) a 6 (Sábado)
-    const diffToMonday = day === 0 ? -6 : 1 - day; // Ajuste para que el lunes sea el primer día
-    const monday = new Date(date);
-    monday.setDate(date.getDate() + diffToMonday + offsetWeeks * 7);
-    monday.setHours(0, 0, 0, 0);
+  static async getClicksOverTime(
+    usuarioId,
+    enlaceId = null,
+    { startDate, endDate } = {},
+    monthlyLimit = null,
+  ) {
+    const visibleIds = await this.#getVisibleCurrentMonthIds(usuarioId, monthlyLimit);
+    const timestamp = {};
+    if (startDate) timestamp.gte = this.#parseDateStart(startDate);
+    if (endDate) timestamp.lte = this.#parseDateEnd(endDate);
 
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    sunday.setHours(23, 59, 59, 999);
+    const rows = await prisma.analitica.findMany({
+      where: {
+        usuario_id: usuarioId,
+        ...(enlaceId ? { enlace_id: enlaceId } : {}),
+        ...(Object.keys(timestamp).length > 0 ? { timestamp } : {}),
+      },
+      select: { id: true, timestamp: true },
+      orderBy: { timestamp: "asc" },
+    });
+    const grouped = new Map();
+    this.#applyMonthlyCap(rows, visibleIds, monthlyLimit).forEach((row) => {
+      const date = row.timestamp.toISOString().split("T")[0];
+      grouped.set(date, (grouped.get(date) ?? 0) + 1);
+    });
 
-    return { start: monday, end: sunday };
+    return [...grouped.entries()].map(([fecha, clics]) => ({ fecha, clics }));
   }
 
-  // Corregido: Agregado el `return` al final
-  static async getClicksOverTime(usuarioId, enlaceId = null, dias = 30) {
-    const fechaLimite = new Date();
-    fechaLimite.setDate(fechaLimite.getDate() - Number(dias));
+  static #parseDateStart(date) {
+    const [year, month, day] = date.split("-").map(Number);
+    return new Date(year, month - 1, day, 0, 0, 0, 0);
+  }
 
-    const queryResult = await prisma.$queryRaw`
-      SELECT 
-        DATE_TRUNC('day', "timestamp") AS fecha,
-        COUNT(id) AS total_clics
-      FROM analitica
-      WHERE usuario_id = ${usuarioId}::uuid
-        AND (${enlaceId}::uuid IS NULL OR enlace_id = ${enlaceId}::uuid)
-        AND "timestamp" >= ${fechaLimite}
-      GROUP BY DATE_TRUNC('day', "timestamp")
-      ORDER BY fecha ASC;
-    `;
-
-    return queryResult.map((row) => ({
-      fecha: row.fecha.toISOString().split("T")[0],
-      clics: Number(row.total_clics),
-    }));
+  static #parseDateEnd(date) {
+    const [year, month, day] = date.split("-").map(Number);
+    return new Date(year, month - 1, day, 23, 59, 59, 999);
   }
 
   static async getSummaryByUserId(userid, linkid = null, options = {}) {
     const lid = linkid && linkid !== "all" ? linkid : null;
-    const { startDate, endDate } = options;
+    const { startDate, endDate, monthlyLimit = null } = options;
+    const visibleCurrentMonthIds = await this.#getVisibleCurrentMonthIds(
+      userid,
+      monthlyLimit,
+    );
 
-    const baseWhere = lid ? { enlace_id: lid } : { usuario_id: userid };
+    const baseWhere = {
+      usuario_id: userid,
+      ...(lid ? { enlace_id: lid } : {}),
+    };
 
     let currentStart, currentEnd;
     if (startDate) {
-      currentStart = new Date(startDate);
-      currentStart.setHours(0, 0, 0, 0);
-      // Corregido: CurrentStart -> currentStart
-      currentEnd = endDate ? new Date(endDate) : new Date(currentStart);
-      currentEnd.setHours(23, 59, 59, 999);
-    } else {
-      const range = this.#getWeekRange(new Date(), 0);
-      currentStart = range.start;
-      currentEnd = range.end;
+      currentStart = this.#parseDateStart(startDate);
+      currentEnd = endDate
+        ? this.#parseDateEnd(endDate)
+        : this.#parseDateEnd(startDate);
     }
 
-    const prevStart = new Date(currentStart);
-    prevStart.setDate(currentStart.getDate() - 7);
-    const prevEnd = new Date(currentEnd);
-    prevEnd.setDate(currentEnd.getDate() - 7);
+    const currentTimestamp = {};
+    const previousTimestamp = {};
+    if (currentStart) {
+      currentTimestamp.gte = currentStart;
+      currentTimestamp.lte = currentEnd;
 
+      const periodLength = currentEnd.getTime() - currentStart.getTime() + 1;
+      previousTimestamp.gte = new Date(currentStart.getTime() - periodLength);
+      previousTimestamp.lte = new Date(currentStart.getTime() - 1);
+    }
+
+    const currentDataPromise = prisma.analitica.findMany({
+      where: {
+        ...baseWhere,
+        ...(currentStart ? { timestamp: currentTimestamp } : {}),
+      },
+    });
+    const previousDataPromise = currentStart
+      ? prisma.analitica.findMany({
+          where: {
+            ...baseWhere,
+            timestamp: previousTimestamp,
+          },
+        })
+      : Promise.resolve([]);
     const [currentData, previousData] = await Promise.all([
-      prisma.analitica.findMany({
-        where: {
-          ...baseWhere,
-          timestamp: {
-            gte: currentStart,
-            lte: currentEnd,
-          },
-        },
-      }),
-      prisma.analitica.findMany({
-        where: {
-          ...baseWhere,
-          timestamp: {
-            gte: prevStart,
-            lte: prevEnd,
-          },
-        },
-      }),
+      currentDataPromise,
+      previousDataPromise,
     ]);
 
-    const current = this.#buildSummary(currentData);
+    const current = this.#buildSummary(
+      this.#applyMonthlyCap(currentData, visibleCurrentMonthIds, monthlyLimit),
+    );
     const previous = this.#buildSummary(previousData);
 
     const comparison = {
@@ -219,7 +312,12 @@ export class AnalyticModel {
       averageCTR: pctChange(current.averageCTR, previous.averageCTR),
     };
 
-    const clicksOverTime = await this.getClicksOverTime(userid, lid, 30);
+    const clicksOverTime = await this.getClicksOverTime(
+      userid,
+      lid,
+      { startDate, endDate },
+      monthlyLimit,
+    );
 
     return {
       ...current,

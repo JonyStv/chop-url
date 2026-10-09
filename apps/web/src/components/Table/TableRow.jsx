@@ -3,7 +3,7 @@ import React from "react";
 import { useEditStore } from "../../store/editStore.js";
 
 export function NoNamed({ enlace, mode }) {
-  const domain = import.meta.env.VITE_APP_DOMAIN || window.location.origin;
+  const domain = import.meta.env.VITE_API_URL || window.location.origin;
   const { openEditModal } = useEditStore();
   const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
   const urlAcortadaVisible = urlAcortada.replace(/https?:\/\//g, "");

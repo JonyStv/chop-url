@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { prisma } from "../config/db.js";
 import { SubscriptionModel } from "../models/subscription.js";
+import { getStripePeriodDates } from "../services/subscription.js";
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -83,12 +84,15 @@ export const stripeWebhookHandler = async (req, res) => {
           ? "cancel_at_period_end"
           : subscription.status;
 
+        const { start: currentPeriodStart, end: currentPeriodEnd } =
+          getStripePeriodDates(subscription);
+
         await SubscriptionModel.upsertForUser({
           usuarioId: userId,
           planId,
           status: statusFinal,
-          currentPeriodStart: new Date(subscription.current_period_start * 1000),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          currentPeriodStart,
+          currentPeriodEnd,
           cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),
           canceledAt: subscription.canceled_at
             ? new Date(subscription.canceled_at * 1000)

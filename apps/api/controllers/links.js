@@ -1,4 +1,5 @@
 import { LinkModel } from "../models/link.js";
+import { AnalyticModel } from "../models/analytic.js";
 import { SubscriptionService } from "../services/subscription.js";
 import { AppError } from "../utils/errors.js";
 
@@ -28,6 +29,20 @@ export class LinkController {
       limit: limitNum,
       offset: offsetNum,
     });
+    if (req.query.capMonthlyClicks === "true") {
+      const usage = await SubscriptionService.getMonthlyClickUsage(userid);
+      const visibleClicksByLink =
+        await AnalyticModel.getVisibleCurrentMonthClicksByLink(
+          userid,
+          usage.limit,
+        );
+
+      if (visibleClicksByLink) {
+        links.forEach((link) => {
+          link.total_clicks = visibleClicksByLink.get(link.id) ?? 0;
+        });
+      }
+    }
     if (!links) {
       res.status(404).json({ error: "Link not found" });
     }

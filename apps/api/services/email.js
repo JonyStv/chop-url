@@ -7,14 +7,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 
 export const sendVerification = async(email, username, rawToken) => {
-    const url = `${process.env.FRONTEND_URL}/auth/verify-email?token=${rawToken}`;
+    const url = `${process.env.BACKEND_URL}/auth/verify-email?token=${rawToken}`;
 
     const html = await render(
       createElement(VerificationEmail, { username, verifyUrl: url })
     );
 
     const { error } = await resend.emails.send({
-      from: 'StvDev <noreply@stvdev.com>',
+      from: 'ChopUrl <noreply@stvdev.com>',
       to: email,
       subject: 'Verifica tu cuenta',
       html,

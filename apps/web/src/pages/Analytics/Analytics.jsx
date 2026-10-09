@@ -10,9 +10,11 @@ import Calendar, {
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { apiJson } from "../../config/api.js";
+import { useUsage } from "../../context/UsageContext.jsx";
 
 function Analytics() {
   const { user } = useAuthStore();
+  const { usage } = useUsage();
   const userId = user?.id;
   const [loading, setLoading] = useState(false);
   const [selecterLinkOpen, setSelecterLinkOpen] = useState(false);
@@ -39,11 +41,31 @@ function Analytics() {
     },
   });
   const [links, setLinks] = useState([]);
+  const [usageWarningDismissed, setUsageWarningDismissed] = useState(false);
+
+  const usageWarningKey = userId && usage?.clicks?.period
+    ? `analytics-usage-warning:${userId}:${usage.clicks.period}`
+    : null;
+  const showUsageWarning =
+    Boolean(usage?.clicks?.hasHiddenClicks) && !usageWarningDismissed;
+
+  useEffect(() => {
+    setUsageWarningDismissed(
+      usageWarningKey ? localStorage.getItem(usageWarningKey) === "dismissed" : false,
+    );
+  }, [usageWarningKey]);
+
+  const dismissUsageWarning = () => {
+    if (usageWarningKey) {
+      localStorage.setItem(usageWarningKey, "dismissed");
+    }
+    setUsageWarningDismissed(true);
+  };
 
   useEffect(() => {
     if (!userId) return;
 
-    apiJson(`/links/${userId}`)
+    apiJson(`/links/${userId}?capMonthlyClicks=true`)
       .then((json) => {
         setLinks(json);
       })
@@ -81,8 +103,26 @@ function Analytics() {
   const handleSelectLink = (enlaceId) => {
     setSelectedLinkId((prev) => (prev === enlaceId ? null : enlaceId));
   };
+  const emailVerified = user?.email_verified_at ? true : false;
+
   return (
     <div className="analytics-page">
+      {showUsageWarning && (
+        <div className="analytics-usage-warning" role="status">
+          <span>
+            Has superado el límite mensual de tu plan. Las analíticas siguen
+            disponibles, pero no estás viendo todos los clicks registrados este
+            mes.
+          </span>
+          <button
+            type="button"
+            onClick={dismissUsageWarning}
+            aria-label="Cerrar aviso de límite mensual"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <section className="analytics-header-section">
         <div className="analytics-text">
           <h1>Analíticas</h1>
@@ -129,7 +169,7 @@ function Analytics() {
               ? `${formatDisplayDate(timeframe.startDate)} — ${formatDisplayDate(timeframe.endDate)}`
               : timeframe.startDate
                 ? `${formatDisplayDate(timeframe.startDate)} — Hoy`
-                : "Elegir Intervalo de Tiempo"}
+                : "Todo el tiempo"}
           </button>
         </div>
       </section>

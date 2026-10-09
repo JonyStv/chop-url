@@ -28,7 +28,7 @@
 .notification--info {
   background: #2563eb;
 }
-button {
+.notification-container button {
   background: none;
   border: none;
   color: inherit;
@@ -38,7 +38,7 @@ button {
   padding: 0.25rem 0.5rem;
   &:hover,
   &:focus {
-    background-color: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 .notification--confirm {
@@ -88,5 +88,17 @@ button {
   color: #fff;
   &:hover {
     background: #b91c1c;
+  }
+
+  .notification__btn--choice {
+    min-height: 2rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 0.5rem;
+    background: var(--color-button-primary);
+    color: #fff;
+  }
+
+  .notification__btn--choice:hover {
+    background: var(--color-button-primary-hover);
   }
 }

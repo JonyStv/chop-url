@@ -16,6 +16,15 @@ router.get("/me", async (req, res, next) => {
   }
 });
 
+router.get("/usage", async (req, res, next) => {
+  try {
+    const clicks = await SubscriptionService.getMonthlyClickUsage(req.user.id);
+    res.json({ clicks });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/features", async (req, res, next) => {
   try {
     const features = await SubscriptionService.getPlanFeatures(req.user.id);
@@ -72,18 +81,35 @@ router.post("/checkout", async (req, res, next) => {
 
 router.patch("/switch", async (req, res, next) => {
   try {
-    const { planId, prorationBehavior = "create_prorations" } = req.body;
+    const { planId, changeTiming } = req.body;
     if (!planId) {
       return res.status(400).json({ message: "Falta planId" });
+    }
+    if (changeTiming && !["immediate", "period_end"].includes(changeTiming)) {
+      return res.status(400).json({ message: "changeTiming no válido" });
     }
 
     const result = await SubscriptionService.switchPlan(
       req.user.id,
       planId,
-      prorationBehavior,
+      changeTiming,
     );
 
     return res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/change-preview", async (req, res, next) => {
+  try {
+    const { planId } = req.body;
+    if (!planId) {
+      return res.status(400).json({ message: "Falta planId" });
+    }
+
+    const result = await SubscriptionService.previewPlanChange(req.user.id, planId);
+    return res.json(result);
   } catch (error) {
     next(error);
   }
@@ -93,6 +119,15 @@ router.post("/billing-portal", async (req, res, next) => {
   try {
     const result = await SubscriptionService.createBillingPortalSession(req.user.id);
     res.json({ url: result.url });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/billing-summary", async (req, res, next) => {
+  try {
+    const result = await SubscriptionService.getBillingSummary(req.user.id);
+    res.json(result);
   } catch (error) {
     next(error);
   }

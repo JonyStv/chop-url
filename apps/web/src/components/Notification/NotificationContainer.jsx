@@ -20,8 +20,10 @@ export default function NotificationContainer() {
               type={n.type}
               confirmText={n.confirmText}
               cancelText={n.cancelText}
+              choices={n.choices}
               onConfirm={() => resolveConfirm(n.id, true)}
               onCancel={() => resolveConfirm(n.id, false)}
+              onChoice={(value) => resolveConfirm(n.id, value)}
             />
           );
         }

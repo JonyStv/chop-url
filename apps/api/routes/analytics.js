@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { AnalyticsController } from "../controllers/analytics.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
 
+router.use(authMiddleware);
 router.get("/:userid/summary", AnalyticsController.getSummary);
 router.get("/:userid/summary/:linkid", AnalyticsController.getSummary);
 router.get("/:userid", AnalyticsController.getByUserId);

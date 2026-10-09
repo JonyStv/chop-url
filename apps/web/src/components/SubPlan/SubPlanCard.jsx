@@ -1,7 +1,10 @@
 import "./SubPlan.css";
+import { useState } from "react";
 import { useAuthStore } from "../../store/authStore.js";
 import { useNotificationStore } from "../../store/notificationStore.js";
 import { apiJson } from "../../config/api.js";
+import PlanChangeModal from "../PlanChangeModal/PlanChangeModal.jsx";
+import { useUsage } from "../../context/UsageContext.jsx";
 
 const FEATURE_LABELS = {
   maxLinks: "Enlaces máximos",
@@ -29,19 +32,16 @@ function formatValue(key, value) {
   return value.toString();
 }
 
-export default function SubPlanCard({ plan }) {
+export default function SubPlanCard({ plan, currentPlan }) {
   const { user, refreshSubscriptionStatus } = useAuthStore();
   const notify = useNotificationStore((s) => s.notify);
-  const handleUpdatePlan = async (planId) => {
+  const { refreshUsage } = useUsage();
+  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
+
+  const handleUpdatePlan = async (planId, changeTiming) => {
     if (planId === user?.plan_id) {
       return notify.info("Ya estás suscrito a este plan");
     }
-
-    const confirmed = await notify.confirm(
-      `¿Estás seguro de que deseas cambiar al plan "${plan.name}?"`,
-    );
-
-    if (!confirmed) return;
 
     try {
       // Si el usuario tiene una suscripción activa en Stripe, usar /switch para cambio sin salir de la app
@@ -50,17 +50,25 @@ export default function SubPlanCard({ plan }) {
         ["active", "trialing", "cancel_at_period_end"].includes(user.subscription_status);
 
       if (hasActiveStripe) {
-        // Downgrade a free: cancelación diferida (proration=none)
-        const prorationBehavior = planId === "free" ? "none" : "create_prorations";
-
         const data = await apiJson("/subscriptions/switch", {
           method: "PATCH",
-          body: JSON.stringify({ planId, prorationBehavior }),
+          body: JSON.stringify({ planId, changeTiming }),
         });
+
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        }
 
         if (data) {
           await refreshSubscriptionStatus();
-          notify.success("Plan actualizado correctamente.");
+          await refreshUsage();
+          setIsChangeModalOpen(false);
+          notify.success(
+            data.downgradeScheduled || data.changeScheduled
+              ? "El cambio de plan se aplicará al final del ciclo actual."
+              : "Plan actualizado correctamente.",
+          );
         }
         return;
       }
@@ -100,7 +108,7 @@ export default function SubPlanCard({ plan }) {
 
       <button
         className={`subscribe-button ${plan.id === user?.plan_id ? "active" : ""}`}
-        onClick={() => handleUpdatePlan(plan.id)}
+        onClick={() => setIsChangeModalOpen(true)}
         disabled={plan.id === user?.plan_id}
       >
         {plan.id === user?.plan_id
@@ -120,6 +128,14 @@ export default function SubPlanCard({ plan }) {
             </li>
           ))}
       </ul>
+      {isChangeModalOpen && currentPlan && (
+        <PlanChangeModal
+          currentPlan={currentPlan}
+          plan={plan}
+          onClose={() => setIsChangeModalOpen(false)}
+          onSelect={(changeTiming) => handleUpdatePlan(plan.id, changeTiming)}
+        />
+      )}
     </div>
   );
 }

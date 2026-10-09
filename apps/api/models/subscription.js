@@ -77,23 +77,29 @@ export class SubscriptionModel {
     usuarioId,
     planId,
     status = "active",
-    currentPeriodStart,
-    currentPeriodEnd,
+    currentPeriodStart = null,
+    currentPeriodEnd = null,
     cancelAtPeriodEnd = false,
     canceledAt = null,
     stripeCustomerId = null,
     stripeSubscriptionId = null,
     stripePriceId = null,
   }) {
+    const now = new Date();
+    const startDate = currentPeriodStart ? new Date(currentPeriodStart) : now;
+    const endDate = currentPeriodEnd
+      ? new Date(currentPeriodEnd)
+      : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
     const subscription = await prisma.subscription.upsert({
       where: { usuario_id: usuarioId },
       update: {
         plan_id: planId,
         status,
-        current_period_start: currentPeriodStart,
-        current_period_end: currentPeriodEnd,
+        current_period_start: startDate,
+        current_period_end: endDate,
         cancel_at_period_end: cancelAtPeriodEnd,
-        canceled_at: canceledAt,
+        canceled_at: canceledAt ? new Date(canceledAt) : null,
         stripe_customer_id: stripeCustomerId,
         stripe_subscription_id: stripeSubscriptionId,
         stripe_price_id: stripePriceId,
@@ -102,10 +108,10 @@ export class SubscriptionModel {
         usuario_id: usuarioId,
         plan_id: planId,
         status,
-        current_period_start: currentPeriodStart,
-        current_period_end: currentPeriodEnd,
+        current_period_start: startDate,
+        current_period_end: endDate,
         cancel_at_period_end: cancelAtPeriodEnd,
-        canceled_at: canceledAt,
+        canceled_at: canceledAt ? new Date(canceledAt) : null,
         stripe_customer_id: stripeCustomerId,
         stripe_subscription_id: stripeSubscriptionId,
         stripe_price_id: stripePriceId,

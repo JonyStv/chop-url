@@ -3,12 +3,16 @@ import { lazy, Suspense, useEffect } from "react";
 import { useAuthStore } from "./store/authStore.js";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
+import { UsageProvider } from "./context/UsageContext.jsx";
 
 import "./App.css";
 const NotificationContainer = lazy(
   () => import("./components/Notification/NotificationContainer.jsx"),
 );
 const Layout = lazy(() => import("./layouts/Layout.jsx"));
+const RequireVerifiedEmail = lazy(
+  () => import("./layouts/RequireVerifiedEmail.jsx"),
+);
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
 const Links = lazy(() => import("./pages/Links/Links.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics/Analytics.jsx"));
@@ -33,11 +37,14 @@ function App() {
   return (
     <>
       <NotificationContainer />
+      <UsageProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={withSuspense(Home)} />
-          <Route path="links" element={withSuspense(Links)} />
-          <Route path="analytics" element={withSuspense(Analytics)} />
+          <Route element={withSuspense(RequireVerifiedEmail)}>
+            <Route index element={withSuspense(Home)} />
+            <Route path="links" element={withSuspense(Links)} />
+            <Route path="analytics" element={withSuspense(Analytics)} />
+          </Route>
           <Route
             path="settings"
             element={
@@ -73,6 +80,7 @@ function App() {
           }
         />
       </Routes>
+      </UsageProvider>
     </>
   );
 }
