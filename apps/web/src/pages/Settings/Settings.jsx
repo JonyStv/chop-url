@@ -69,6 +69,7 @@ function Settings() {
   const [billingSummary, setBillingSummary] = useState(null);
   const [isBillingVisible, setIsBillingVisible] = useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isRenewalModalVisible, setIsRenewalModalVisible] = useState(false);
   const [isScheduledPlanNoticeExpanded, setIsScheduledPlanNoticeExpanded] =
     useState(false);
   const subscriptionStatus = user?.subscription_status || "active";
@@ -166,6 +167,7 @@ console.log(user);
       });
 
       await refreshSubscriptionStatus();
+      setIsRenewalModalVisible(false);
       notify.success("Tu suscripción ha sido reactivada correctamente.");
     } catch (error) {
       notify(error.message || "No se pudo reactivar la suscripción.", "error");
@@ -311,7 +313,7 @@ console.log(user);
               {subCancelAtPeriodEnd && currentPlanId !== "free" && (
                 <button
                   className="upgrade-button"
-                  onClick={handleReactivateSubscription}
+                  onClick={() => setIsRenewalModalVisible(true)}
                 >
                   Reactivar suscripción
                 </button>
@@ -386,6 +388,18 @@ console.log(user);
             cancellation
             onClose={() => setIsCancelModalVisible(false)}
             onSelect={handleCancelSubscription}
+          />
+        )}
+        {isRenewalModalVisible && plan && (
+          <PlanChangeModal
+            currentPlan={{
+              ...plan,
+              periodEnd: user?.subscription_period_end,
+            }}
+            plan={plan}
+            renewal
+            onClose={() => setIsRenewalModalVisible(false)}
+            onSelect={handleReactivateSubscription}
           />
         )}
         {isBillingVisible && (

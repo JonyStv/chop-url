@@ -18,19 +18,22 @@ export default function PlanChangeModal({
   onClose,
   onSelect,
   cancellation = false,
+  renewal = false,
 }) {
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
-    if (cancellation) {
+    if (cancellation || renewal) {
       setPreview({
         currentPeriodEnd: currentPlan.periodEnd,
-        isCancellation: true,
+        isCancellation: cancellation,
+        isRenewal: renewal,
         periodEnd: {
-          description:
-            "Tu plan seguirá activo hasta el final del ciclo actual. Después se cancelará y no se realizarán nuevos cobros.",
+          description: cancellation
+            ? "Tu plan seguirá activo hasta el final del ciclo actual. Después se cancelará y no se realizarán nuevos cobros."
+            : "Tu suscripción continuará activa y se renovará al finalizar el ciclo actual.",
         },
       });
       return () => {
@@ -51,7 +54,7 @@ export default function PlanChangeModal({
     return () => {
       cancelled = true;
     };
-  }, [cancellation, currentPlan.periodEnd, plan?.id]);
+  }, [cancellation, currentPlan.periodEnd, plan?.id, renewal]);
 
   const renderTiming = (
     timing,
@@ -114,6 +117,8 @@ export default function PlanChangeModal({
             <h2 id="plan-change-title">
               {cancellation
                 ? `Cancelar ${currentPlan.name}`
+                : renewal
+                  ? `Renovar ${currentPlan.name}`
                 : `${currentPlan.name} → ${plan.name}`}
             </h2>
           </div>
@@ -126,34 +131,46 @@ export default function PlanChangeModal({
         {!preview && !error && <p>Calculando importes y condiciones...</p>}
         {preview && (
           <>
-            {!cancellation && (
+            {!cancellation && !renewal && (
               <div className="plan-change-summary">
                 <span>Precio del nuevo plan</span>
                 <strong>{preview.newPlan.price.toFixed(2)} {preview.newPlan.currency}</strong>
               </div>
             )}
+            {renewal && (
+              <div className="plan-change-summary">
+                <span>Importe del próximo ciclo</span>
+                <strong>
+                  {currentPlan.price.toFixed(2)} {currentPlan.currency}
+                </strong>
+              </div>
+            )}
             <p className="plan-change-cycle">
               El ciclo actual finaliza el <strong>{date(preview.currentPeriodEnd)}</strong>.
             </p>
-            {!cancellation && preview.paymentMethod ? (
-              <p className="plan-change-payment">
-                Método de pago:{" "}
-                {preview.paymentMethod.brand ||
-                  preview.paymentMethod.bankName ||
-                  preview.paymentMethod.type}{" "}
-                •••• {preview.paymentMethod.last4}
-              </p>
-            ) : (
-              <p className="plan-change-payment">No hay un método de pago guardado disponible.</p>
+            {!cancellation && !renewal && (
+              preview.paymentMethod ? (
+                <p className="plan-change-payment">
+                  Método de pago:{" "}
+                  {preview.paymentMethod.brand ||
+                    preview.paymentMethod.bankName ||
+                    preview.paymentMethod.type}{" "}
+                  •••• {preview.paymentMethod.last4}
+                </p>
+              ) : (
+                <p className="plan-change-payment">
+                  No hay un método de pago guardado disponible.
+                </p>
+              )
             )}
-            {!cancellation && !preview.isFreeTarget &&
+            {!cancellation && !renewal && !preview.isFreeTarget &&
               renderTiming(
                 "immediate",
                 "Aplicar ahora",
                 preview.immediate.description,
                 preview.isUpgrade ? "Pagar y actualizar" : "Cambiar ahora",
               )}
-            {!cancellation && !preview.isFreeTarget && preview.canSchedule &&
+            {!cancellation && !renewal && !preview.isFreeTarget && preview.canSchedule &&
               renderTiming(
                 "periodEnd",
                 "Aplicar al final del ciclo",
@@ -167,12 +184,12 @@ export default function PlanChangeModal({
                 aplicarlo ahora si quieres adelantarlo.
               </p>
             )}
-            {!cancellation && !preview.canSchedule && (
+            {!cancellation && !renewal && !preview.canSchedule && (
               <p className="plan-change-note">
                 La suscripción de pago se contratará mediante Stripe Checkout al continuar.
               </p>
             )}
-            {!cancellation && preview.isFreeTarget && (
+            {!cancellation && !renewal && preview.isFreeTarget && (
               <div className="plan-change-option">
                 <div>
                   <h3>Aplicar al final del ciclo</h3>
@@ -200,6 +217,27 @@ export default function PlanChangeModal({
                 </div>
                 <p className="plan-change-note">
                   No se realizará ningún reembolso automático en efectivo.
+                </p>
+              </>
+            ) : renewal ? (
+              <>
+                <div className="plan-change-option">
+                  <div>
+                    <h3>Renovar suscripción</h3>
+                    <p>{preview.periodEnd.description}</p>
+                    <p>
+                      Se mantendrá tu plan actual y sus condiciones. El
+                      siguiente cobro se realizará al comenzar el próximo
+                      ciclo.
+                    </p>
+                  </div>
+                  <button type="button" onClick={() => onSelect("renewal")}>
+                    Confirmar renovación
+                  </button>
+                </div>
+                <p className="plan-change-note">
+                  La renovación mantiene activa tu suscripción y permite que
+                  se realice el próximo cobro según tu método de pago.
                 </p>
               </>
             ) : (
