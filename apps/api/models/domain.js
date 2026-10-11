@@ -85,10 +85,10 @@ export class DomainModel {
         usuario_id: true,
         hostname: true,
         status: true,
-        sslStatus: true,
-        errorMessage: true,
-        verifiedAt: true,
-        lastCheckedAt: true,
+        ssl_status: true,
+        error_message: true,
+        verified_at: true,
+        last_checked_at: true,
       },
     });
   }

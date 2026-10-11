@@ -204,7 +204,7 @@ console.log(user);
         <SettingsForm model="profile" />
         <SettingsForm model="security" />
       </section>
-      {true && (
+      {user?.plan_id !== "free" && (
         <section className="ajustes-section domain-section">
           <DomainForm />
         </section>

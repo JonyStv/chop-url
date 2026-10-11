@@ -32,13 +32,13 @@ export class DomainController {
         dnsInstructions: {
           step1_txt: {
             type: "TXT",
-            name: `chop-url.${hostname}`,
+            name: `stvdev.${hostname}`,
             value: domain.verification_token,
           },
           step2_cname: {
             type: "CNAME",
             name: hostname,
-            value: 'chop-url.com',
+            value: 'stvdev.com',
           },
           note: 'Puede tardar hasta 48 horas en propagarse. Una vez propagado, haga clic en "Verificar dominio" para completar la verificación.',
         },

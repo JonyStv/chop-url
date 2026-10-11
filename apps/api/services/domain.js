@@ -7,8 +7,8 @@ async function emitirCertificadoSSL(domainId) {
   console.warn(`[SSL] Stub: provisioning SSL for domain ${domainId} (not yet implemented)`);
 }
 
-const VERIFY_PREFIX = 'chop-url';
-const REDIRECTOR_HOST = 'chop-url.com';
+const VERIFY_PREFIX = 'stvdev';
+const REDIRECTOR_HOST = 'stvdev.com';
 
 export class DomainNotFoundError extends Error {}
 export class DnsError extends Error {
@@ -60,11 +60,11 @@ export async function verifyDomain({ domainId, usuarioId }) {
   // 3) Activar
   const updated = await DomainModel.update(domain.id, {
     status: 'active',
-    verifiedAt: new Date(),
-    activatedAt: new Date(),
-    lastCheckedAt: new Date(),
-    errorMessage: null,
-    sslStatus: 'provisioning',
+    verified_at: new Date(),
+    activated_at: new Date(),
+    last_checked_at: new Date(),
+    error_message: null,
+    ssl_status: 'provisioning',
   });
 
   // Fire-and-forget: el service no espera
