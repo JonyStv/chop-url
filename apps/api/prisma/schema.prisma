@@ -121,7 +121,7 @@ model dominio {
 
   // Relaciones
   usuario             usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-
+  @@unique([usuario_id])
   @@index([usuario_id])
   @@index([hostname, status])
   @@map("dominio")

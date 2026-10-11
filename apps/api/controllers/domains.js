@@ -1,5 +1,6 @@
 import {DomainModel, DomainValidationError, DomainConflictError} from "../models/domain.js";
 import * as domainService from "../services/domain.js";
+import {env} from "../config/env.js";
 
 export class DomainController {
   static async getByUserId(req, res) {
@@ -19,7 +20,7 @@ export class DomainController {
     if (!domain || (usuarioId && domain.usuario_id !== usuarioId)) {
       return res.status(404).json({ message: 'Dominio no encontrado' });
     }
-    return res.json({ status: domain.status, sslStatus: domain.sslStatus });
+    return res.json({ status: domain.status, ssl_status: domain.ssl_status });
   }
 
   static async create(req, res) {
@@ -32,13 +33,13 @@ export class DomainController {
         dnsInstructions: {
           step1_txt: {
             type: "TXT",
-            name: `stvdev.${hostname}`,
+            name: `${env.redirectorPrefix}.${hostname}`,
             value: domain.verification_token,
           },
           step2_cname: {
             type: "CNAME",
             name: hostname,
-            value: 'stvdev.com',
+            value: env.redirectorHost,
           },
           note: 'Puede tardar hasta 48 horas en propagarse. Una vez propagado, haga clic en "Verificar dominio" para completar la verificación.',
         },
@@ -59,11 +60,6 @@ export class DomainController {
     const usuarioId = req.user?.id;
 
     try {
-      const existing = await DomainModel.getById(id);
-      if (!existing || (usuarioId && existing.usuario_id !== usuarioId)) {
-        return res.status(404).json({ message: 'Dominio no encontrado' });
-      }
-
       const result = await domainService.verifyDomain({
         domainId: id,
         usuarioId,

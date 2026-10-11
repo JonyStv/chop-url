@@ -1,5 +1,6 @@
 import {prisma} from "../config/db.js";
-
+import crypto from "crypto";
+import {env} from "../config/env.js";
 export class DomainValidationError extends Error {
   constructor(message) {
     super(message);
@@ -43,7 +44,7 @@ export class DomainModel {
       throw new DomainConflictError("User already has a domain");
     }
 
-    const verificationToken = `chop-url=${crypto.randomUUID()}`;
+    const verificationToken = `${env.redirectorPrefix}=${crypto.randomUUID()}`;
     const domain = await prisma.dominio.create({
       data: {
         usuario_id: userId,

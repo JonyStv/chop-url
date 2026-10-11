@@ -7,4 +7,7 @@ export const dnsProvider = {
   async resolveCname(hostname) {
     return dns.resolveCname(hostname);
   },
+  async resolve4(hostname) {
+    return dns.resolve4(hostname);
+  }
 };

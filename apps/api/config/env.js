@@ -37,6 +37,8 @@ export const env = {
   logLevel: process.env.LOG_LEVEL || "info",
   databaseUrl: process.env.DATABASE_URL,
   directDatabaseUrl: process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL,
+  redirectorHost: process.env.REDIRECTOR_HOST || "chop-url.com",
+  redirectorPrefix: process.env.REDIRECTOR_PREFIX || (process.env.REDIRECTOR_HOST ? process.env.REDIRECTOR_HOST.split(".")[0] : "chop-url"),
 };
 
 if (
