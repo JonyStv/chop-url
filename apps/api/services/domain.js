@@ -2,11 +2,7 @@
 import { DomainModel } from './../models/domain.js';
 import { dnsProvider as dns } from './../config/dns.js';
 import { env } from './../config/env.js';
-
-// TODO: replace with real SSL provisioning service
-async function emitirCertificadoSSL(domainId) {
-  console.warn(`[SSL] Stub: provisioning SSL for domain ${domainId} (not yet implemented)`);
-}
+import { emitirCertificadoSSL } from './ssl.js';
 
 const VERIFY_PREFIX = env.redirectorPrefix;
 const REDIRECTOR_HOST = env.redirectorHost;

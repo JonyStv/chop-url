@@ -20,7 +20,21 @@ export class DomainController {
     if (!domain || (usuarioId && domain.usuario_id !== usuarioId)) {
       return res.status(404).json({ message: 'Dominio no encontrado' });
     }
-    return res.json({ status: domain.status, ssl_status: domain.ssl_status });
+
+    // Si está en aprovisionamiento o activo, sincronizamos con Cloudflare
+    if (domain.ssl_status === 'provisioning' || req.query.refresh === 'true') {
+      try {
+        const { consultarEstadoSSL } = await import('../services/ssl.js');
+        const cfResult = await consultarEstadoSSL(id);
+        if (cfResult?.status) {
+          domain.ssl_status = cfResult.status;
+        }
+      } catch (err) {
+        console.warn('[getDomainStatus] Error al sincronizar SSL:', err.message);
+      }
+    }
+
+    return res.json({ status: domain.status, ssl_status: domain.ssl_status, sslStatus: domain.ssl_status });
   }
 
   static async create(req, res) {
