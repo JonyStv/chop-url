@@ -1,5 +1,6 @@
 import "./StatCard.css";
 function StatCard({ title, value, svgPath, comparisonValue }) {
+
   return (
     <article>
       <header>

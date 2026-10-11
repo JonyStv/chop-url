@@ -448,16 +448,18 @@ export class SubscriptionService {
     return { subscription, plan };
   }
 
-  static async cancelSubscription(usuarioId) {
+  static async cancelSubscription(usuarioId, cancelTiming = "period_end") {
     const current = await this.getCurrentSubscriptionForUser(usuarioId);
     const subscription = current.subscription;
+    let stripeSynced = false;
 
     // No permitir cancelar si no hay suscripción o ya está cancelada
     if (!subscription || !subscription.stripeSubscriptionId) {
       throw new AppError("No tienes una suscripción activa.", 400);
     }
 
-    // Cancelar en Stripe con efecto al fin de periodo (no inmediato)
+    const isImmediate = cancelTiming !== "period_end";
+
     if (stripe) {
       try {
         const stripeSubscription = await stripe.subscriptions.retrieve(
@@ -476,11 +478,18 @@ export class SubscriptionService {
         if (schedule) {
           await stripe.subscriptionSchedules.release(schedule.id);
         }
-        await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
-          cancel_at_period_end: true,
-          proration_behavior: "none",
-        });
 
+        if (isImmediate) {
+          // Cancelación inmediata: elimina la suscripción en Stripe al momento
+          await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
+        } else {
+          // Cancelación diferida: se mantiene activa hasta el fin del ciclo
+          await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+            cancel_at_period_end: true,
+            proration_behavior: "none",
+          });
+        }
+        stripeSynced = true;
       } catch (error) {
         console.warn(
           "No se pudo cancelar la suscripción en Stripe; se mantiene el cambio local:",
@@ -489,21 +498,36 @@ export class SubscriptionService {
       }
     }
 
-    // Marcar la suscripción con status "cancel_at_period_end" SIN cambiar el plan.
-    // El downgrade a free ocurrirá cuando Stripe envíe customer.subscription.deleted
-    // al final del período (o customer.subscription.updated si se anula antes).
-    await SubscriptionModel.upsertForUser({
-      usuarioId,
-      planId: subscription.planId, // mantener el plan actual hasta el fin de periodo
-      status: "cancel_at_period_end",
-      currentPeriodStart: subscription.currentPeriodStart,
-      currentPeriodEnd: subscription.currentPeriodEnd,
-      cancelAtPeriodEnd: true,
-      canceledAt: new Date(),
-      stripeCustomerId: subscription.stripeCustomerId ?? null,
-      stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
-      stripePriceId: subscription.stripePriceId ?? null,
-    });
+    if (isImmediate) {
+      // Cancelación inmediata: bajar al plan gratuito ya
+      await SubscriptionModel.upsertForUser({
+        usuarioId,
+        planId: "free",
+        status: "canceled",
+        currentPeriodStart: subscription.currentPeriodStart,
+        currentPeriodEnd: subscription.currentPeriodEnd,
+        cancelAtPeriodEnd: false,
+        canceledAt: new Date(),
+        stripeCustomerId: subscription.stripeCustomerId ?? null,
+        stripeSubscriptionId: null,
+        stripePriceId: null,
+      });
+    } else {
+      // Cancelación diferida: mantener el plan activo hasta el fin de periodo.
+      // El downgrade a free ocurrirá cuando Stripe envíe customer.subscription.deleted.
+      await SubscriptionModel.upsertForUser({
+        usuarioId,
+        planId: subscription.planId,
+        status: "cancel_at_period_end",
+        currentPeriodStart: subscription.currentPeriodStart,
+        currentPeriodEnd: subscription.currentPeriodEnd,
+        cancelAtPeriodEnd: true,
+        canceledAt: new Date(),
+        stripeCustomerId: subscription.stripeCustomerId ?? null,
+        stripeSubscriptionId: subscription.stripeSubscriptionId ?? null,
+        stripePriceId: subscription.stripePriceId ?? null,
+      });
+    }
 
     return this.getCurrentSubscriptionForUser(usuarioId);
   }

@@ -31,7 +31,22 @@
   padding: 0.25rem 0.6rem;
   font-size: 1.5rem;
 }
-
+.billing-modal-close {
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  font-size: 1.5rem;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: var(--shadow-elevation-1);
+  &:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+    background: var(--color-bg-canvas);
+  }
+}
 .billing-balance,
 .billing-invoice-list li {
   display: flex;

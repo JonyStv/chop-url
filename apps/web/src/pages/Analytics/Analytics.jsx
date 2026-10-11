@@ -29,7 +29,9 @@ function Analytics() {
     totalClicks: 0,
     uniqueVisitors: 0,
     primaryCountry: "N/A",
-    averageCTR: 0,
+    clicksPerVisitor: 0,
+    repeatRate: 0,
+    uniquenessRate: 0,
     countries: null,
     devices: null,
     referrers: null,
@@ -37,11 +39,14 @@ function Analytics() {
       totalClicks: 0,
       uniqueVisitors: 0,
       primaryCountryClicks: 0,
-      averageCTR: 0,
+      clicksPerVisitor: 0,
+      repeatRate: 0,
+      uniquenessRate: 0,
     },
   });
   const [links, setLinks] = useState([]);
   const [usageWarningDismissed, setUsageWarningDismissed] = useState(false);
+  const [dataBeyondLimit, setDataBeyondLimit] = useState(false);
 
   const usageWarningKey = userId && usage?.clicks?.period
     ? `analytics-usage-warning:${userId}:${usage.clicks.period}`
@@ -61,7 +66,9 @@ function Analytics() {
     }
     setUsageWarningDismissed(true);
   };
-
+  const dismissdataBeyondLimitWarning = () => {
+    setDataBeyondLimit(false);
+  };
   useEffect(() => {
     if (!userId) return;
 
@@ -79,16 +86,17 @@ function Analytics() {
     const params = new URLSearchParams();
     if (timeframe.startDate) params.set("startDate", timeframe.startDate);
     if (timeframe.endDate) params.set("endDate", timeframe.endDate);
+    params.set("planId", user?.plan_id || "free");
 
     const query = params.toString();
     if (!userId) return;
-
     apiJson(
-      `/analytics/${userId}/summary/${selectedLinkId || "all"}${query ? `?${query}` : ""}`,
+      `/analytics/${userId}/summary/${selectedLinkId || "all"}${query ? `?${query}` : ""}`
     )
       .then((json) => {
         setSummary(json);
         setLoading(false);
+        setDataBeyondLimit(json.hasDataBeyondPlanLimit );
       })
       .catch((err) => {
         console.error("Error al obtener resumen:", err);
@@ -123,6 +131,22 @@ function Analytics() {
           </button>
         </div>
       )}
+      {dataBeyondLimit && (
+        <div className="analytics-data-beyond-limit-warning" role="status">
+          <span>
+            Estás viendo datos limitados debido a tu plan actual. Considera
+            actualizar tu plan para acceder a todas las analíticas.
+          </span>
+          <button
+            type="button"
+            onClick={dismissdataBeyondLimitWarning}
+            aria-label="Cerrar aviso de datos limitados"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <section className="analytics-header-section">
         <div className="analytics-text">
           <h1>Analíticas</h1>
@@ -191,9 +215,19 @@ function Analytics() {
           comparisonValue={summary.comparison.primaryCountryClicks}
         />
         <StatCard
-          title="CTR Promedio"
-          value={summary.averageCTR}
-          comparisonValue={summary.comparison.averageCTR}
+          title="Clics por Visitante"
+          value={summary.clicksPerVisitor}
+          comparisonValue={summary.comparison.clicksPerVisitor}
+        />
+        <StatCard
+          title="Tasa de Repetición"
+          value={`${summary.repeatRate}%`}
+          comparisonValue={summary.comparison.repeatRate}
+        />
+        <StatCard
+          title="Tasa de Unicidad"
+          value={`${summary.uniquenessRate}%`}
+          comparisonValue={summary.comparison.uniquenessRate}
         />
       </section>
 

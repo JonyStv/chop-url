@@ -401,6 +401,7 @@ export const ModelName = {
   enlace: 'enlace',
   sesion: 'sesion',
   usuario: 'usuario',
+  dominio: 'dominio',
   plan: 'plan',
   subscription: 'subscription',
   stripe_event: 'stripe_event',
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "analitica" | "enlace" | "sesion" | "usuario" | "plan" | "subscription" | "stripe_event" | "usage_counter"
+    modelProps: "analitica" | "enlace" | "sesion" | "usuario" | "dominio" | "plan" | "subscription" | "stripe_event" | "usage_counter"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -717,6 +718,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.usuarioCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UsuarioCountAggregateOutputType> | number
+        }
+      }
+    }
+    dominio: {
+      payload: Prisma.$dominioPayload<ExtArgs>
+      fields: Prisma.dominioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.dominioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.dominioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        findFirst: {
+          args: Prisma.dominioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.dominioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        findMany: {
+          args: Prisma.dominioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>[]
+        }
+        create: {
+          args: Prisma.dominioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        createMany: {
+          args: Prisma.dominioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.dominioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>[]
+        }
+        delete: {
+          args: Prisma.dominioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        update: {
+          args: Prisma.dominioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        deleteMany: {
+          args: Prisma.dominioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.dominioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.dominioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>[]
+        }
+        upsert: {
+          args: Prisma.dominioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$dominioPayload>
+        }
+        aggregate: {
+          args: Prisma.DominioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDominio>
+        }
+        groupBy: {
+          args: Prisma.dominioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DominioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.dominioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DominioCountAggregateOutputType> | number
         }
       }
     }
@@ -1120,6 +1195,26 @@ export const UsuarioScalarFieldEnum = {
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
 
 
+export const DominioScalarFieldEnum = {
+  id: 'id',
+  usuario_id: 'usuario_id',
+  hostname: 'hostname',
+  verification_token: 'verification_token',
+  verification_method: 'verification_method',
+  status: 'status',
+  ssl_status: 'ssl_status',
+  is_primary: 'is_primary',
+  last_checked_at: 'last_checked_at',
+  verified_at: 'verified_at',
+  activated_at: 'activated_at',
+  error_message: 'error_message',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DominioScalarFieldEnum = (typeof DominioScalarFieldEnum)[keyof typeof DominioScalarFieldEnum]
+
+
 export const PlanScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1493,6 +1588,7 @@ export type GlobalOmitConfig = {
   enlace?: Prisma.enlaceOmit
   sesion?: Prisma.sesionOmit
   usuario?: Prisma.usuarioOmit
+  dominio?: Prisma.dominioOmit
   plan?: Prisma.planOmit
   subscription?: Prisma.subscriptionOmit
   stripe_event?: Prisma.stripe_eventOmit

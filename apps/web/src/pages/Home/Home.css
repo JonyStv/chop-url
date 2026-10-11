@@ -55,6 +55,7 @@
   font-weight: bold;
   color: var(--color-text-muted);
   text-align: center;
+  align-self: center;
 }
 .slug-input,
 .title-input {
@@ -64,6 +65,7 @@
   width: 70%;
   align-self: center;
 }
+
 .title-input {
   margin-bottom: 0.5rem;
 }
@@ -88,7 +90,7 @@
   }
   .slug-input,
   .title-input {
-    width: 95%;
+    width: 80%;
   }
   p {
     font-size: 0.9rem;

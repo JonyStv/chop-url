@@ -55,6 +55,7 @@ export const ModelName = {
   enlace: 'enlace',
   sesion: 'sesion',
   usuario: 'usuario',
+  dominio: 'dominio',
   plan: 'plan',
   subscription: 'subscription',
   stripe_event: 'stripe_event',
@@ -140,6 +141,26 @@ export const UsuarioScalarFieldEnum = {
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const DominioScalarFieldEnum = {
+  id: 'id',
+  usuario_id: 'usuario_id',
+  hostname: 'hostname',
+  verification_token: 'verification_token',
+  verification_method: 'verification_method',
+  status: 'status',
+  ssl_status: 'ssl_status',
+  is_primary: 'is_primary',
+  last_checked_at: 'last_checked_at',
+  verified_at: 'verified_at',
+  activated_at: 'activated_at',
+  error_message: 'error_message',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DominioScalarFieldEnum = (typeof DominioScalarFieldEnum)[keyof typeof DominioScalarFieldEnum]
 
 
 export const PlanScalarFieldEnum = {

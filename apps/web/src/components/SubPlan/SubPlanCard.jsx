@@ -123,7 +123,7 @@ export default function SubPlanCard({ plan, currentPlan }) {
           .filter(([feature]) => feature in FEATURE_LABELS)
           .map(([feature, value]) => (
             <li key={feature}>
-              <span className="feature-label">{FEATURE_LABELS[feature]}</span>
+              <strong className="feature-label">{FEATURE_LABELS[feature]}</strong>
               <span className="feature-value">{formatValue(feature, value)}</span>
             </li>
           ))}

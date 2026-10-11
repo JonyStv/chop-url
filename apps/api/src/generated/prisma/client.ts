@@ -62,6 +62,11 @@ export type sesion = Prisma.sesionModel
  */
 export type usuario = Prisma.usuarioModel
 /**
+ * Model dominio
+ * 
+ */
+export type dominio = Prisma.dominioModel
+/**
  * Model plan
  * 
  */

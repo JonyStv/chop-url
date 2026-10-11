@@ -103,6 +103,12 @@
     font-size: 0.8rem;
     color: var(--color-text-secondary);
   }
+  & .edit-card-info-label {
+    background-color: var(--color-button-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: var(--shadow-elevation-1);
+  }
 }
 
 /* NUEVO: Estilos para los botones */
@@ -121,6 +127,9 @@
     cursor: pointer;
     transition: all 0.2s;
     border: 1px solid transparent;
+    &:hover:not(:disabled) {
+      transform: scale(1.05);
+    }
   }
 
   /* Botón de cancelar (Secundario) */

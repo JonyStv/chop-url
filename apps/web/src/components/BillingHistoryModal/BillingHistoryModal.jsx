@@ -64,7 +64,7 @@ export default function BillingHistoryModal({ onClose }) {
       >
         <header className="billing-modal-header">
           <h2 id="billing-modal-title">Facturación</h2>
-          <button type="button" onClick={onClose} aria-label="Cerrar">×</button>
+          <button type="button" className="billing-modal-close" onClick={onClose} aria-label="Cerrar">×</button>
         </header>
         {error && <p className="billing-error">{error}</p>}
         {!summary && !error && <p>Cargando información de facturación...</p>}

@@ -23,17 +23,24 @@ export default function PlanChangeModal({
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
 
+  const isCancelAtEnd = cancellation === "cancel";
+  const isCancelNow   = cancellation === "cancelNow";
+  const isAnyCancellation = isCancelAtEnd || isCancelNow;
+
   useEffect(() => {
     let cancelled = false;
-    if (cancellation || renewal) {
+    if (isAnyCancellation || renewal) {
       setPreview({
         currentPeriodEnd: currentPlan.periodEnd,
-        isCancellation: cancellation,
+        isCancellation: isAnyCancellation,
+        isCancelNow,
         isRenewal: renewal,
         periodEnd: {
-          description: cancellation
-            ? "Tu plan seguirá activo hasta el final del ciclo actual. Después se cancelará y no se realizarán nuevos cobros."
-            : "Tu suscripción continuará activa y se renovará al finalizar el ciclo actual.",
+          description: isCancelNow
+            ? "Tu suscripción se cancelará de forma inmediata y perderás el acceso a las funciones de pago al instante."
+            : isAnyCancellation
+              ? "Tu plan seguirá activo hasta el final del ciclo actual. Después se cancelará y no se realizarán nuevos cobros."
+              : "Tu suscripción continuará activa y se renovará al finalizar el ciclo actual.",
         },
       });
       return () => {
@@ -115,11 +122,13 @@ export default function PlanChangeModal({
           <div>
             <p className="plan-change-kicker">Cambio de suscripción</p>
             <h2 id="plan-change-title">
-              {cancellation
-                ? `Cancelar ${currentPlan.name}`
-                : renewal
-                  ? `Renovar ${currentPlan.name}`
-                : `${currentPlan.name} → ${plan.name}`}
+              {isCancelNow
+                ? `Cancelar ahora ${currentPlan.name}`
+                : isCancelAtEnd
+                  ? `Cancelar ${currentPlan.name}`
+                  : renewal
+                    ? `Renovar ${currentPlan.name}`
+                    : `${currentPlan.name} → ${plan.name}`}
             </h2>
           </div>
           <button type="button" className="plan-change-close" onClick={onClose} aria-label="Cerrar">
@@ -131,7 +140,7 @@ export default function PlanChangeModal({
         {!preview && !error && <p>Calculando importes y condiciones...</p>}
         {preview && (
           <>
-            {!cancellation && !renewal && (
+            {!isAnyCancellation && !renewal && (
               <div className="plan-change-summary">
                 <span>Precio del nuevo plan</span>
                 <strong>{preview.newPlan.price.toFixed(2)} {preview.newPlan.currency}</strong>
@@ -148,7 +157,7 @@ export default function PlanChangeModal({
             <p className="plan-change-cycle">
               El ciclo actual finaliza el <strong>{date(preview.currentPeriodEnd)}</strong>.
             </p>
-            {!cancellation && !renewal && (
+            {!isAnyCancellation && !renewal && (
               preview.paymentMethod ? (
                 <p className="plan-change-payment">
                   Método de pago:{" "}
@@ -163,14 +172,14 @@ export default function PlanChangeModal({
                 </p>
               )
             )}
-            {!cancellation && !renewal && !preview.isFreeTarget &&
+            {!isAnyCancellation && !renewal && !preview.isFreeTarget &&
               renderTiming(
                 "immediate",
                 "Aplicar ahora",
                 preview.immediate.description,
                 preview.isUpgrade ? "Pagar y actualizar" : "Cambiar ahora",
               )}
-            {!cancellation && !renewal && !preview.isFreeTarget && preview.canSchedule &&
+            {!isAnyCancellation && !renewal && !preview.isFreeTarget && preview.canSchedule &&
               renderTiming(
                 "periodEnd",
                 "Aplicar al final del ciclo",
@@ -184,12 +193,12 @@ export default function PlanChangeModal({
                 aplicarlo ahora si quieres adelantarlo.
               </p>
             )}
-            {!cancellation && !renewal && !preview.canSchedule && (
+            {!isAnyCancellation && !renewal && !preview.canSchedule && (
               <p className="plan-change-note">
                 La suscripción de pago se contratará mediante Stripe Checkout al continuar.
               </p>
             )}
-            {!cancellation && !renewal && preview.isFreeTarget && (
+            {!isAnyCancellation && !renewal && preview.isFreeTarget && (
               <div className="plan-change-option">
                 <div>
                   <h3>Aplicar al final del ciclo</h3>
@@ -200,7 +209,7 @@ export default function PlanChangeModal({
                 </button>
               </div>
             )}
-            {cancellation ? (
+            {isCancelAtEnd ? (
               <>
                 <div className="plan-change-option">
                   <div>
@@ -213,6 +222,25 @@ export default function PlanChangeModal({
                   </div>
                   <button type="button" onClick={() => onSelect("period_end")}>
                     Confirmar cancelación
+                  </button>
+                </div>
+                <p className="plan-change-note">
+                  No se realizará ningún reembolso automático en efectivo.
+                </p>
+              </>
+            ) : isCancelNow ? (
+              <>
+                <div className="plan-change-option">
+                  <div>
+                    <h3>Cancelar inmediatamente</h3>
+                    <p>{preview.periodEnd.description}</p>
+                    <p>
+                      Esta acción no se puede deshacer. Perderás el acceso al
+                      plan de pago de forma inmediata.
+                    </p>
+                  </div>
+                  <button type="button" className="danger-button" onClick={() => onSelect("immediate")}>
+                    Cancelar ahora
                   </button>
                 </div>
                 <p className="plan-change-note">

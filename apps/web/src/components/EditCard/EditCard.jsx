@@ -108,8 +108,7 @@ function EditCard() {
             </label>
           </div>
           <div className="edit-card-info">
-            <span>Fecha de Creación: {fechaCreacion}</span>
-            <span>Estado: {currentLink?.estado}</span>
+            <strong className="edit-card-info-label">Fecha de Creación: {fechaCreacion}</strong>
           </div>
           <div className="edit-card-actions">
             <button type="submit" disabled={loading}>

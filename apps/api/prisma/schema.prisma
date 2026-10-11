@@ -84,7 +84,47 @@ model usuario {
   email_verification_expires_at DateTime? @map("email_verification_expires_at") @db.Timestamptz(6)
   email_verification_sent_at    DateTime? @map("email_verification_sent_at") @db.Timestamptz(6)
 
+  dominio        dominio[]
+
   @@map("usuario")
+}
+model dominio {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuario_id          String    @db.Uuid
+  hostname            String    @unique @db.VarChar(255)
+
+  // Verificación DNS
+  verification_token  String    @unique @db.VarChar(255)
+  verification_method String    @default("txt") @db.VarChar(10) // 'txt' | 'cname' | 'a'
+
+  // Estado del dominio
+  // pending     → recién creado, esperando DNS
+  // verifying   → TXT detectado, esperando propagación
+  // active      → verificado y enrutando
+  // error       → falló verificación tras N intentos
+  // suspended   → desactivado por admin
+  status              String    @default("pending") @db.VarChar(20)
+
+  // Estado SSL: pending | provisioning | active | failed
+  ssl_status          String    @default("pending") @db.VarChar(20) @map("sslStatus")
+
+  // Metadata
+  is_primary          Boolean   @default(false)
+  last_checked_at     DateTime? @map("lastCheckedAt") @db.Timestamptz(6)
+  verified_at         DateTime? @map("verifiedAt") @db.Timestamptz(6)
+  activated_at        DateTime? @map("activatedAt") @db.Timestamptz(6)
+  error_message       String?   @map("errorMessage")
+
+  // Timestamps
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime  @updatedAt @db.Timestamptz(6)
+
+  // Relaciones
+  usuario             usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  @@index([usuario_id])
+  @@index([hostname, status])
+  @@map("dominio")
 }
 model plan {
   id          String  @id @db.VarChar(50)

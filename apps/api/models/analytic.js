@@ -177,9 +177,20 @@ export class AnalyticModel {
         ? (countries.labels[1] ?? "N/A")
         : (countries.labels[0] ?? "N/A");
 
-    const averageCTR = Math.round(
-      totalClicks > 0 ? (uniqueVisitors / totalClicks) * 100 : 0,
-    );
+    const clicksPerVisitor =
+      uniqueVisitors > 0
+        ? Math.round((totalClicks / uniqueVisitors) * 100) / 100
+        : 0;
+
+    const repeatRate =
+      totalClicks > 0
+        ? Math.round(((totalClicks - uniqueVisitors) / totalClicks) * 100)
+        : 0;
+
+    const uniquenessRate =
+      totalClicks > 0
+        ? Math.round((uniqueVisitors / totalClicks) * 100)
+        : 0;
 
     const primaryCountryClicks = primaryCountry
       ? analytics.filter((a) => a.country === primaryCountry).length
@@ -190,7 +201,9 @@ export class AnalyticModel {
       uniqueVisitors,
       primaryCountry,
       primaryCountryClicks,
-      averageCTR,
+      clicksPerVisitor,
+      repeatRate,
+      uniquenessRate,
       countries,
       devices,
       referrers,
@@ -198,7 +211,9 @@ export class AnalyticModel {
         totalClicks: 0,
         uniqueVisitors: 0,
         primaryCountryClicks: 0,
-        averageCTR: 0,
+        clicksPerVisitor: 0,
+        repeatRate: 0,
+        uniquenessRate: 0,
       },
       clicksOverTime: [],
     };
@@ -209,11 +224,19 @@ export class AnalyticModel {
     enlaceId = null,
     { startDate, endDate } = {},
     monthlyLimit = null,
+    planDateLimit = null,
   ) {
     const visibleIds = await this.#getVisibleCurrentMonthIds(usuarioId, monthlyLimit);
     const timestamp = {};
     if (startDate) timestamp.gte = this.#parseDateStart(startDate);
     if (endDate) timestamp.lte = this.#parseDateEnd(endDate);
+
+    // Clamp lower bound to plan date limit
+    if (planDateLimit) {
+      if (!timestamp.gte || timestamp.gte < planDateLimit) {
+        timestamp.gte = planDateLimit;
+      }
+    }
 
     const rows = await prisma.analitica.findMany({
       where: {
@@ -242,14 +265,27 @@ export class AnalyticModel {
     const [year, month, day] = date.split("-").map(Number);
     return new Date(year, month - 1, day, 23, 59, 59, 999);
   }
+  static #getPlanDateLimit(planId) {
+    const now = new Date();
+    if (planId === "free") {
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    }
+    if (planId === "pro") {
+      return new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+    }
+    // business or unknown: no limit
+    return null;
+  }
 
-  static async getSummaryByUserId(userid, linkid = null, options = {}) {
+  static async getSummaryByUserId(userid, linkid = null, planId, options = {}) {
     const lid = linkid && linkid !== "all" ? linkid : null;
     const { startDate, endDate, monthlyLimit = null } = options;
     const visibleCurrentMonthIds = await this.#getVisibleCurrentMonthIds(
       userid,
       monthlyLimit,
     );
+
+    const planDateLimit = this.#getPlanDateLimit(planId);
 
     const baseWhere = {
       usuario_id: userid,
@@ -264,35 +300,65 @@ export class AnalyticModel {
         : this.#parseDateEnd(startDate);
     }
 
+    // Apply plan date limit: clamp currentStart to planDateLimit if needed
+    const effectiveStart = planDateLimit
+      ? currentStart && currentStart > planDateLimit
+        ? currentStart
+        : planDateLimit
+      : currentStart;
+
     const currentTimestamp = {};
     const previousTimestamp = {};
-    if (currentStart) {
-      currentTimestamp.gte = currentStart;
-      currentTimestamp.lte = currentEnd;
+    if (effectiveStart || currentEnd) {
+      if (effectiveStart) currentTimestamp.gte = effectiveStart;
+      if (currentEnd) currentTimestamp.lte = currentEnd;
 
-      const periodLength = currentEnd.getTime() - currentStart.getTime() + 1;
-      previousTimestamp.gte = new Date(currentStart.getTime() - periodLength);
-      previousTimestamp.lte = new Date(currentStart.getTime() - 1);
+      if (currentStart && currentEnd) {
+        const periodLength = currentEnd.getTime() - currentStart.getTime() + 1;
+        previousTimestamp.gte = new Date(currentStart.getTime() - periodLength);
+        previousTimestamp.lte = new Date(currentStart.getTime() - 1);
+        // Also clamp previous period to plan limit
+        if (planDateLimit && previousTimestamp.gte < planDateLimit) {
+          previousTimestamp.gte = planDateLimit;
+        }
+      }
     }
 
     const currentDataPromise = prisma.analitica.findMany({
       where: {
         ...baseWhere,
-        ...(currentStart ? { timestamp: currentTimestamp } : {}),
+        ...(Object.keys(currentTimestamp).length > 0 ? { timestamp: currentTimestamp } : {}),
       },
     });
-    const previousDataPromise = currentStart
-      ? prisma.analitica.findMany({
+
+    const previousDataPromise =
+      currentStart && currentEnd
+        ? prisma.analitica.findMany({
+            where: {
+              ...baseWhere,
+              timestamp: previousTimestamp,
+            },
+          })
+        : Promise.resolve([]);
+
+    // Check if there is any data beyond the plan date limit
+    const beyondLimitPromise = planDateLimit
+      ? prisma.analitica.findFirst({
           where: {
             ...baseWhere,
-            timestamp: previousTimestamp,
+            timestamp: { lt: planDateLimit },
           },
+          select: { id: true },
         })
-      : Promise.resolve([]);
-    const [currentData, previousData] = await Promise.all([
+      : Promise.resolve(null);
+
+    const [currentData, previousData, beyondLimitRecord] = await Promise.all([
       currentDataPromise,
       previousDataPromise,
+      beyondLimitPromise,
     ]);
+
+    const hasDataBeyondPlanLimit = beyondLimitRecord !== null;
 
     const current = this.#buildSummary(
       this.#applyMonthlyCap(currentData, visibleCurrentMonthIds, monthlyLimit),
@@ -309,7 +375,9 @@ export class AnalyticModel {
         current.primaryCountryClicks,
         previous.primaryCountryClicks,
       ),
-      averageCTR: pctChange(current.averageCTR, previous.averageCTR),
+      clicksPerVisitor: pctChange(current.clicksPerVisitor, previous.clicksPerVisitor),
+      repeatRate: pctChange(current.repeatRate, previous.repeatRate),
+      uniquenessRate: pctChange(current.uniquenessRate, previous.uniquenessRate),
     };
 
     const clicksOverTime = await this.getClicksOverTime(
@@ -317,12 +385,14 @@ export class AnalyticModel {
       lid,
       { startDate, endDate },
       monthlyLimit,
+      planDateLimit,
     );
 
     return {
       ...current,
       comparison,
       clicksOverTime,
+      hasDataBeyondPlanLimit,
     };
   }
 }

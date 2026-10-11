@@ -44,8 +44,9 @@ router.get("/can-create-link", async (req, res, next) => {
 });
 
 router.post("/cancel", async (req, res, next) => {
+  const cancelTiming = req.body.cancelTiming || "period_end";
   try {
-    const result = await SubscriptionService.cancelSubscription(req.user.id);
+    const result = await SubscriptionService.cancelSubscription(req.user.id, cancelTiming);
     res.status(200).json(result);
   } catch (error) {
     next(error);

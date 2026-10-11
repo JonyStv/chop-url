@@ -6,6 +6,7 @@ import { useNotificationStore } from "../../store/notificationStore";
 import { apiJson, apiFetch } from "../../config/api.js";
 import SubPlan from "../../components/SubPlan/SubPlan.jsx";
 import SettingsForm from "../../pages/Settings/SettingsForm.jsx";
+import DomainForm from "../../components/DomainForm/DomainForm.jsx";
 import BillingHistoryModal from "../../components/BillingHistoryModal/BillingHistoryModal.jsx";
 import PlanChangeModal from "../../components/PlanChangeModal/PlanChangeModal.jsx";
 import { useUsage } from "../../context/UsageContext.jsx";
@@ -36,12 +37,12 @@ const getPlanStatusMeta = (status = "active") => {
         "Hay un problema con tu pago; reactiva la suscripción para continuar.",
       tone: "danger",
     },
-    canceled: {
-      label: "Cancelada",
-      message:
-        "Tu suscripción está cancelada. Puedes reactivarla cuando quieras.",
-      tone: "muted",
-    },
+    // canceled: {
+    //   label: "Cancelada",
+    //   message:
+    //     "Tu suscripción está cancelada. Puedes reactivarla cuando quieras.",
+    //   tone: "muted",
+    // },
     inactive: {
       label: "Inactiva",
       message: "Tu suscripción no está activa en este momento.",
@@ -69,6 +70,7 @@ function Settings() {
   const [billingSummary, setBillingSummary] = useState(null);
   const [isBillingVisible, setIsBillingVisible] = useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isCancelNowModalVisible, setIsCancelNowModalVisible] = useState(false);
   const [isRenewalModalVisible, setIsRenewalModalVisible] = useState(false);
   const [isScheduledPlanNoticeExpanded, setIsScheduledPlanNoticeExpanded] =
     useState(false);
@@ -142,12 +144,29 @@ function Settings() {
 console.log(user);
   const handleCancelSubscription = async () => {
     try {
-      await apiJson("/subscriptions/cancel", { method: "POST" });
+      await apiJson("/subscriptions/cancel", 
+        { method: "POST" ,
+          body: JSON.stringify({ cancelTiming: "period_end" })
+        });
       await refreshSubscriptionStatus();
       setIsCancelModalVisible(false);
       notify.success(
         "Tu suscripción se ha programado para cancelarse al final del periodo.",
       );
+    } catch (error) {
+      notify(error.message || "No se pudo cancelar la suscripción.", "error");
+    }
+  };
+
+  const handleCancelNowSubscription = async () => {
+    try {
+      await apiJson("/subscriptions/cancel", 
+        { method: "POST",
+          body: JSON.stringify({ cancelTiming: "immediate" })
+         });
+      await refreshSubscriptionStatus();
+      setIsCancelNowModalVisible(false);
+      notify.success("Tu suscripción ha sido cancelada de forma inmediata.");
     } catch (error) {
       notify(error.message || "No se pudo cancelar la suscripción.", "error");
     }
@@ -185,7 +204,11 @@ console.log(user);
         <SettingsForm model="profile" />
         <SettingsForm model="security" />
       </section>
-
+      {true && (
+        <section className="ajustes-section domain-section">
+          <DomainForm />
+        </section>
+      )}
       <section className="ajustes-section subscription-section">
         <header className="subscription-header">
           <h3>Suscripción</h3>
@@ -267,40 +290,11 @@ console.log(user);
 
             <div className="subscription-actions">
               <button
-                className="upgrade-button"
+                className="upgrade-button switch-plan-button"
                 onClick={() => setIsSubVisible((v) => !v)}
               >
                 {isSubVisible ? "Ocultar planes" : "Actualizar Plan"}
               </button>
-              <button
-                className="upgrade-button"
-                onClick={() => setIsBillingVisible(true)}
-              >
-                Ver pagos y próximo cobro
-              </button>
-              {/* Botón para gestionar la facturación (Unavailable) */}
-              {!isFree && false && (
-                <button
-                  className="upgrade-button"
-                  onClick={async () => {
-                    try {
-                      const data = await apiJson("/subscriptions/billing-portal", {
-                        method: "POST",
-                      });
-                      if (data?.url) {
-                        window.location.href = data.url;
-                      } else {
-                        notify.error("No se pudo abrir el portal de facturación");
-                      }
-                    } catch (error) {
-                      notify.error(error.message || "No se pudo abrir el portal de facturación");
-                    }
-                  }}
-                >
-                  Gestionar facturación
-                </button>
-              )}
-
               {!subCancelAtPeriodEnd && !isFree && (
                 <button
                   className="upgrade-button danger-button"
@@ -309,15 +303,29 @@ console.log(user);
                   Cancelar suscripción
                 </button>
               )}
-
               {subCancelAtPeriodEnd && currentPlanId !== "free" && (
                 <button
-                  className="upgrade-button"
+                  className="upgrade-button reactivate-button"
                   onClick={() => setIsRenewalModalVisible(true)}
                 >
                   Reactivar suscripción
                 </button>
               )}
+              {subCancelAtPeriodEnd && currentPlanId !== "free" && (
+                <button
+                  className="upgrade-button danger-button"
+                  onClick={() => setIsCancelNowModalVisible(true)}
+                >
+                  Cancelar ahora
+                </button>
+              )}
+              <button
+                className="upgrade-button billing-button"
+                onClick={() => setIsBillingVisible(true)}
+              >
+                Ver Facturación
+              </button>
+
             </div>
           </div>
 
@@ -385,9 +393,21 @@ console.log(user);
               periodEnd: user?.subscription_period_end,
             }}
             plan={plan}
-            cancellation
+            cancellation="cancel"
             onClose={() => setIsCancelModalVisible(false)}
             onSelect={handleCancelSubscription}
+          />
+        )}
+        {isCancelNowModalVisible && plan && (
+          <PlanChangeModal
+            currentPlan={{
+              ...plan,
+              periodEnd: user?.subscription_period_end,
+            }}
+            plan={plan}
+            cancellation="cancelNow"
+            onClose={() => setIsCancelNowModalVisible(false)}
+            onSelect={handleCancelNowSubscription}
           />
         )}
         {isRenewalModalVisible && plan && (

@@ -21,9 +21,10 @@ export class AnalyticsController {
     if (req.user && req.user.id !== userid) {
       throw new AppError("No puedes consultar analíticas de otro usuario.", 403);
     }
+    const planId = req.user?.plan_id ?? "free";
     const usage = await SubscriptionService.getMonthlyClickUsage(userid);
     const { startDate, endDate } = req.query;
-    const summary = await AnalyticModel.getSummaryByUserId(userid, linkid, {
+    const summary = await AnalyticModel.getSummaryByUserId(userid, linkid, planId, {
       startDate,
       endDate,
       monthlyLimit: usage.limit,

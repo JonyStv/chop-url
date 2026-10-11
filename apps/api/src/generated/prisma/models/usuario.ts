@@ -297,6 +297,7 @@ export type usuarioWhereInput = {
   sesion?: Prisma.SesionListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.subscriptionWhereInput> | null
   usage_counter?: Prisma.Usage_counterListRelationFilter
+  dominio?: Prisma.DominioListRelationFilter
 }
 
 export type usuarioOrderByWithRelationInput = {
@@ -319,6 +320,7 @@ export type usuarioOrderByWithRelationInput = {
   sesion?: Prisma.sesionOrderByRelationAggregateInput
   subscription?: Prisma.subscriptionOrderByWithRelationInput
   usage_counter?: Prisma.usage_counterOrderByRelationAggregateInput
+  dominio?: Prisma.dominioOrderByRelationAggregateInput
 }
 
 export type usuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -344,6 +346,7 @@ export type usuarioWhereUniqueInput = Prisma.AtLeast<{
   sesion?: Prisma.SesionListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.subscriptionWhereInput> | null
   usage_counter?: Prisma.Usage_counterListRelationFilter
+  dominio?: Prisma.DominioListRelationFilter
 }, "id" | "email" | "email_verification_token_hash">
 
 export type usuarioOrderByWithAggregationInput = {
@@ -408,6 +411,7 @@ export type usuarioCreateInput = {
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateInput = {
@@ -430,6 +434,7 @@ export type usuarioUncheckedCreateInput = {
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUpdateInput = {
@@ -452,6 +457,7 @@ export type usuarioUpdateInput = {
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateInput = {
@@ -474,6 +480,7 @@ export type usuarioUncheckedUpdateInput = {
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioCreateManyInput = {
@@ -647,6 +654,20 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type usuarioCreateNestedOneWithoutDominioInput = {
+  create?: Prisma.XOR<Prisma.usuarioCreateWithoutDominioInput, Prisma.usuarioUncheckedCreateWithoutDominioInput>
+  connectOrCreate?: Prisma.usuarioCreateOrConnectWithoutDominioInput
+  connect?: Prisma.usuarioWhereUniqueInput
+}
+
+export type usuarioUpdateOneRequiredWithoutDominioNestedInput = {
+  create?: Prisma.XOR<Prisma.usuarioCreateWithoutDominioInput, Prisma.usuarioUncheckedCreateWithoutDominioInput>
+  connectOrCreate?: Prisma.usuarioCreateOrConnectWithoutDominioInput
+  upsert?: Prisma.usuarioUpsertWithoutDominioInput
+  connect?: Prisma.usuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.usuarioUpdateToOneWithWhereWithoutDominioInput, Prisma.usuarioUpdateWithoutDominioInput>, Prisma.usuarioUncheckedUpdateWithoutDominioInput>
+}
+
 export type usuarioCreateNestedOneWithoutSubscriptionInput = {
   create?: Prisma.XOR<Prisma.usuarioCreateWithoutSubscriptionInput, Prisma.usuarioUncheckedCreateWithoutSubscriptionInput>
   connectOrCreate?: Prisma.usuarioCreateOrConnectWithoutSubscriptionInput
@@ -694,6 +715,7 @@ export type usuarioCreateWithoutAnaliticaInput = {
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateWithoutAnaliticaInput = {
@@ -715,6 +737,7 @@ export type usuarioUncheckedCreateWithoutAnaliticaInput = {
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioCreateOrConnectWithoutAnaliticaInput = {
@@ -752,6 +775,7 @@ export type usuarioUpdateWithoutAnaliticaInput = {
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateWithoutAnaliticaInput = {
@@ -773,6 +797,7 @@ export type usuarioUncheckedUpdateWithoutAnaliticaInput = {
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioCreateWithoutEnlaceInput = {
@@ -794,6 +819,7 @@ export type usuarioCreateWithoutEnlaceInput = {
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateWithoutEnlaceInput = {
@@ -815,6 +841,7 @@ export type usuarioUncheckedCreateWithoutEnlaceInput = {
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioCreateOrConnectWithoutEnlaceInput = {
@@ -852,6 +879,7 @@ export type usuarioUpdateWithoutEnlaceInput = {
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateWithoutEnlaceInput = {
@@ -873,6 +901,7 @@ export type usuarioUncheckedUpdateWithoutEnlaceInput = {
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioCreateWithoutSesionInput = {
@@ -894,6 +923,7 @@ export type usuarioCreateWithoutSesionInput = {
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateWithoutSesionInput = {
@@ -915,6 +945,7 @@ export type usuarioUncheckedCreateWithoutSesionInput = {
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioCreateOrConnectWithoutSesionInput = {
@@ -952,6 +983,7 @@ export type usuarioUpdateWithoutSesionInput = {
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateWithoutSesionInput = {
@@ -971,6 +1003,111 @@ export type usuarioUncheckedUpdateWithoutSesionInput = {
   email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
+  subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
+  usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type usuarioCreateWithoutDominioInput = {
+  id?: string
+  email: string
+  password: string
+  nombre: string
+  fecha_registro?: Date | string
+  plan?: string
+  limite_enlaces?: number
+  enlaces_creados?: number
+  activo?: boolean
+  plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
+  analitica?: Prisma.analiticaCreateNestedManyWithoutUsuarioInput
+  enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
+  sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
+  subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
+  usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+}
+
+export type usuarioUncheckedCreateWithoutDominioInput = {
+  id?: string
+  email: string
+  password: string
+  nombre: string
+  fecha_registro?: Date | string
+  plan?: string
+  limite_enlaces?: number
+  enlaces_creados?: number
+  activo?: boolean
+  plan_id?: string
+  email_verified_at?: Date | string | null
+  email_verification_token_hash?: string | null
+  email_verification_expires_at?: Date | string | null
+  email_verification_sent_at?: Date | string | null
+  analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutUsuarioInput
+  enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
+  sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
+  subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
+  usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type usuarioCreateOrConnectWithoutDominioInput = {
+  where: Prisma.usuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.usuarioCreateWithoutDominioInput, Prisma.usuarioUncheckedCreateWithoutDominioInput>
+}
+
+export type usuarioUpsertWithoutDominioInput = {
+  update: Prisma.XOR<Prisma.usuarioUpdateWithoutDominioInput, Prisma.usuarioUncheckedUpdateWithoutDominioInput>
+  create: Prisma.XOR<Prisma.usuarioCreateWithoutDominioInput, Prisma.usuarioUncheckedCreateWithoutDominioInput>
+  where?: Prisma.usuarioWhereInput
+}
+
+export type usuarioUpdateToOneWithWhereWithoutDominioInput = {
+  where?: Prisma.usuarioWhereInput
+  data: Prisma.XOR<Prisma.usuarioUpdateWithoutDominioInput, Prisma.usuarioUncheckedUpdateWithoutDominioInput>
+}
+
+export type usuarioUpdateWithoutDominioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  analitica?: Prisma.analiticaUpdateManyWithoutUsuarioNestedInput
+  enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
+  sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
+  subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
+  usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+}
+
+export type usuarioUncheckedUpdateWithoutDominioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  fecha_registro?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_enlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  enlaces_creados?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan_id?: Prisma.StringFieldUpdateOperationsInput | string
+  email_verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_token_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email_verification_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_verification_sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  analitica?: Prisma.analiticaUncheckedUpdateManyWithoutUsuarioNestedInput
+  enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
 }
@@ -994,6 +1131,7 @@ export type usuarioCreateWithoutSubscriptionInput = {
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateWithoutSubscriptionInput = {
@@ -1015,6 +1153,7 @@ export type usuarioUncheckedCreateWithoutSubscriptionInput = {
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   usage_counter?: Prisma.usage_counterUncheckedCreateNestedManyWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioCreateOrConnectWithoutSubscriptionInput = {
@@ -1052,6 +1191,7 @@ export type usuarioUpdateWithoutSubscriptionInput = {
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateWithoutSubscriptionInput = {
@@ -1073,6 +1213,7 @@ export type usuarioUncheckedUpdateWithoutSubscriptionInput = {
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   usage_counter?: Prisma.usage_counterUncheckedUpdateManyWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioCreateWithoutUsage_counterInput = {
@@ -1094,6 +1235,7 @@ export type usuarioCreateWithoutUsage_counterInput = {
   enlace?: Prisma.enlaceCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionCreateNestedOneWithoutUsuarioInput
+  dominio?: Prisma.dominioCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioUncheckedCreateWithoutUsage_counterInput = {
@@ -1115,6 +1257,7 @@ export type usuarioUncheckedCreateWithoutUsage_counterInput = {
   enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutUsuarioInput
   sesion?: Prisma.sesionUncheckedCreateNestedManyWithoutUsuarioInput
   subscription?: Prisma.subscriptionUncheckedCreateNestedOneWithoutUsuarioInput
+  dominio?: Prisma.dominioUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type usuarioCreateOrConnectWithoutUsage_counterInput = {
@@ -1152,6 +1295,7 @@ export type usuarioUpdateWithoutUsage_counterInput = {
   enlace?: Prisma.enlaceUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUpdateOneWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUpdateManyWithoutUsuarioNestedInput
 }
 
 export type usuarioUncheckedUpdateWithoutUsage_counterInput = {
@@ -1173,6 +1317,7 @@ export type usuarioUncheckedUpdateWithoutUsage_counterInput = {
   enlace?: Prisma.enlaceUncheckedUpdateManyWithoutUsuarioNestedInput
   sesion?: Prisma.sesionUncheckedUpdateManyWithoutUsuarioNestedInput
   subscription?: Prisma.subscriptionUncheckedUpdateOneWithoutUsuarioNestedInput
+  dominio?: Prisma.dominioUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 
@@ -1185,6 +1330,7 @@ export type UsuarioCountOutputType = {
   enlace: number
   sesion: number
   usage_counter: number
+  dominio: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1192,6 +1338,7 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   enlace?: boolean | UsuarioCountOutputTypeCountEnlaceArgs
   sesion?: boolean | UsuarioCountOutputTypeCountSesionArgs
   usage_counter?: boolean | UsuarioCountOutputTypeCountUsage_counterArgs
+  dominio?: boolean | UsuarioCountOutputTypeCountDominioArgs
 }
 
 /**
@@ -1232,6 +1379,13 @@ export type UsuarioCountOutputTypeCountUsage_counterArgs<ExtArgs extends runtime
   where?: Prisma.usage_counterWhereInput
 }
 
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountDominioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.dominioWhereInput
+}
+
 
 export type usuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1253,6 +1407,7 @@ export type usuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sesion?: boolean | Prisma.usuario$sesionArgs<ExtArgs>
   subscription?: boolean | Prisma.usuario$subscriptionArgs<ExtArgs>
   usage_counter?: boolean | Prisma.usuario$usage_counterArgs<ExtArgs>
+  dominio?: boolean | Prisma.usuario$dominioArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -1314,6 +1469,7 @@ export type usuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   sesion?: boolean | Prisma.usuario$sesionArgs<ExtArgs>
   subscription?: boolean | Prisma.usuario$subscriptionArgs<ExtArgs>
   usage_counter?: boolean | Prisma.usuario$usage_counterArgs<ExtArgs>
+  dominio?: boolean | Prisma.usuario$dominioArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type usuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1327,6 +1483,7 @@ export type $usuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     sesion: Prisma.$sesionPayload<ExtArgs>[]
     subscription: Prisma.$subscriptionPayload<ExtArgs> | null
     usage_counter: Prisma.$usage_counterPayload<ExtArgs>[]
+    dominio: Prisma.$dominioPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1742,6 +1899,7 @@ export interface Prisma__usuarioClient<T, Null = never, ExtArgs extends runtime.
   sesion<T extends Prisma.usuario$sesionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuario$sesionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$sesionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscription<T extends Prisma.usuario$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuario$subscriptionArgs<ExtArgs>>): Prisma.Prisma__subscriptionClient<runtime.Types.Result.GetResult<Prisma.$subscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   usage_counter<T extends Prisma.usuario$usage_counterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuario$usage_counterArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$usage_counterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dominio<T extends Prisma.usuario$dominioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuario$dominioArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$dominioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2290,6 +2448,30 @@ export type usuario$usage_counterArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.Usage_counterScalarFieldEnum | Prisma.Usage_counterScalarFieldEnum[]
+}
+
+/**
+ * usuario.dominio
+ */
+export type usuario$dominioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the dominio
+   */
+  select?: Prisma.dominioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the dominio
+   */
+  omit?: Prisma.dominioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.dominioInclude<ExtArgs> | null
+  where?: Prisma.dominioWhereInput
+  orderBy?: Prisma.dominioOrderByWithRelationInput | Prisma.dominioOrderByWithRelationInput[]
+  cursor?: Prisma.dominioWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DominioScalarFieldEnum | Prisma.DominioScalarFieldEnum[]
 }
 
 /**

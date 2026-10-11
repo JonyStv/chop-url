@@ -49,6 +49,40 @@ function Links({}) {
   const handleTextChange = (event) => {
     setSearchTerm(event.target.value);
   };
+  const clearData = () => {
+    const data = filteredEnlaces.map((enlace) => ({
+      titulo: enlace.titulo,
+      url_original: enlace.url_original,
+      slug: enlace.slug,
+      totalClicks: enlace.total_clicks,
+      estado: enlace.estado,
+      fecha_creacion: enlace.fecha_creacion,
+    }));
+    return data;
+  };
+  const jsonToCSV = (jsonData) => {
+    if (!jsonData.length) return "";
+
+    const headers = Object.keys(jsonData[0]).join(",");
+    const rows = jsonData.map((obj) =>
+      Object.values(obj)
+        .map((val) => `"${val}"`)
+        .join(",")
+    );
+
+    return `${headers}\n${rows.join("\n")}`;
+  };
+  const handleExport = () => {
+    const csvData = jsonToCSV(clearData());
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "enlaces_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="links-page">
@@ -58,7 +92,7 @@ function Links({}) {
           <p>Visualiza, filtra y administra todos tus enlaces acortados.</p>
         </div>
         <div className="enlaces-buttons">
-          <button type="button" className="export-button">
+          <button type="button" className="export-button" onClick={handleExport}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -116,7 +150,7 @@ function Links({}) {
         <InputForm
           svgPath="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0 M21 21l-6 -6"
           type="search"
-          placeholder="Busca tu enlace acortado o original aquí"
+          placeholder="Busca tu slug o enlace aquí"
           name="search"
           value={searchTerm}
           onSubmit={handleSubmit}
