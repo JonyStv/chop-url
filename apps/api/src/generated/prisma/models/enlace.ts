@@ -37,6 +37,7 @@ export type EnlaceSumAggregateOutputType = {
 export type EnlaceMinAggregateOutputType = {
   id: string | null
   usuario_id: string | null
+  dominio_id: string | null
   slug: string | null
   url_original: string | null
   titulo: string | null
@@ -48,6 +49,7 @@ export type EnlaceMinAggregateOutputType = {
 export type EnlaceMaxAggregateOutputType = {
   id: string | null
   usuario_id: string | null
+  dominio_id: string | null
   slug: string | null
   url_original: string | null
   titulo: string | null
@@ -59,6 +61,7 @@ export type EnlaceMaxAggregateOutputType = {
 export type EnlaceCountAggregateOutputType = {
   id: number
   usuario_id: number
+  dominio_id: number
   slug: number
   url_original: number
   titulo: number
@@ -80,6 +83,7 @@ export type EnlaceSumAggregateInputType = {
 export type EnlaceMinAggregateInputType = {
   id?: true
   usuario_id?: true
+  dominio_id?: true
   slug?: true
   url_original?: true
   titulo?: true
@@ -91,6 +95,7 @@ export type EnlaceMinAggregateInputType = {
 export type EnlaceMaxAggregateInputType = {
   id?: true
   usuario_id?: true
+  dominio_id?: true
   slug?: true
   url_original?: true
   titulo?: true
@@ -102,6 +107,7 @@ export type EnlaceMaxAggregateInputType = {
 export type EnlaceCountAggregateInputType = {
   id?: true
   usuario_id?: true
+  dominio_id?: true
   slug?: true
   url_original?: true
   titulo?: true
@@ -200,6 +206,7 @@ export type enlaceGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type EnlaceGroupByOutputType = {
   id: string
   usuario_id: string
+  dominio_id: string | null
   slug: string
   url_original: string
   titulo: string | null
@@ -234,6 +241,7 @@ export type enlaceWhereInput = {
   NOT?: Prisma.enlaceWhereInput | Prisma.enlaceWhereInput[]
   id?: Prisma.UuidFilter<"enlace"> | string
   usuario_id?: Prisma.UuidFilter<"enlace"> | string
+  dominio_id?: Prisma.UuidNullableFilter<"enlace"> | string | null
   slug?: Prisma.StringFilter<"enlace"> | string
   url_original?: Prisma.StringFilter<"enlace"> | string
   titulo?: Prisma.StringNullableFilter<"enlace"> | string | null
@@ -242,11 +250,13 @@ export type enlaceWhereInput = {
   total_clicks?: Prisma.IntNullableFilter<"enlace"> | number | null
   analitica?: Prisma.AnaliticaListRelationFilter
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.usuarioWhereInput>
+  dominio?: Prisma.XOR<Prisma.DominioNullableScalarRelationFilter, Prisma.dominioWhereInput> | null
 }
 
 export type enlaceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  dominio_id?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrder
   url_original?: Prisma.SortOrder
   titulo?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -255,6 +265,7 @@ export type enlaceOrderByWithRelationInput = {
   total_clicks?: Prisma.SortOrderInput | Prisma.SortOrder
   analitica?: Prisma.analiticaOrderByRelationAggregateInput
   usuario?: Prisma.usuarioOrderByWithRelationInput
+  dominio?: Prisma.dominioOrderByWithRelationInput
 }
 
 export type enlaceWhereUniqueInput = Prisma.AtLeast<{
@@ -264,6 +275,7 @@ export type enlaceWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.enlaceWhereInput[]
   NOT?: Prisma.enlaceWhereInput | Prisma.enlaceWhereInput[]
   usuario_id?: Prisma.UuidFilter<"enlace"> | string
+  dominio_id?: Prisma.UuidNullableFilter<"enlace"> | string | null
   url_original?: Prisma.StringFilter<"enlace"> | string
   titulo?: Prisma.StringNullableFilter<"enlace"> | string | null
   fecha_creacion?: Prisma.DateTimeNullableFilter<"enlace"> | Date | string | null
@@ -271,11 +283,13 @@ export type enlaceWhereUniqueInput = Prisma.AtLeast<{
   total_clicks?: Prisma.IntNullableFilter<"enlace"> | number | null
   analitica?: Prisma.AnaliticaListRelationFilter
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.usuarioWhereInput>
+  dominio?: Prisma.XOR<Prisma.DominioNullableScalarRelationFilter, Prisma.dominioWhereInput> | null
 }, "id" | "slug">
 
 export type enlaceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  dominio_id?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrder
   url_original?: Prisma.SortOrder
   titulo?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -295,6 +309,7 @@ export type enlaceScalarWhereWithAggregatesInput = {
   NOT?: Prisma.enlaceScalarWhereWithAggregatesInput | Prisma.enlaceScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"enlace"> | string
   usuario_id?: Prisma.UuidWithAggregatesFilter<"enlace"> | string
+  dominio_id?: Prisma.UuidNullableWithAggregatesFilter<"enlace"> | string | null
   slug?: Prisma.StringWithAggregatesFilter<"enlace"> | string
   url_original?: Prisma.StringWithAggregatesFilter<"enlace"> | string
   titulo?: Prisma.StringNullableWithAggregatesFilter<"enlace"> | string | null
@@ -313,11 +328,13 @@ export type enlaceCreateInput = {
   total_clicks?: number | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutEnlaceInput
   usuario: Prisma.usuarioCreateNestedOneWithoutEnlaceInput
+  dominio?: Prisma.dominioCreateNestedOneWithoutEnlaceInput
 }
 
 export type enlaceUncheckedCreateInput = {
   id?: string
   usuario_id: string
+  dominio_id?: string | null
   slug: string
   url_original: string
   titulo?: string | null
@@ -337,11 +354,13 @@ export type enlaceUpdateInput = {
   total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   analitica?: Prisma.analiticaUpdateManyWithoutEnlaceNestedInput
   usuario?: Prisma.usuarioUpdateOneRequiredWithoutEnlaceNestedInput
+  dominio?: Prisma.dominioUpdateOneWithoutEnlaceNestedInput
 }
 
 export type enlaceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
+  dominio_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   url_original?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -354,6 +373,7 @@ export type enlaceUncheckedUpdateInput = {
 export type enlaceCreateManyInput = {
   id?: string
   usuario_id: string
+  dominio_id?: string | null
   slug: string
   url_original: string
   titulo?: string | null
@@ -375,6 +395,7 @@ export type enlaceUpdateManyMutationInput = {
 export type enlaceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
+  dominio_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   url_original?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -391,6 +412,7 @@ export type EnlaceScalarRelationFilter = {
 export type enlaceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  dominio_id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   url_original?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
@@ -406,6 +428,7 @@ export type enlaceAvgOrderByAggregateInput = {
 export type enlaceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  dominio_id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   url_original?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
@@ -417,6 +440,7 @@ export type enlaceMaxOrderByAggregateInput = {
 export type enlaceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuario_id?: Prisma.SortOrder
+  dominio_id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   url_original?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
@@ -503,6 +527,48 @@ export type enlaceUncheckedUpdateManyWithoutUsuarioNestedInput = {
   deleteMany?: Prisma.enlaceScalarWhereInput | Prisma.enlaceScalarWhereInput[]
 }
 
+export type enlaceCreateNestedManyWithoutDominioInput = {
+  create?: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput> | Prisma.enlaceCreateWithoutDominioInput[] | Prisma.enlaceUncheckedCreateWithoutDominioInput[]
+  connectOrCreate?: Prisma.enlaceCreateOrConnectWithoutDominioInput | Prisma.enlaceCreateOrConnectWithoutDominioInput[]
+  createMany?: Prisma.enlaceCreateManyDominioInputEnvelope
+  connect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+}
+
+export type enlaceUncheckedCreateNestedManyWithoutDominioInput = {
+  create?: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput> | Prisma.enlaceCreateWithoutDominioInput[] | Prisma.enlaceUncheckedCreateWithoutDominioInput[]
+  connectOrCreate?: Prisma.enlaceCreateOrConnectWithoutDominioInput | Prisma.enlaceCreateOrConnectWithoutDominioInput[]
+  createMany?: Prisma.enlaceCreateManyDominioInputEnvelope
+  connect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+}
+
+export type enlaceUpdateManyWithoutDominioNestedInput = {
+  create?: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput> | Prisma.enlaceCreateWithoutDominioInput[] | Prisma.enlaceUncheckedCreateWithoutDominioInput[]
+  connectOrCreate?: Prisma.enlaceCreateOrConnectWithoutDominioInput | Prisma.enlaceCreateOrConnectWithoutDominioInput[]
+  upsert?: Prisma.enlaceUpsertWithWhereUniqueWithoutDominioInput | Prisma.enlaceUpsertWithWhereUniqueWithoutDominioInput[]
+  createMany?: Prisma.enlaceCreateManyDominioInputEnvelope
+  set?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  disconnect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  delete?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  connect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  update?: Prisma.enlaceUpdateWithWhereUniqueWithoutDominioInput | Prisma.enlaceUpdateWithWhereUniqueWithoutDominioInput[]
+  updateMany?: Prisma.enlaceUpdateManyWithWhereWithoutDominioInput | Prisma.enlaceUpdateManyWithWhereWithoutDominioInput[]
+  deleteMany?: Prisma.enlaceScalarWhereInput | Prisma.enlaceScalarWhereInput[]
+}
+
+export type enlaceUncheckedUpdateManyWithoutDominioNestedInput = {
+  create?: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput> | Prisma.enlaceCreateWithoutDominioInput[] | Prisma.enlaceUncheckedCreateWithoutDominioInput[]
+  connectOrCreate?: Prisma.enlaceCreateOrConnectWithoutDominioInput | Prisma.enlaceCreateOrConnectWithoutDominioInput[]
+  upsert?: Prisma.enlaceUpsertWithWhereUniqueWithoutDominioInput | Prisma.enlaceUpsertWithWhereUniqueWithoutDominioInput[]
+  createMany?: Prisma.enlaceCreateManyDominioInputEnvelope
+  set?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  disconnect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  delete?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  connect?: Prisma.enlaceWhereUniqueInput | Prisma.enlaceWhereUniqueInput[]
+  update?: Prisma.enlaceUpdateWithWhereUniqueWithoutDominioInput | Prisma.enlaceUpdateWithWhereUniqueWithoutDominioInput[]
+  updateMany?: Prisma.enlaceUpdateManyWithWhereWithoutDominioInput | Prisma.enlaceUpdateManyWithWhereWithoutDominioInput[]
+  deleteMany?: Prisma.enlaceScalarWhereInput | Prisma.enlaceScalarWhereInput[]
+}
+
 export type enlaceCreateWithoutAnaliticaInput = {
   id?: string
   slug: string
@@ -512,11 +578,13 @@ export type enlaceCreateWithoutAnaliticaInput = {
   estado?: string
   total_clicks?: number | null
   usuario: Prisma.usuarioCreateNestedOneWithoutEnlaceInput
+  dominio?: Prisma.dominioCreateNestedOneWithoutEnlaceInput
 }
 
 export type enlaceUncheckedCreateWithoutAnaliticaInput = {
   id?: string
   usuario_id: string
+  dominio_id?: string | null
   slug: string
   url_original: string
   titulo?: string | null
@@ -550,11 +618,13 @@ export type enlaceUpdateWithoutAnaliticaInput = {
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   usuario?: Prisma.usuarioUpdateOneRequiredWithoutEnlaceNestedInput
+  dominio?: Prisma.dominioUpdateOneWithoutEnlaceNestedInput
 }
 
 export type enlaceUncheckedUpdateWithoutAnaliticaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
+  dominio_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   url_original?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -572,10 +642,12 @@ export type enlaceCreateWithoutUsuarioInput = {
   estado?: string
   total_clicks?: number | null
   analitica?: Prisma.analiticaCreateNestedManyWithoutEnlaceInput
+  dominio?: Prisma.dominioCreateNestedOneWithoutEnlaceInput
 }
 
 export type enlaceUncheckedCreateWithoutUsuarioInput = {
   id?: string
+  dominio_id?: string | null
   slug: string
   url_original: string
   titulo?: string | null
@@ -617,6 +689,7 @@ export type enlaceScalarWhereInput = {
   NOT?: Prisma.enlaceScalarWhereInput | Prisma.enlaceScalarWhereInput[]
   id?: Prisma.UuidFilter<"enlace"> | string
   usuario_id?: Prisma.UuidFilter<"enlace"> | string
+  dominio_id?: Prisma.UuidNullableFilter<"enlace"> | string | null
   slug?: Prisma.StringFilter<"enlace"> | string
   url_original?: Prisma.StringFilter<"enlace"> | string
   titulo?: Prisma.StringNullableFilter<"enlace"> | string | null
@@ -625,8 +698,59 @@ export type enlaceScalarWhereInput = {
   total_clicks?: Prisma.IntNullableFilter<"enlace"> | number | null
 }
 
+export type enlaceCreateWithoutDominioInput = {
+  id?: string
+  slug: string
+  url_original: string
+  titulo?: string | null
+  fecha_creacion?: Date | string | null
+  estado?: string
+  total_clicks?: number | null
+  analitica?: Prisma.analiticaCreateNestedManyWithoutEnlaceInput
+  usuario: Prisma.usuarioCreateNestedOneWithoutEnlaceInput
+}
+
+export type enlaceUncheckedCreateWithoutDominioInput = {
+  id?: string
+  usuario_id: string
+  slug: string
+  url_original: string
+  titulo?: string | null
+  fecha_creacion?: Date | string | null
+  estado?: string
+  total_clicks?: number | null
+  analitica?: Prisma.analiticaUncheckedCreateNestedManyWithoutEnlaceInput
+}
+
+export type enlaceCreateOrConnectWithoutDominioInput = {
+  where: Prisma.enlaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput>
+}
+
+export type enlaceCreateManyDominioInputEnvelope = {
+  data: Prisma.enlaceCreateManyDominioInput | Prisma.enlaceCreateManyDominioInput[]
+  skipDuplicates?: boolean
+}
+
+export type enlaceUpsertWithWhereUniqueWithoutDominioInput = {
+  where: Prisma.enlaceWhereUniqueInput
+  update: Prisma.XOR<Prisma.enlaceUpdateWithoutDominioInput, Prisma.enlaceUncheckedUpdateWithoutDominioInput>
+  create: Prisma.XOR<Prisma.enlaceCreateWithoutDominioInput, Prisma.enlaceUncheckedCreateWithoutDominioInput>
+}
+
+export type enlaceUpdateWithWhereUniqueWithoutDominioInput = {
+  where: Prisma.enlaceWhereUniqueInput
+  data: Prisma.XOR<Prisma.enlaceUpdateWithoutDominioInput, Prisma.enlaceUncheckedUpdateWithoutDominioInput>
+}
+
+export type enlaceUpdateManyWithWhereWithoutDominioInput = {
+  where: Prisma.enlaceScalarWhereInput
+  data: Prisma.XOR<Prisma.enlaceUpdateManyMutationInput, Prisma.enlaceUncheckedUpdateManyWithoutDominioInput>
+}
+
 export type enlaceCreateManyUsuarioInput = {
   id?: string
+  dominio_id?: string | null
   slug: string
   url_original: string
   titulo?: string | null
@@ -644,10 +768,12 @@ export type enlaceUpdateWithoutUsuarioInput = {
   estado?: Prisma.StringFieldUpdateOperationsInput | string
   total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   analitica?: Prisma.analiticaUpdateManyWithoutEnlaceNestedInput
+  dominio?: Prisma.dominioUpdateOneWithoutEnlaceNestedInput
 }
 
 export type enlaceUncheckedUpdateWithoutUsuarioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  dominio_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   url_original?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -659,6 +785,53 @@ export type enlaceUncheckedUpdateWithoutUsuarioInput = {
 
 export type enlaceUncheckedUpdateManyWithoutUsuarioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  dominio_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  url_original?: Prisma.StringFieldUpdateOperationsInput | string
+  titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fecha_creacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estado?: Prisma.StringFieldUpdateOperationsInput | string
+  total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type enlaceCreateManyDominioInput = {
+  id?: string
+  usuario_id: string
+  slug: string
+  url_original: string
+  titulo?: string | null
+  fecha_creacion?: Date | string | null
+  estado?: string
+  total_clicks?: number | null
+}
+
+export type enlaceUpdateWithoutDominioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  url_original?: Prisma.StringFieldUpdateOperationsInput | string
+  titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fecha_creacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estado?: Prisma.StringFieldUpdateOperationsInput | string
+  total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  analitica?: Prisma.analiticaUpdateManyWithoutEnlaceNestedInput
+  usuario?: Prisma.usuarioUpdateOneRequiredWithoutEnlaceNestedInput
+}
+
+export type enlaceUncheckedUpdateWithoutDominioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  url_original?: Prisma.StringFieldUpdateOperationsInput | string
+  titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fecha_creacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estado?: Prisma.StringFieldUpdateOperationsInput | string
+  total_clicks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  analitica?: Prisma.analiticaUncheckedUpdateManyWithoutEnlaceNestedInput
+}
+
+export type enlaceUncheckedUpdateManyWithoutDominioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   url_original?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -701,6 +874,7 @@ export type EnlaceCountOutputTypeCountAnaliticaArgs<ExtArgs extends runtime.Type
 export type enlaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   usuario_id?: boolean
+  dominio_id?: boolean
   slug?: boolean
   url_original?: boolean
   titulo?: boolean
@@ -709,12 +883,14 @@ export type enlaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   total_clicks?: boolean
   analitica?: boolean | Prisma.enlace$analiticaArgs<ExtArgs>
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
   _count?: boolean | Prisma.EnlaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["enlace"]>
 
 export type enlaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   usuario_id?: boolean
+  dominio_id?: boolean
   slug?: boolean
   url_original?: boolean
   titulo?: boolean
@@ -722,11 +898,13 @@ export type enlaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   estado?: boolean
   total_clicks?: boolean
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
 }, ExtArgs["result"]["enlace"]>
 
 export type enlaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   usuario_id?: boolean
+  dominio_id?: boolean
   slug?: boolean
   url_original?: boolean
   titulo?: boolean
@@ -734,11 +912,13 @@ export type enlaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   estado?: boolean
   total_clicks?: boolean
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
 }, ExtArgs["result"]["enlace"]>
 
 export type enlaceSelectScalar = {
   id?: boolean
   usuario_id?: boolean
+  dominio_id?: boolean
   slug?: boolean
   url_original?: boolean
   titulo?: boolean
@@ -747,17 +927,20 @@ export type enlaceSelectScalar = {
   total_clicks?: boolean
 }
 
-export type enlaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuario_id" | "slug" | "url_original" | "titulo" | "fecha_creacion" | "estado" | "total_clicks", ExtArgs["result"]["enlace"]>
+export type enlaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuario_id" | "dominio_id" | "slug" | "url_original" | "titulo" | "fecha_creacion" | "estado" | "total_clicks", ExtArgs["result"]["enlace"]>
 export type enlaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   analitica?: boolean | Prisma.enlace$analiticaArgs<ExtArgs>
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
   _count?: boolean | Prisma.EnlaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type enlaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
 }
 export type enlaceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  dominio?: boolean | Prisma.enlace$dominioArgs<ExtArgs>
 }
 
 export type $enlacePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -765,10 +948,12 @@ export type $enlacePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     analitica: Prisma.$analiticaPayload<ExtArgs>[]
     usuario: Prisma.$usuarioPayload<ExtArgs>
+    dominio: Prisma.$dominioPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     usuario_id: string
+    dominio_id: string | null
     slug: string
     url_original: string
     titulo: string | null
@@ -1171,6 +1356,7 @@ export interface Prisma__enlaceClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   analitica<T extends Prisma.enlace$analiticaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.enlace$analiticaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$analiticaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usuario<T extends Prisma.usuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__usuarioClient<runtime.Types.Result.GetResult<Prisma.$usuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  dominio<T extends Prisma.enlace$dominioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.enlace$dominioArgs<ExtArgs>>): Prisma.Prisma__dominioClient<runtime.Types.Result.GetResult<Prisma.$dominioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1202,6 +1388,7 @@ export interface Prisma__enlaceClient<T, Null = never, ExtArgs extends runtime.T
 export interface enlaceFieldRefs {
   readonly id: Prisma.FieldRef<"enlace", 'String'>
   readonly usuario_id: Prisma.FieldRef<"enlace", 'String'>
+  readonly dominio_id: Prisma.FieldRef<"enlace", 'String'>
   readonly slug: Prisma.FieldRef<"enlace", 'String'>
   readonly url_original: Prisma.FieldRef<"enlace", 'String'>
   readonly titulo: Prisma.FieldRef<"enlace", 'String'>
@@ -1630,6 +1817,25 @@ export type enlace$analiticaArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.AnaliticaScalarFieldEnum | Prisma.AnaliticaScalarFieldEnum[]
+}
+
+/**
+ * enlace.dominio
+ */
+export type enlace$dominioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the dominio
+   */
+  select?: Prisma.dominioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the dominio
+   */
+  omit?: Prisma.dominioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.dominioInclude<ExtArgs> | null
+  where?: Prisma.dominioWhereInput
 }
 
 /**

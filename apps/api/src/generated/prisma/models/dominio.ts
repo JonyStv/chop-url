@@ -255,6 +255,7 @@ export type dominioWhereInput = {
   created_at?: Prisma.DateTimeFilter<"dominio"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"dominio"> | Date | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.usuarioWhereInput>
+  enlace?: Prisma.EnlaceListRelationFilter
 }
 
 export type dominioOrderByWithRelationInput = {
@@ -273,16 +274,17 @@ export type dominioOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   usuario?: Prisma.usuarioOrderByWithRelationInput
+  enlace?: Prisma.enlaceOrderByRelationAggregateInput
 }
 
 export type dominioWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  usuario_id?: string
   hostname?: string
   verification_token?: string
   AND?: Prisma.dominioWhereInput | Prisma.dominioWhereInput[]
   OR?: Prisma.dominioWhereInput[]
   NOT?: Prisma.dominioWhereInput | Prisma.dominioWhereInput[]
-  usuario_id?: Prisma.UuidFilter<"dominio"> | string
   verification_method?: Prisma.StringFilter<"dominio"> | string
   status?: Prisma.StringFilter<"dominio"> | string
   ssl_status?: Prisma.StringFilter<"dominio"> | string
@@ -294,7 +296,8 @@ export type dominioWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"dominio"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"dominio"> | Date | string
   usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.usuarioWhereInput>
-}, "id" | "hostname" | "verification_token">
+  enlace?: Prisma.EnlaceListRelationFilter
+}, "id" | "hostname" | "verification_token" | "usuario_id">
 
 export type dominioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -351,6 +354,7 @@ export type dominioCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   usuario: Prisma.usuarioCreateNestedOneWithoutDominioInput
+  enlace?: Prisma.enlaceCreateNestedManyWithoutDominioInput
 }
 
 export type dominioUncheckedCreateInput = {
@@ -368,6 +372,7 @@ export type dominioUncheckedCreateInput = {
   error_message?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutDominioInput
 }
 
 export type dominioUpdateInput = {
@@ -385,6 +390,7 @@ export type dominioUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuario?: Prisma.usuarioUpdateOneRequiredWithoutDominioNestedInput
+  enlace?: Prisma.enlaceUpdateManyWithoutDominioNestedInput
 }
 
 export type dominioUncheckedUpdateInput = {
@@ -402,6 +408,7 @@ export type dominioUncheckedUpdateInput = {
   error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  enlace?: Prisma.enlaceUncheckedUpdateManyWithoutDominioNestedInput
 }
 
 export type dominioCreateManyInput = {
@@ -452,6 +459,11 @@ export type dominioUncheckedUpdateManyInput = {
   error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DominioNullableScalarRelationFilter = {
+  is?: Prisma.dominioWhereInput | null
+  isNot?: Prisma.dominioWhereInput | null
 }
 
 export type DominioListRelationFilter = {
@@ -515,6 +527,22 @@ export type dominioMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type dominioCreateNestedOneWithoutEnlaceInput = {
+  create?: Prisma.XOR<Prisma.dominioCreateWithoutEnlaceInput, Prisma.dominioUncheckedCreateWithoutEnlaceInput>
+  connectOrCreate?: Prisma.dominioCreateOrConnectWithoutEnlaceInput
+  connect?: Prisma.dominioWhereUniqueInput
+}
+
+export type dominioUpdateOneWithoutEnlaceNestedInput = {
+  create?: Prisma.XOR<Prisma.dominioCreateWithoutEnlaceInput, Prisma.dominioUncheckedCreateWithoutEnlaceInput>
+  connectOrCreate?: Prisma.dominioCreateOrConnectWithoutEnlaceInput
+  upsert?: Prisma.dominioUpsertWithoutEnlaceInput
+  disconnect?: Prisma.dominioWhereInput | boolean
+  delete?: Prisma.dominioWhereInput | boolean
+  connect?: Prisma.dominioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.dominioUpdateToOneWithWhereWithoutEnlaceInput, Prisma.dominioUpdateWithoutEnlaceInput>, Prisma.dominioUncheckedUpdateWithoutEnlaceInput>
+}
+
 export type dominioCreateNestedManyWithoutUsuarioInput = {
   create?: Prisma.XOR<Prisma.dominioCreateWithoutUsuarioInput, Prisma.dominioUncheckedCreateWithoutUsuarioInput> | Prisma.dominioCreateWithoutUsuarioInput[] | Prisma.dominioUncheckedCreateWithoutUsuarioInput[]
   connectOrCreate?: Prisma.dominioCreateOrConnectWithoutUsuarioInput | Prisma.dominioCreateOrConnectWithoutUsuarioInput[]
@@ -557,6 +585,90 @@ export type dominioUncheckedUpdateManyWithoutUsuarioNestedInput = {
   deleteMany?: Prisma.dominioScalarWhereInput | Prisma.dominioScalarWhereInput[]
 }
 
+export type dominioCreateWithoutEnlaceInput = {
+  id?: string
+  hostname: string
+  verification_token: string
+  verification_method?: string
+  status?: string
+  ssl_status?: string
+  is_primary?: boolean
+  last_checked_at?: Date | string | null
+  verified_at?: Date | string | null
+  activated_at?: Date | string | null
+  error_message?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  usuario: Prisma.usuarioCreateNestedOneWithoutDominioInput
+}
+
+export type dominioUncheckedCreateWithoutEnlaceInput = {
+  id?: string
+  usuario_id: string
+  hostname: string
+  verification_token: string
+  verification_method?: string
+  status?: string
+  ssl_status?: string
+  is_primary?: boolean
+  last_checked_at?: Date | string | null
+  verified_at?: Date | string | null
+  activated_at?: Date | string | null
+  error_message?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type dominioCreateOrConnectWithoutEnlaceInput = {
+  where: Prisma.dominioWhereUniqueInput
+  create: Prisma.XOR<Prisma.dominioCreateWithoutEnlaceInput, Prisma.dominioUncheckedCreateWithoutEnlaceInput>
+}
+
+export type dominioUpsertWithoutEnlaceInput = {
+  update: Prisma.XOR<Prisma.dominioUpdateWithoutEnlaceInput, Prisma.dominioUncheckedUpdateWithoutEnlaceInput>
+  create: Prisma.XOR<Prisma.dominioCreateWithoutEnlaceInput, Prisma.dominioUncheckedCreateWithoutEnlaceInput>
+  where?: Prisma.dominioWhereInput
+}
+
+export type dominioUpdateToOneWithWhereWithoutEnlaceInput = {
+  where?: Prisma.dominioWhereInput
+  data: Prisma.XOR<Prisma.dominioUpdateWithoutEnlaceInput, Prisma.dominioUncheckedUpdateWithoutEnlaceInput>
+}
+
+export type dominioUpdateWithoutEnlaceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  hostname?: Prisma.StringFieldUpdateOperationsInput | string
+  verification_token?: Prisma.StringFieldUpdateOperationsInput | string
+  verification_method?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  ssl_status?: Prisma.StringFieldUpdateOperationsInput | string
+  is_primary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  last_checked_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuario?: Prisma.usuarioUpdateOneRequiredWithoutDominioNestedInput
+}
+
+export type dominioUncheckedUpdateWithoutEnlaceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  usuario_id?: Prisma.StringFieldUpdateOperationsInput | string
+  hostname?: Prisma.StringFieldUpdateOperationsInput | string
+  verification_token?: Prisma.StringFieldUpdateOperationsInput | string
+  verification_method?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  ssl_status?: Prisma.StringFieldUpdateOperationsInput | string
+  is_primary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  last_checked_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verified_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type dominioCreateWithoutUsuarioInput = {
   id?: string
   hostname: string
@@ -571,6 +683,7 @@ export type dominioCreateWithoutUsuarioInput = {
   error_message?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  enlace?: Prisma.enlaceCreateNestedManyWithoutDominioInput
 }
 
 export type dominioUncheckedCreateWithoutUsuarioInput = {
@@ -587,6 +700,7 @@ export type dominioUncheckedCreateWithoutUsuarioInput = {
   error_message?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  enlace?: Prisma.enlaceUncheckedCreateNestedManyWithoutDominioInput
 }
 
 export type dominioCreateOrConnectWithoutUsuarioInput = {
@@ -665,6 +779,7 @@ export type dominioUpdateWithoutUsuarioInput = {
   error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  enlace?: Prisma.enlaceUpdateManyWithoutDominioNestedInput
 }
 
 export type dominioUncheckedUpdateWithoutUsuarioInput = {
@@ -681,6 +796,7 @@ export type dominioUncheckedUpdateWithoutUsuarioInput = {
   error_message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  enlace?: Prisma.enlaceUncheckedUpdateManyWithoutDominioNestedInput
 }
 
 export type dominioUncheckedUpdateManyWithoutUsuarioInput = {
@@ -700,6 +816,35 @@ export type dominioUncheckedUpdateManyWithoutUsuarioInput = {
 }
 
 
+/**
+ * Count Type DominioCountOutputType
+ */
+
+export type DominioCountOutputType = {
+  enlace: number
+}
+
+export type DominioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  enlace?: boolean | DominioCountOutputTypeCountEnlaceArgs
+}
+
+/**
+ * DominioCountOutputType without action
+ */
+export type DominioCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DominioCountOutputType
+   */
+  select?: Prisma.DominioCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * DominioCountOutputType without action
+ */
+export type DominioCountOutputTypeCountEnlaceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.enlaceWhereInput
+}
+
 
 export type dominioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -717,6 +862,8 @@ export type dominioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   created_at?: boolean
   updated_at?: boolean
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  enlace?: boolean | Prisma.dominio$enlaceArgs<ExtArgs>
+  _count?: boolean | Prisma.DominioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dominio"]>
 
 export type dominioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -775,6 +922,8 @@ export type dominioSelectScalar = {
 export type dominioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuario_id" | "hostname" | "verification_token" | "verification_method" | "status" | "ssl_status" | "is_primary" | "last_checked_at" | "verified_at" | "activated_at" | "error_message" | "created_at" | "updated_at", ExtArgs["result"]["dominio"]>
 export type dominioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
+  enlace?: boolean | Prisma.dominio$enlaceArgs<ExtArgs>
+  _count?: boolean | Prisma.DominioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type dominioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usuario?: boolean | Prisma.usuarioDefaultArgs<ExtArgs>
@@ -787,6 +936,7 @@ export type $dominioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "dominio"
   objects: {
     usuario: Prisma.$usuarioPayload<ExtArgs>
+    enlace: Prisma.$enlacePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1198,6 +1348,7 @@ readonly fields: dominioFieldRefs;
 export interface Prisma__dominioClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   usuario<T extends Prisma.usuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__usuarioClient<runtime.Types.Result.GetResult<Prisma.$usuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  enlace<T extends Prisma.dominio$enlaceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.dominio$enlaceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$enlacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1639,6 +1790,30 @@ export type dominioDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many dominios to delete.
    */
   limit?: number
+}
+
+/**
+ * dominio.enlace
+ */
+export type dominio$enlaceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the enlace
+   */
+  select?: Prisma.enlaceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the enlace
+   */
+  omit?: Prisma.enlaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.enlaceInclude<ExtArgs> | null
+  where?: Prisma.enlaceWhereInput
+  orderBy?: Prisma.enlaceOrderByWithRelationInput | Prisma.enlaceOrderByWithRelationInput[]
+  cursor?: Prisma.enlaceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EnlaceScalarFieldEnum | Prisma.EnlaceScalarFieldEnum[]
 }
 
 /**

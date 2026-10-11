@@ -103,6 +103,7 @@ export const AnaliticaScalarFieldEnum = {
 export const EnlaceScalarFieldEnum = {
     id: 'id',
     usuario_id: 'usuario_id',
+    dominio_id: 'dominio_id',
     slug: 'slug',
     url_original: 'url_original',
     titulo: 'titulo',

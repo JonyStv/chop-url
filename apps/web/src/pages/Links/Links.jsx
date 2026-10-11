@@ -54,6 +54,8 @@ function Links({}) {
       titulo: enlace.titulo,
       url_original: enlace.url_original,
       slug: enlace.slug,
+      dominio: enlace.dominio_id && enlace.dominio?.hostname ? enlace.dominio.hostname : "Web (predeterminado)",
+      tipo_dominio: enlace.dominio_id ? "Personalizado" : "Plataforma",
       totalClicks: enlace.total_clicks,
       estado: enlace.estado,
       fecha_creacion: enlace.fecha_creacion,

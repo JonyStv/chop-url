@@ -9,7 +9,7 @@ const URL_REGEX =
   /^(https?:\/\/)?(([\w-]+\.)+[\w-]+)(:[0-9]{1,5})?(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/;
 
 function Home({}) {
-  const { user } = useAuthStore();
+  const { user, accessToken } = useAuthStore();
   const [summary, setSummary] = useState({
     totalClicks: 0,
     uniqueVisitors: 0,
@@ -31,14 +31,40 @@ function Home({}) {
   const [titulo, setTitulo] = useState("");
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [isOptionalInputsVisible, setIsOptionalInputsVisible] = useState(false);
+  const [useCustomDomain, setUseCustomDomain] = useState(false);
+  const [userDomain, setUserDomain] = useState(null);
 
   const inputFormRef = useRef(null);
+  const isBusinessPlan = user?.plan_id === "business";
+
+  useEffect(() => {
+    if (isBusinessPlan && user?.id) {
+      apiJson(`/domains/user/${user.id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .then((domains) => {
+          if (Array.isArray(domains) && domains.length > 0) {
+            setUserDomain(domains[0]);
+          } else {
+            setUserDomain(null);
+          }
+        })
+        .catch((err) => {
+          console.error("Error al obtener dominio personalizado:", err);
+          setUserDomain(null);
+        });
+    } else {
+      setUserDomain(null);
+      setUseCustomDomain(false);
+    }
+  }, [isBusinessPlan, user?.id, accessToken]);
 
   const resetForm = () => {
     setUrl("");
     setSlug("");
     setTitulo("");
     setIsValidUrl(false);
+    setUseCustomDomain(false);
   };
   const handleUrlChange = (event) => {
     const value = event.target.value;
@@ -85,7 +111,13 @@ function Home({}) {
           value={url}
           onChange={handleUrlChange}
           disabled={!isValidUrl}
-          extraData={{ slug, titulo }}
+          extraData={{
+            slug,
+            titulo,
+            ...(useCustomDomain && userDomain
+              ? { customDomain: userDomain.hostname, domainId: userDomain.id }
+              : {}),
+          }}
           onSuccess={(data) => {
             console.log("Enlace creado exitosamente:", data);
             resetForm();
@@ -129,6 +161,33 @@ function Home({}) {
             onChange={(e) => setTitulo(e.target.value)}
             onKeyDown={handleOptionalKeyDown}
           />
+
+          {isBusinessPlan && (
+            <div className="domain-option-container">
+              {userDomain ? (
+                <label className="domain-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={useCustomDomain}
+                    onChange={(e) => setUseCustomDomain(e.target.checked)}
+                    disabled={userDomain.status !== "active"}
+                  />
+                  <span>
+                    Usar dominio personalizado (
+                    <strong>{userDomain.hostname}</strong>)
+                    {userDomain.status !== "active" && (
+                      <em className="domain-status-warning"> - Pendiente de verificación</em>
+                    )}
+                  </span>
+                </label>
+              ) : (
+                <p className="domain-hint-text">
+                  Tienes el plan Business. Puedes configurar tu propio dominio en{" "}
+                  <a href="/settings">Ajustes</a>.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </section>
 

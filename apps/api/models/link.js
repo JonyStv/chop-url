@@ -3,7 +3,7 @@ import { env } from "../config/env.js";
 
 export class LinkModel {
   //CREATE
-  static async create({ titulo, urlOriginal, slug, userId }) {
+  static async create({ titulo, urlOriginal, slug, userId, dominioId }) {
     let dominio = env.publicUrl;
     if (!dominio.endsWith("/")) {
       dominio += "/";
@@ -11,6 +11,7 @@ export class LinkModel {
 
     const newLink = {
       usuario_id: userId,
+      dominio_id: dominioId || null,
       slug,
       url_original: urlOriginal,
       titulo,
@@ -28,11 +29,18 @@ export class LinkModel {
     });
     return await prisma.enlace.create({
       data: newLink,
+      include: {
+        dominio: true,
+      },
     });
   }
   //READ
   static async getAll({ estado, search, limit, offset }) {
-    let filteredLinks = await prisma.enlace.findMany();
+    let filteredLinks = await prisma.enlace.findMany({
+      include: {
+        dominio: true,
+      },
+    });
     filteredLinks = filterLinks(filteredLinks, {
       estado,
       search,
@@ -47,6 +55,9 @@ export class LinkModel {
       where: {
         usuario_id: userid,
       },
+      include: {
+        dominio: true,
+      },
     });
     filteredLinks = filterLinks(filteredLinks, {
       estado,
@@ -60,6 +71,9 @@ export class LinkModel {
     return await prisma.enlace.findUnique({
       where: {
         slug,
+      },
+      include: {
+        dominio: true,
       },
     });
   }

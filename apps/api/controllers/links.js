@@ -49,7 +49,7 @@ export class LinkController {
     res.json(links);
   }
   static async create(req, res) {
-    const { titulo, urlOriginal, slug, userId } = req.body;
+    const { titulo, urlOriginal, slug, userId, domainId, dominio_id } = req.body;
 
     if (typeof userId === "string" || typeof userId === "number") {
       const canCreate = await SubscriptionService.canCreateLink(userId);
@@ -66,6 +66,7 @@ export class LinkController {
       urlOriginal,
       slug,
       userId,
+      dominioId: domainId || dominio_id || null,
     });
     return res.status(201).json(newLink);
   }

@@ -3,9 +3,18 @@ import React from "react";
 import { useEditStore } from "../../store/editStore.js";
 
 export function NoNamed({ enlace, mode }) {
-  const domain = import.meta.env.VITE_API_URL || window.location.origin;
+  const defaultDomain = import.meta.env.VITE_API_URL || window.location.origin;
   const { openEditModal } = useEditStore();
-  const urlAcortada = `${domain.replace(/\/$/, "")}/${enlace.slug}`;
+
+  const isCustomDomain = Boolean(enlace.dominio_id && (enlace.dominio?.hostname || enlace.custom_domain));
+  const effectiveHostname = isCustomDomain
+    ? enlace.dominio?.hostname || enlace.custom_domain
+    : defaultDomain.replace(/\/$/, "");
+
+  const urlAcortada = isCustomDomain
+    ? `https://${effectiveHostname}/${enlace.slug}`
+    : `${defaultDomain.replace(/\/$/, "")}/${enlace.slug}`;
+
   const urlAcortadaVisible = urlAcortada.replace(/https?:\/\//g, "");
   const urlOriginal = enlace.url_original
     .replace(/https?:\/\//g, "")
@@ -21,13 +30,24 @@ export function NoNamed({ enlace, mode }) {
   return (
     <>
       <td className="link-column shortened">
-        {mode === "select" ? (
-          <span>{urlAcortadaVisible}</span>
-        ) : (
-          <a href={urlAcortada} target="_blank" rel="noopener">
-            {urlAcortadaVisible}
-          </a>
-        )}
+        <div className="link-cell-wrapper">
+          {mode === "select" ? (
+            <span>{urlAcortadaVisible}</span>
+          ) : (
+            <a href={urlAcortada} target="_blank" rel="noopener">
+              {urlAcortadaVisible}
+            </a>
+          )}
+          {isCustomDomain ? (
+            <span className="domain-type-badge custom-domain-badge" title="Dominio personalizado">
+              Custom
+            </span>
+          ) : (
+            <span className="domain-type-badge default-domain-badge" title="Dominio predeterminado de la plataforma">
+              Web
+            </span>
+          )}
+        </div>
       </td>
       <td className="link-column original">
         {mode === "select" ? (

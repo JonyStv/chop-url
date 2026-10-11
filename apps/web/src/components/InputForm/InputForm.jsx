@@ -38,13 +38,12 @@ const InputForm = forwardRef(
 
     const handleSubmit = (event) => {
       event.preventDefault();
-      if (disabled) return;
-
       const payload = {
         titulo: extraData?.titulo || "Sin título",
         urlOriginal: value,
         slug: extraData?.slug || Math.random().toString(36).substring(2, 8),
         userId: user?.id,
+        ...extraData,
       };
 
       // Si el padre paso su propio onSubmit (por ejemplo Links.jsx para busquedas), ejecutarlo
